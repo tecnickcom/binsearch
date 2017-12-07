@@ -87,3 +87,19 @@ func (mf TMMFile) FindFirstUint64be(blklen, blkpos, first, last uint64, search u
 func (mf TMMFile) FindLastUint64be(blklen, blkpos, first, last uint64, search uint64) uint64 {
 	return uint64(C.find_last_uint64be((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), C.uint64_t(last), C.uint64_t(search)))
 }
+
+// FindFirstUint128be search for the first occurrence of a 128 bit unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data.
+// The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
+// Return the item number if found or (last + 1) if not found.
+func (mf TMMFile) FindFirstUint128be(blklen, blkpos, first, last uint64, searchHi, searchLo uint64) uint64 {
+	return uint64(C.find_first_uint128be((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), C.uint64_t(last), C.uint64_t(searchHi), C.uint64_t(searchLo)))
+}
+
+// FindLastUint128be search for the last occurrence of a 128 bit unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data.
+// The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
+// Return the item number if found or (last + 1) if not found.
+func (mf TMMFile) FindLastUint128be(blklen, blkpos, first, last uint64, searchHi, searchLo uint64) uint64 {
+	return uint64(C.find_last_uint128be((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), C.uint64_t(last), C.uint64_t(searchHi), C.uint64_t(searchLo)))
+}

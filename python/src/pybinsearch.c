@@ -111,6 +111,34 @@ static PyObject* py_find_last_uint64be(PyObject *Py_UNUSED(ignored), PyObject *a
     return result;
 }
 
+static PyObject* py_find_first_uint128be(PyObject *Py_UNUSED(ignored), PyObject *args)
+{
+    PyObject *result;
+    uint64_t blklen, blkpos, first, last;
+    uint64_t search_hi, search_lo;
+    PyObject* mfsrc = NULL;
+    if (!PyArg_ParseTuple(args, "OKKKKKK", &mfsrc, &blklen, &blkpos, &first, &last, &search_hi, &search_lo))
+        return NULL;
+    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    uint64_t h = find_first_uint128be(src, blklen, blkpos, first, last, search_hi, search_lo);
+    result = Py_BuildValue("K", h);
+    return result;
+}
+
+static PyObject* py_find_last_uint128be(PyObject *Py_UNUSED(ignored), PyObject *args)
+{
+    PyObject *result;
+    uint64_t blklen, blkpos, first, last;
+    uint64_t search_hi, search_lo;
+    PyObject* mfsrc = NULL;
+    if (!PyArg_ParseTuple(args, "OKKKKKK", &mfsrc, &blklen, &blkpos, &first, &last, &search_hi, &search_lo))
+        return NULL;
+    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    uint64_t h = find_last_uint128be(src, blklen, blkpos, first, last, search_hi, search_lo);
+    result = Py_BuildValue("K", h);
+    return result;
+}
+
 static PyMethodDef PyBinsearchMethods[] =
 {
     {"mmap_binfile", py_mmap_binfile, METH_VARARGS, PYMMAPBINFILE_DOCSTRING},
@@ -120,6 +148,8 @@ static PyMethodDef PyBinsearchMethods[] =
     {"find_last_uint32be", py_find_last_uint32be, METH_VARARGS, PYFINDLASTUINT32BE_DOCSTRING},
     {"find_first_uint64be", py_find_first_uint64be, METH_VARARGS, PYFINDFIRSTUINT64BE_DOCSTRING},
     {"find_last_uint64be", py_find_last_uint64be, METH_VARARGS, PYFINDLASTUINT64BE_DOCSTRING},
+    {"find_first_uint128be", py_find_first_uint128be, METH_VARARGS, PYFINDFIRSTUINT128BE_DOCSTRING},
+    {"find_last_uint128be", py_find_last_uint128be, METH_VARARGS, PYFINDLASTUINT128BE_DOCSTRING},
     {NULL, NULL, 0, NULL}
 };
 

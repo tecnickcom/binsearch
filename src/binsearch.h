@@ -177,4 +177,38 @@ uint64_t find_first_uint64be(const unsigned char *src, uint64_t blklen, uint64_t
  */
 uint64_t find_last_uint64be(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t first, uint64_t last, uint64_t search);
 
+/**
+ * Search for the first occurrence of a 128 bit unsigned integer on a memory mapped
+ * binary file containing adjacent blocks of sorted binary data.
+ * The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
+ *
+ * @param src       Memory mapped file address.
+ * @param blklen    Lenght of the binary block in bytes.
+ * @param blkpos    Indicates the position of the number to search inside a binary block.
+ * @param first     First element of the range to search (min value = 0).
+ * @param last      Last element of the range to search (max value = nitems - 1).
+ * @param search_hi First 64 bit of unsigned number to search.
+ * @param search_lo Last 64 bit of unsigned number to search.
+ *
+ * @return item number if found or (last + 1) if not found.
+ */
+uint64_t find_first_uint128be(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t first, uint64_t last, uint64_t search_hi, uint64_t search_lo);
+
+/**
+ * Search for the last occurrence of a 128 bit unsigned integer on a memory mapped
+ * binary file containing adjacent blocks of sorted binary data.
+ * The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
+ *
+ * @param src       Memory mapped file address.
+ * @param blklen    Lenght of the binary block in bytes.
+ * @param blkpos    Indicates the position of the number to search inside a binary block.
+ * @param first     First element of the range to search (min value = 0).
+ * @param last      Last element of the range to search (max value = nitems - 1).
+ * @param search_hi First 64 bit of unsigned number to search.
+ * @param search_lo Last 64 bit of unsigned number to search.
+ *
+ * @return item number if found or (last + 1) if not found.
+ */
+uint64_t find_last_uint128be(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t first, uint64_t last, uint64_t search_hi, uint64_t search_lo);
+
 #endif  // BINSEARCH_H

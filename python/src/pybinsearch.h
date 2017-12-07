@@ -25,6 +25,8 @@ PyMODINIT_FUNC initlibpybinsearch(void);
 #define PYFINDLASTUINT32BE_DOCSTRING "Search for the last occurrence of a 32 bit unsigned integer on a memory mapped binary file containing adjacent blocks of sorted binary data. The 32 bit values in the file must encoded in big-endian format and sorted in ascending order."
 #define PYFINDFIRSTUINT64BE_DOCSTRING "Search for the first occurrence of a 64 bit unsigned integer on a memory mapped binary file containing adjacent blocks of sorted binary data. The 64 bit values in the file must encoded in big-endian format and sorted in ascending order."
 #define PYFINDLASTUINT64BE_DOCSTRING "Search for the last occurrence of a 64 bit unsigned integer on a memory mapped binary file containing adjacent blocks of sorted binary data. The 64 bit values in the file must encoded in big-endian format and sorted in ascending order."
+#define PYFINDFIRSTUINT128BE_DOCSTRING "Search for the first occurrence of a 128 bit unsigned integer on a memory mapped binary file containing adjacent blocks of sorted binary data. The 128 bit values in the file must encoded in big-endian format and sorted in ascending order."
+#define PYFINDLASTUINT128BE_DOCSTRING "Search for the last occurrence of a 128 bit unsigned integer on a memory mapped binary file containing adjacent blocks of sorted binary data. The 128 bit values in the file must encoded in big-endian format and sorted in ascending order."
 
 #if defined(__SUNPRO_C) || defined(__hpux) || defined(_AIX)
 #define inline

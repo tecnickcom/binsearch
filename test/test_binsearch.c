@@ -21,8 +21,8 @@ typedef struct test_data_32_t
     uint64_t first;
     uint64_t last;
     uint32_t search;
-    uint64_t foundFirst32;
-    uint64_t foundLast32;
+    uint64_t foundFirst;
+    uint64_t foundLast;
 } test_data_32_t;
 
 typedef struct test_data_64_t
@@ -31,9 +31,20 @@ typedef struct test_data_64_t
     uint64_t first;
     uint64_t last;
     uint64_t search;
-    uint64_t foundFirst64;
-    uint64_t foundLast64;
+    uint64_t foundFirst;
+    uint64_t foundLast;
 } test_data_64_t;
+
+typedef struct test_data_128_t
+{
+    uint64_t blkpos;
+    uint64_t first;
+    uint64_t last;
+    uint64_t search_hi;
+    uint64_t search_lo;
+    uint64_t foundFirst;
+    uint64_t foundLast;
+} test_data_128_t;
 
 static test_data_32_t test_data_32[TEST_DATA_SIZE] =
 {
@@ -65,6 +76,21 @@ static test_data_64_t test_data_64[TEST_DATA_SIZE] =
     {4, 99, 99, 0xfffffffffffffff0, 100, 100},
 };
 
+static test_data_128_t test_data_128[TEST_DATA_SIZE] =
+{
+    {4, 0, 99, 0x000027225FB6E591, 0x6EB7ABD92E3DEB1D, 0, 0},
+    {4, 0, 99, 0x000027C07B9621EC, 0x01F886390C06811D, 10, 10},
+    {4, 0, 0, 0x000027225FB6E591, 0x6EB7ABD92E3DEB1A, 1, 1},
+    {4, 0, 99, 0x000027C30981EF0F, 0x500126C20C059EB5, 12, 12},
+    {4, 0, 99, 0x000027F35FB6E591, 0x6EB7ABD90889E85E, 13, 13},
+    {4, 0, 99, 0x000027F3D41A0CE2, 0xDF116BBC0BF2CF80, 100, 100},
+    {4, 0, 99, 0x000027F53B9E3036, 0x5103B7A62E3FBBCC, 100, 100},
+    {4, 0, 99, 0x000027F690C4DEFF, 0x765F63B80BF00517, 16, 16},
+    {4, 0, 99, 0x000033F522A78FD9, 0x1ACC7B430AC5CA22, 99, 99},
+    {4, 0, 0, 0x0000000000000001, 0x0000000000000001, 1, 1},
+    {4, 0, 0, 0xfffffffffffffff0, 0xfffffffffffffff0, 1, 1},
+};
+
 // returns current time in nanoseconds
 uint64_t get_time()
 {
@@ -81,9 +107,9 @@ int test_find_first_uint32be(mmfile_t mf, uint64_t blklen)
     for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_first_uint32be(mf.src, blklen, test_data_32[i].blkpos, test_data_32[i].first, test_data_32[i].last, test_data_32[i].search);
-        if (found != test_data_32[i].foundFirst32)
+        if (found != test_data_32[i].foundFirst)
         {
-            fprintf(stderr, "test_find_first_uint32be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_32[i].foundFirst32, found);
+            fprintf(stderr, "test_find_first_uint32be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_32[i].foundFirst, found);
             ++errors;
         }
     }
@@ -98,9 +124,9 @@ int test_find_last_uint32be(mmfile_t mf, uint64_t blklen)
     for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_last_uint32be(mf.src, blklen, test_data_32[i].blkpos, test_data_32[i].first, test_data_32[i].last, test_data_32[i].search);
-        if (found != test_data_32[i].foundLast32)
+        if (found != test_data_32[i].foundLast)
         {
-            fprintf(stderr, "test_find_last_uint32be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_32[i].foundLast32, found);
+            fprintf(stderr, "test_find_last_uint32be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_32[i].foundLast, found);
             ++errors;
         }
     }
@@ -115,9 +141,9 @@ int test_find_first_uint64be(mmfile_t mf, uint64_t blklen)
     for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_first_uint64be(mf.src, blklen, test_data_64[i].blkpos, test_data_64[i].first, test_data_64[i].last, test_data_64[i].search);
-        if (found != test_data_64[i].foundFirst64)
+        if (found != test_data_64[i].foundFirst)
         {
-            fprintf(stderr, "test_find_first_uint64be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_64[i].foundFirst64, found);
+            fprintf(stderr, "test_find_first_uint64be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_64[i].foundFirst, found);
             ++errors;
         }
     }
@@ -132,9 +158,43 @@ int test_find_last_uint64be(mmfile_t mf, uint64_t blklen)
     for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_last_uint64be(mf.src, blklen, test_data_64[i].blkpos, test_data_64[i].first, test_data_64[i].last, test_data_64[i].search);
-        if (found != test_data_64[i].foundLast64)
+        if (found != test_data_64[i].foundLast)
         {
-            fprintf(stderr, "test_find_last_uint64be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_64[i].foundLast64, found);
+            fprintf(stderr, "test_find_last_uint64be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_64[i].foundLast, found);
+            ++errors;
+        }
+    }
+    return errors;
+}
+
+int test_find_first_uint128be(mmfile_t mf, uint64_t blklen)
+{
+    int errors = 0;
+    int i;
+    uint64_t found;
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
+    {
+        found = find_first_uint128be(mf.src, blklen, test_data_128[i].blkpos, test_data_128[i].first, test_data_128[i].last, test_data_128[i].search_hi, test_data_128[i].search_lo);
+        if (found != test_data_128[i].foundFirst)
+        {
+            fprintf(stderr, "test_find_first_uint128be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_128[i].foundFirst, found);
+            ++errors;
+        }
+    }
+    return errors;
+}
+
+int test_find_last_uint128be(mmfile_t mf, uint64_t blklen)
+{
+    int errors = 0;
+    int i;
+    uint64_t found;
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
+    {
+        found = find_last_uint128be(mf.src, blklen, test_data_128[i].blkpos, test_data_128[i].first, test_data_128[i].last, test_data_128[i].search_hi, test_data_128[i].search_lo);
+        if (found != test_data_128[i].foundLast)
+        {
+            fprintf(stderr, "test_find_last_uint128be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_128[i].foundLast, found);
             ++errors;
         }
     }
@@ -197,6 +257,34 @@ void benchmark_find_last_uint64be(mmfile_t mf, uint64_t blklen, uint64_t nitems)
     fprintf(stdout, " * find_last_uint64be : %lu ns/op\n", (tend - tstart)/(size*4));
 }
 
+void benchmark_find_first_uint128be(mmfile_t mf, uint64_t blklen, uint64_t nitems)
+{
+    uint64_t tstart, tend;
+    int i;
+    int size = 100000;
+    tstart = get_time();
+    for (i=0 ; i < size; i++)
+    {
+        find_first_uint128be(mf.src, blklen, 4, 0, (nitems - 1), 0x000027C30981EF0F, 0x500126C20C059EB5);
+    }
+    tend = get_time();
+    fprintf(stdout, " * find_first_uint128be : %lu ns/op\n", (tend - tstart)/(size*4));
+}
+
+void benchmark_find_last_uint128be(mmfile_t mf, uint64_t blklen, uint64_t nitems)
+{
+    uint64_t tstart, tend;
+    int i;
+    int size = 100000;
+    tstart = get_time();
+    for (i=0 ; i < size; i++)
+    {
+        find_last_uint128be(mf.src, blklen, 4, 0, (nitems - 1), 0x000027C30981EF0F, 0x500126C20C059EB5);
+    }
+    tend = get_time();
+    fprintf(stdout, " * find_last_uint128be : %lu ns/op\n", (tend - tstart)/(size*4));
+}
+
 int main()
 {
     int errors = 0;
@@ -236,11 +324,17 @@ int main()
     errors += test_find_first_uint64be(mf, blklen);
     errors += test_find_last_uint64be(mf, blklen);
 
+    errors += test_find_first_uint128be(mf, blklen);
+    errors += test_find_last_uint128be(mf, blklen);
+
     benchmark_find_first_uint32be(mf, blklen, nitems);
     benchmark_find_last_uint32be(mf, blklen, nitems);
 
     benchmark_find_first_uint64be(mf, blklen, nitems);
     benchmark_find_last_uint64be(mf, blklen, nitems);
+
+    benchmark_find_first_uint128be(mf, blklen, nitems);
+    benchmark_find_last_uint128be(mf, blklen, nitems);
 
     int e = munmap_binfile(mf);
     if (e != 0)

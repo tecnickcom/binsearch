@@ -153,3 +153,60 @@ uint64_t find_last_uint64be(const unsigned char *src, uint64_t blklen, uint64_t 
     }
     return found;
 }
+
+uint64_t find_first_uint128be(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t first, uint64_t last, uint64_t search_hi, uint64_t search_lo)
+{
+    uint64_t i, middle, found = (last + 1);
+    uint64_t x_hi, x_lo;
+    while (first <= last)
+    {
+        middle = ((first + last) >> 1);
+        i = get_address(blklen, blkpos, middle);
+        x_hi = bytes_to_uint64be(src, i);
+        if (x_hi == search_hi)
+        {
+            x_lo = bytes_to_uint64be(src, i + 8);
+            if (x_lo == search_lo)
+            {
+                if (middle == 0) return middle;
+                found = middle;
+                last = (middle - 1);
+            }
+            else if (x_lo < search_lo) first = (middle + 1);
+            else if (middle > 0) last = (middle - 1);
+            else return found;
+        }
+        else if (x_hi < search_hi) first = (middle + 1);
+        else if (middle > 0) last = (middle - 1);
+        else return found;
+    }
+    return found;
+}
+
+uint64_t find_last_uint128be(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t first, uint64_t last, uint64_t search_hi, uint64_t search_lo)
+{
+    uint64_t i, middle, found = (last + 1);
+    uint64_t x_hi, x_lo;
+    while (first <= last)
+    {
+        middle = ((first + last) >> 1);
+        i = get_address(blklen, blkpos, middle);
+        x_hi = bytes_to_uint64be(src, i);
+        if (x_hi == search_hi)
+        {
+            x_lo = bytes_to_uint64be(src, i + 8);
+            if (x_lo == search_lo)
+            {
+                found = middle;
+                first = (middle + 1);
+            }
+            else if (x_lo < search_lo) first = (middle + 1);
+            else if (middle > 0) last = (middle - 1);
+            else return found;
+        }
+        else if (x_hi < search_hi) first = (middle + 1);
+        else if (middle > 0) last = (middle - 1);
+        else return found;
+    }
+    return found;
+}

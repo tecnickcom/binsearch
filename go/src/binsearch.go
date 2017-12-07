@@ -181,3 +181,92 @@ func (mf TMMFile) FindLastUint64be(blklen, blkpos, first, last uint64, search ui
 	}
 	return found
 }
+
+// FindFirstUint128be search for the first occurrence of a 128 bit unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data.
+// The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
+// Return the item number if found or (last + 1) if not found.
+func (mf TMMFile) FindFirstUint128be(blklen, blkpos, first, last uint64, searchHi, searchLo uint64) uint64 {
+	var i, middle uint64
+	var xHi, xLo uint64
+	found := (last + 1)
+	for first <= last {
+		middle = ((first + last) >> 1)
+		i = GetAddress(blklen, blkpos, middle)
+		xHi = mf.BytesToUint64be(int(i))
+		if xHi == searchHi {
+			xLo = mf.BytesToUint64be(int(i + 8))
+			if xLo == searchLo {
+				if middle == 0 {
+					return middle
+				}
+				found = middle
+				last = (middle - 1)
+			} else {
+				if xLo < searchLo {
+					first = (middle + 1)
+				} else {
+					if middle > 0 {
+						last = (middle - 1)
+					} else {
+						return found
+					}
+				}
+			}
+		} else {
+			if xHi < searchHi {
+				first = (middle + 1)
+			} else {
+				if middle > 0 {
+					last = (middle - 1)
+				} else {
+					return found
+				}
+			}
+		}
+	}
+	return found
+}
+
+// FindLastUint128be search for the last occurrence of a 128 bit unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data.
+// The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
+// Return the item number if found or (last + 1) if not found.
+func (mf TMMFile) FindLastUint128be(blklen, blkpos, first, last uint64, searchHi, searchLo uint64) uint64 {
+	var i, middle uint64
+	var xHi, xLo uint64
+	found := (last + 1)
+	for first <= last {
+		middle = ((first + last) >> 1)
+		i = GetAddress(blklen, blkpos, middle)
+		xHi = mf.BytesToUint64be(int(i))
+		if xHi == searchHi {
+			xLo = mf.BytesToUint64be(int(i + 8))
+			if xLo == searchLo {
+				found = middle
+				first = (middle + 1)
+			} else {
+				if xLo < searchLo {
+					first = (middle + 1)
+				} else {
+					if middle > 0 {
+						last = (middle - 1)
+					} else {
+						return found
+					}
+				}
+			}
+		} else {
+			if xHi < searchHi {
+				first = (middle + 1)
+			} else {
+				if middle > 0 {
+					last = (middle - 1)
+				} else {
+					return found
+				}
+			}
+		}
+	}
+	return found
+}
