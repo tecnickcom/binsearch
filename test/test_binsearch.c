@@ -13,6 +13,8 @@
 #include <sys/mman.h>
 #include "binsearch.h"
 
+#define TEST_DATA_SIZE 11
+
 typedef struct test_data_32_t
 {
     uint64_t blkpos;
@@ -33,7 +35,7 @@ typedef struct test_data_64_t
     uint64_t foundLast64;
 } test_data_64_t;
 
-static test_data_32_t test_data_32[7] =
+static test_data_32_t test_data_32[TEST_DATA_SIZE] =
 {
     {4, 0, 99, 0x00002722, 0, 0},
     {4, 0, 99, 0x000033f5, 99, 99},
@@ -42,9 +44,13 @@ static test_data_32_t test_data_32[7] =
     {4, 0, 99, 0x000027f3, 13, 14},
     {4, 13, 99, 0x000027f3, 13, 14},
     {4, 14, 99, 0x000027f3, 14, 14},
+    {4, 0, 0, 0x00000001, 1, 1},
+    {4, 0, 0, 0xfffffff0, 1, 1},
+    {4, 99, 99, 0x00000001, 100, 100},
+    {4, 99, 99, 0xfffffff0, 100, 100},
 };
 
-static test_data_64_t test_data_64[7] =
+static test_data_64_t test_data_64[TEST_DATA_SIZE] =
 {
     {4, 0, 99, 0x000027225FB6E591, 0, 0},
     {4, 0, 99, 0x000033F522A78FD9, 99, 99},
@@ -53,6 +59,10 @@ static test_data_64_t test_data_64[7] =
     {4, 0, 99, 0x000027F35FB6E591, 13, 13},
     {0, 13, 99, 0x00000001000027f3, 13, 14},
     {0, 14, 99, 0x00000001000027f3, 14, 14},
+    {4, 0, 0, 0x0000000000000001, 1, 1},
+    {4, 0, 0, 0xfffffffffffffff0, 1, 1},
+    {4, 99, 99, 0x0000000000000001, 100, 100},
+    {4, 99, 99, 0xfffffffffffffff0, 100, 100},
 };
 
 // returns current time in nanoseconds
@@ -68,12 +78,12 @@ int test_find_first_uint32be(mmfile_t mf, uint64_t blklen)
     int errors = 0;
     int i;
     uint64_t found;
-    for (i=0 ; i < 7; i++)
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_first_uint32be(mf.src, blklen, test_data_32[i].blkpos, test_data_32[i].first, test_data_32[i].last, test_data_32[i].search);
         if (found != test_data_32[i].foundFirst32)
         {
-            fprintf(stderr, "%d. Expected %"PRIx64", got %"PRIx64"", i, test_data_32[i].foundFirst32, found);
+            fprintf(stderr, "test_find_first_uint32be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_32[i].foundFirst32, found);
             ++errors;
         }
     }
@@ -85,12 +95,12 @@ int test_find_last_uint32be(mmfile_t mf, uint64_t blklen)
     int errors = 0;
     int i;
     uint64_t found;
-    for (i=0 ; i < 7; i++)
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_last_uint32be(mf.src, blklen, test_data_32[i].blkpos, test_data_32[i].first, test_data_32[i].last, test_data_32[i].search);
         if (found != test_data_32[i].foundLast32)
         {
-            fprintf(stderr, "%d. Expected %"PRIx64", got %"PRIx64"", i, test_data_32[i].foundLast32, found);
+            fprintf(stderr, "test_find_last_uint32be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_32[i].foundLast32, found);
             ++errors;
         }
     }
@@ -102,12 +112,12 @@ int test_find_first_uint64be(mmfile_t mf, uint64_t blklen)
     int errors = 0;
     int i;
     uint64_t found;
-    for (i=0 ; i < 7; i++)
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_first_uint64be(mf.src, blklen, test_data_64[i].blkpos, test_data_64[i].first, test_data_64[i].last, test_data_64[i].search);
         if (found != test_data_64[i].foundFirst64)
         {
-            fprintf(stderr, "%d. Expected %"PRIx64", got %"PRIx64"", i, test_data_64[i].foundFirst64, found);
+            fprintf(stderr, "test_find_first_uint64be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_64[i].foundFirst64, found);
             ++errors;
         }
     }
@@ -119,12 +129,12 @@ int test_find_last_uint64be(mmfile_t mf, uint64_t blklen)
     int errors = 0;
     int i;
     uint64_t found;
-    for (i=0 ; i < 7; i++)
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         found = find_last_uint64be(mf.src, blklen, test_data_64[i].blkpos, test_data_64[i].first, test_data_64[i].last, test_data_64[i].search);
         if (found != test_data_64[i].foundLast64)
         {
-            fprintf(stderr, "%d. Expected %"PRIx64", got %"PRIx64"", i, test_data_64[i].foundLast64, found);
+            fprintf(stderr, "test_find_last_uint64be (%d) Expected %"PRIx64", got %"PRIx64"\n", i, test_data_64[i].foundLast64, found);
             ++errors;
         }
     }
@@ -199,7 +209,7 @@ int main()
 
     if (mf.fd < 0)
     {
-        fprintf(stderr, "can't open %s for reading", file);
+        fprintf(stderr, "can't open %s for reading\n", file);
         return 1;
     }
     if (mf.size == 0)

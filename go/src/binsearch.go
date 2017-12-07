@@ -69,16 +69,20 @@ func (mf TMMFile) FindFirstUint32be(blklen, blkpos, first, last uint64, search u
 		i = GetAddress(blklen, blkpos, middle)
 		x = mf.BytesToUint32be(int(i))
 		if x == search {
-			found = middle
-			if found == 0 {
-				return found
+			if middle == 0 {
+				return middle
 			}
+			found = middle
 			last = (middle - 1)
 		} else {
 			if x < search {
 				first = (middle + 1)
 			} else {
-				last = (middle - 1)
+				if middle > 0 {
+					last = (middle - 1)
+				} else {
+					return found
+				}
 			}
 		}
 	}
@@ -104,7 +108,11 @@ func (mf TMMFile) FindLastUint32be(blklen, blkpos, first, last uint64, search ui
 			if x < search {
 				first = (middle + 1)
 			} else {
-				last = (middle - 1)
+				if middle > 0 {
+					last = (middle - 1)
+				} else {
+					return found
+				}
 			}
 		}
 	}
@@ -124,16 +132,20 @@ func (mf TMMFile) FindFirstUint64be(blklen, blkpos, first, last uint64, search u
 		i = GetAddress(blklen, blkpos, middle)
 		x = mf.BytesToUint64be(int(i))
 		if x == search {
-			found = middle
-			if found == 0 {
-				return found
+			if middle == 0 {
+				return middle
 			}
+			found = middle
 			last = (middle - 1)
 		} else {
 			if x < search {
 				first = (middle + 1)
 			} else {
-				last = (middle - 1)
+				if middle > 0 {
+					last = (middle - 1)
+				} else {
+					return found
+				}
 			}
 		}
 	}
@@ -159,7 +171,11 @@ func (mf TMMFile) FindLastUint64be(blklen, blkpos, first, last uint64, search ui
 			if x < search {
 				first = (middle + 1)
 			} else {
-				last = (middle - 1)
+				if middle > 0 {
+					last = (middle - 1)
+				} else {
+					return found
+				}
 			}
 		}
 	}

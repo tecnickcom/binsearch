@@ -79,12 +79,13 @@ uint64_t find_first_uint32be(const unsigned char *src, uint64_t blklen, uint64_t
         x = bytes_to_uint32be(src, i);
         if (x == search)
         {
+            if (middle == 0) return middle;
             found = middle;
-            if (found == 0) return found;
             last = (middle - 1);
         }
         else if (x < search) first = (middle + 1);
-        else last = (middle - 1);
+        else if (middle > 0) last = (middle - 1);
+        else return found;
     }
     return found;
 }
@@ -104,7 +105,8 @@ uint64_t find_last_uint32be(const unsigned char *src, uint64_t blklen, uint64_t 
             first = (middle + 1);
         }
         else if (x < search) first = (middle + 1);
-        else last = (middle - 1);
+        else if (middle > 0) last = (middle - 1);
+        else return found;
     }
     return found;
 }
@@ -120,12 +122,13 @@ uint64_t find_first_uint64be(const unsigned char *src, uint64_t blklen, uint64_t
         x = bytes_to_uint64be(src, i);
         if (x == search)
         {
+            if (middle == 0) return middle;
             found = middle;
-            if (found == 0) return found;
             last = (middle - 1);
         }
         else if (x < search) first = (middle + 1);
-        else last = (middle - 1);
+        else if (middle > 0) last = (middle - 1);
+        else return found;
     }
     return found;
 }
@@ -145,7 +148,8 @@ uint64_t find_last_uint64be(const unsigned char *src, uint64_t blklen, uint64_t 
             first = (middle + 1);
         }
         else if (x < search) first = (middle + 1);
-        else last = (middle - 1);
+        else if (middle > 0) last = (middle - 1);
+        else return found;
     }
     return found;
 }
