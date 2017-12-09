@@ -291,7 +291,7 @@ int main()
 
     char *file = "test_data.bin"; // file containing test data
     uint64_t blklen = 20; // lenght of each binary block
-    uint64_t nitems; // number of binary bloack in the file
+    uint64_t nitems; // number of binary blocks in the file
 
     mmfile_t mf = mmap_binfile(file);
 

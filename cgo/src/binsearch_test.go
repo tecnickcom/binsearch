@@ -89,6 +89,13 @@ func TestMain(m *testing.M) {
 	os.Exit(retCode)
 }
 
+func TestGetAddress(t *testing.T) {
+	h := GetAddress(3, 5, 7)
+	if h != 26 {
+		t.Errorf("Expected 26, got %d", h)
+	}
+}
+
 func TestFindFirstUint32be(t *testing.T) {
 	for i, tt := range testData32 {
 		h := mf.FindFirstUint32be(20, tt.blkpos, tt.first, tt.last, tt.search)
