@@ -14,14 +14,6 @@ type Uint128 struct {
 	Lo uint64
 }
 
-// castCUint128 convert C uint128_t to GO Uint128.
-func castCUint128(u C.uint128_t) Uint128 {
-	return Uint128{
-		Hi: uint64(u.hi),
-		Lo: uint64(u.lo),
-	}
-}
-
 // castGoUint128 convert GO Uint128 to C uint128_t.
 func castGoUint128(u Uint128) C.uint128_t {
 	var c C.uint128_t
