@@ -22,6 +22,12 @@ package binsearch
 
 import "golang.org/x/exp/mmap"
 
+// Uint128 contains 2 64bit unsigned integers
+type Uint128 struct {
+	Hi uint64
+	Lo uint64
+}
+
 // TMMFile contains the memory mapped file reader
 type TMMFile struct {
 	r *mmap.ReaderAt

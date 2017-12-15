@@ -55,8 +55,8 @@
  */
 typedef struct uint128_t
 {
-    uint64_t hi;
-    uint64_t lo;
+    uint64_t hi; /*!< hi 64 bits */
+    uint64_t lo; /*!< low 64 bits */
 } uint128_t;
 
 /**
@@ -152,6 +152,11 @@ uint64_t bytes_to_uint64_t(const unsigned char *src, uint64_t i);
  */
 uint128_t bytes_to_uint128_t(const unsigned char *src, uint64_t i);
 
+/**
+ * Generic function to compare two integers.
+ *
+ * @param T Unsigned integer tupe, one of: uint8_t, uint16_t, uint32_t, uint64_t
+ */
 #define define_compare(T) \
 /** Compare two integers
 @param a First integer to compare
