@@ -96,99 +96,99 @@ func TestGetAddress(t *testing.T) {
 	}
 }
 
-func TestFindFirstUint32be(t *testing.T) {
+func TestFindFirstUint32_t(t *testing.T) {
 	for i, tt := range testData32 {
-		h := mf.FindFirstUint32be(20, tt.blkpos, tt.first, tt.last, tt.search)
+		h := mf.FindFirstUint32_t(20, tt.blkpos, tt.first, tt.last, tt.search)
 		if h != tt.foundFirst {
 			t.Errorf("%d. Expected %#016x, got %#016x", i, tt.foundFirst, h)
 		}
 	}
 }
 
-func BenchmarkFindFirstUint32be(b *testing.B) {
+func BenchmarkFindFirstUint32_t(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		mf.FindFirstUint32be(20, 4, 0, 99, 0x000027f3)
+		mf.FindFirstUint32_t(20, 4, 0, 99, 0x000027f3)
 	}
 }
 
-func TestFindLastUint32be(t *testing.T) {
+func TestFindLastUint32_t(t *testing.T) {
 	for i, tt := range testData32 {
-		h := mf.FindLastUint32be(20, tt.blkpos, tt.first, tt.last, tt.search)
+		h := mf.FindLastUint32_t(20, tt.blkpos, tt.first, tt.last, tt.search)
 		if h != tt.foundLast {
 			t.Errorf("%d. Expected %d, got %d", i, tt.foundLast, h)
 		}
 	}
 }
 
-func BenchmarkFindLastUint32be(b *testing.B) {
+func BenchmarkFindLastUint32_t(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		mf.FindLastUint32be(20, 4, 0, 99, 0x000027f3)
+		mf.FindLastUint32_t(20, 4, 0, 99, 0x000027f3)
 	}
 }
 
-func TestFindFirstUint64be(t *testing.T) {
+func TestFindFirstUint64_t(t *testing.T) {
 	for i, tt := range testData64 {
-		h := mf.FindFirstUint64be(20, tt.blkpos, tt.first, tt.last, tt.search)
+		h := mf.FindFirstUint64_t(20, tt.blkpos, tt.first, tt.last, tt.search)
 		if h != tt.foundFirst {
 			t.Errorf("%d. Expected %#016x, got %#016x", i, tt.foundFirst, h)
 		}
 	}
 }
 
-func BenchmarkFindFirstUint64be(b *testing.B) {
+func BenchmarkFindFirstUint64_t(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		mf.FindFirstUint64be(20, 4, 0, 99, 0x000027F35FB6E591)
+		mf.FindFirstUint64_t(20, 4, 0, 99, 0x000027F35FB6E591)
 	}
 }
 
-func TestFindLastUint64be(t *testing.T) {
+func TestFindLastUint64_t(t *testing.T) {
 	for i, tt := range testData64 {
-		h := mf.FindLastUint64be(20, tt.blkpos, tt.first, tt.last, tt.search)
+		h := mf.FindLastUint64_t(20, tt.blkpos, tt.first, tt.last, tt.search)
 		if h != tt.foundLast {
 			t.Errorf("%d. Expected %d, got %d", i, tt.foundLast, h)
 		}
 	}
 }
 
-func BenchmarkFindLastUint64be(b *testing.B) {
+func BenchmarkFindLastUint64_t(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		mf.FindLastUint64be(20, 4, 0, 99, 0x000027F35FB6E591)
+		mf.FindLastUint64_t(20, 4, 0, 99, 0x000027F35FB6E591)
 	}
 }
 
-func TestFindFirstUint128be(t *testing.T) {
+func TestFindFirstUint128_t(t *testing.T) {
 	for i, tt := range testData128 {
-		h := mf.FindFirstUint128be(20, tt.blkpos, tt.first, tt.last, tt.searchHi, tt.searchLo)
+		h := mf.FindFirstUint128_t(20, tt.blkpos, tt.first, tt.last, tt.searchHi, tt.searchLo)
 		if h != tt.foundFirst {
 			t.Errorf("%d. Expected %#016x, got %#016x", i, tt.foundFirst, h)
 		}
 	}
 }
 
-func BenchmarkFindFirstUint128be(b *testing.B) {
+func BenchmarkFindFirstUint128_t(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		mf.FindFirstUint128be(20, 4, 0, 99, 0x000027C30981EF0F, 0x500126C20C059EB5)
+		mf.FindFirstUint128_t(20, 4, 0, 99, 0x000027C30981EF0F, 0x500126C20C059EB5)
 	}
 }
 
-func TestFindLastUint128be(t *testing.T) {
+func TestFindLastUint128_t(t *testing.T) {
 	for i, tt := range testData128 {
-		h := mf.FindLastUint128be(20, tt.blkpos, tt.first, tt.last, tt.searchHi, tt.searchLo)
+		h := mf.FindLastUint128_t(20, tt.blkpos, tt.first, tt.last, tt.searchHi, tt.searchLo)
 		if h != tt.foundLast {
 			t.Errorf("%d. Expected %d, got %d", i, tt.foundLast, h)
 		}
 	}
 }
 
-func BenchmarkFindLastUint128be(b *testing.B) {
+func BenchmarkFindLastUint128_t(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		mf.FindLastUint128be(20, 4, 0, 99, 0x000027C30981EF0F, 0x500126C20C059EB5)
+		mf.FindLastUint128_t(20, 4, 0, 99, 0x000027C30981EF0F, 0x500126C20C059EB5)
 	}
 }
 
