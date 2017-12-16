@@ -65,20 +65,7 @@ make build
 Set *BS_BUILD_SHARED_LIB* in config.mk to build a static or shared library.
 
 
-## Python Module
+## Python and GO Libraires
 
-A shared library can be built using the command:
-```
-make python
-```
-
-
-### Python Usage Example
-
-```
-# copy this code in the same directory of libpybinsearch library
-
-import libpybinsearch as bs
-
-print('\nUSAGE EXAMPLE:\n')
-```
+Implementation in Python, GO and CGO are available.
+use the command ```make all``` to build a test all the implementations.
