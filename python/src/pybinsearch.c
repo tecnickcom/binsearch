@@ -61,7 +61,7 @@ static PyObject* py_find_first_uint8(PyObject *Py_UNUSED(ignored), PyObject *arg
     uint64_t blklen, blkpos, first, last;
     uint8_t search;
     PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKKKI", &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    if (!PyArg_ParseTuple(args, "OKKKKB", &mfsrc, &blklen, &blkpos, &first, &last, &search))
         return NULL;
     const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
     uint64_t h = find_first_uint8_t(src, blklen, blkpos, &first, &last, search);
@@ -78,7 +78,7 @@ static PyObject* py_find_last_uint8(PyObject *Py_UNUSED(ignored), PyObject *args
     uint64_t blklen, blkpos, first, last;
     uint8_t search;
     PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKKKI", &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    if (!PyArg_ParseTuple(args, "OKKKKB", &mfsrc, &blklen, &blkpos, &first, &last, &search))
         return NULL;
     const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
     uint64_t h = find_last_uint8_t(src, blklen, blkpos, &first, &last, search);
@@ -95,7 +95,7 @@ static PyObject* py_find_first_uint16(PyObject *Py_UNUSED(ignored), PyObject *ar
     uint64_t blklen, blkpos, first, last;
     uint16_t search;
     PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKKKI", &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    if (!PyArg_ParseTuple(args, "OKKKKH", &mfsrc, &blklen, &blkpos, &first, &last, &search))
         return NULL;
     const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
     uint64_t h = find_first_uint16_t(src, blklen, blkpos, &first, &last, search);
@@ -112,7 +112,7 @@ static PyObject* py_find_last_uint16(PyObject *Py_UNUSED(ignored), PyObject *arg
     uint64_t blklen, blkpos, first, last;
     uint16_t search;
     PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKKKI", &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    if (!PyArg_ParseTuple(args, "OKKKKH", &mfsrc, &blklen, &blkpos, &first, &last, &search))
         return NULL;
     const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
     uint64_t h = find_last_uint16_t(src, blklen, blkpos, &first, &last, search);
@@ -129,7 +129,7 @@ static PyObject* py_find_first_uint32(PyObject *Py_UNUSED(ignored), PyObject *ar
     uint64_t blklen, blkpos, first, last;
     uint32_t search;
     PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKKKk", &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    if (!PyArg_ParseTuple(args, "OKKKKI", &mfsrc, &blklen, &blkpos, &first, &last, &search))
         return NULL;
     const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
     uint64_t h = find_first_uint32_t(src, blklen, blkpos, &first, &last, search);
@@ -146,7 +146,7 @@ static PyObject* py_find_last_uint32(PyObject *Py_UNUSED(ignored), PyObject *arg
     uint64_t blklen, blkpos, first, last;
     uint32_t search;
     PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKKKk", &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    if (!PyArg_ParseTuple(args, "OKKKKI", &mfsrc, &blklen, &blkpos, &first, &last, &search))
         return NULL;
     const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
     uint64_t h = find_last_uint32_t(src, blklen, blkpos, &first, &last, search);
