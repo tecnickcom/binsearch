@@ -55,8 +55,8 @@ uint8_t bytes_to_uint8_t(const unsigned char *src, uint64_t i)
 
 uint16_t bytes_to_uint16_t(const unsigned char *src, uint64_t i)
 {
-    return (((uint32_t)src[i] << 8)
-            | (uint32_t)src[i+1]);
+    return (((uint16_t)src[i] << 8)
+            | (uint16_t)src[i+1]);
 }
 
 uint32_t bytes_to_uint32_t(const unsigned char *src, uint64_t i)
