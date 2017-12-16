@@ -169,7 +169,7 @@ func (mf TMMFile) FindFirstUint128(blklen, blkpos, first, last uint64, search Ui
 	return ret, uint64(cfirst), uint64(clast)
 }
 
-// FindLastUint128be search for the last occurrence of a 128 bit unsigned integer on a memory mapped
+// FindLastUint128 search for the last occurrence of a 128 bit unsigned integer on a memory mapped
 // binary file containing adjacent blocks of sorted binary data.
 // The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.

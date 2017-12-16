@@ -87,3 +87,78 @@ uint128_t bytes_to_uint128_t(const unsigned char *src, uint64_t i)
          .lo = bytes_to_uint64_t(src, i + 8)
     };
 }
+
+#define define_compare(T) int compare_##T(T a, T b) {return (a < b) ? -1 : (a > b);}
+
+define_compare(uint8_t)
+define_compare(uint16_t)
+define_compare(uint32_t)
+define_compare(uint64_t)
+
+int compare_uint128_t(uint128_t a, uint128_t b)
+{
+    if (a.hi < b.hi) return -1;
+    if (a.hi > b.hi) return 1;
+    return compare_uint64_t(a.lo, b.lo);
+}
+
+#define define_find_first(T) \
+uint64_t find_first_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *first, uint64_t *last, T search) \
+{ \
+    uint64_t i, middle, found = (*last + 1); \
+    T x; \
+    int cmp; \
+    while (*first <= *last) \
+    { \
+        middle = ((*first + *last) >> 1); \
+        i = get_address(blklen, blkpos, middle); \
+        x = bytes_to_##T(src, i); \
+        cmp = compare_##T(x, search); \
+        if (cmp == 0) \
+        { \
+            if (middle == 0) return middle; \
+            found = middle; \
+            *last = (middle - 1); \
+        } \
+        else if (cmp < 0) *first = (middle + 1); \
+        else if (middle > 0) *last = (middle - 1); \
+        else return found; \
+    } \
+    return found; \
+}
+
+define_find_first(uint8_t)
+define_find_first(uint16_t)
+define_find_first(uint32_t)
+define_find_first(uint64_t)
+define_find_first(uint128_t)
+
+#define define_find_last(T) \
+uint64_t find_last_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *first, uint64_t *last, T search) \
+{ \
+    uint64_t i, middle, found = (*last + 1); \
+    T x; \
+    int cmp; \
+    while (*first <= *last) \
+    { \
+        middle = ((*first + *last) >> 1); \
+        i = get_address(blklen, blkpos, middle); \
+        x = bytes_to_##T(src, i); \
+        cmp = compare_##T(x, search); \
+        if (cmp == 0) \
+        { \
+            found = middle; \
+            *first = (middle + 1); \
+        } \
+        else if (cmp < 0) *first = (middle + 1); \
+        else if (middle > 0) *last = (middle - 1); \
+        else return found; \
+    } \
+    return found; \
+}
+
+define_find_last(uint8_t)
+define_find_last(uint16_t)
+define_find_last(uint32_t)
+define_find_last(uint64_t)
+define_find_last(uint128_t)
