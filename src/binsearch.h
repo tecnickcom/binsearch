@@ -123,10 +123,10 @@ define_declare_bytes_to(uint128_t)
  * Define generic comparison function for unsigned integers
  */
 #define define_declare_compare(T) \
-/** Compare two uint128_t integers
+/** Compare two uinsigned integers
 @param a First integer to compare
 @param b Second integer to compare
-@return Negative value if a < b, positive value if a > b and zero if a = b.
+@return Negative value if a < b, positive value if a > b and zero if a == b.
 */ \
 int compare_##T(T a, T b);
 
