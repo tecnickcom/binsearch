@@ -55,8 +55,8 @@
  */
 typedef struct uint128_t
 {
-    uint64_t hi; /*!< hi 64 bits */
     uint64_t lo; /*!< low 64 bits */
+    uint64_t hi; /*!< high 64 bits */
 } uint128_t;
 
 /**

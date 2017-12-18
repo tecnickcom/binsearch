@@ -10,15 +10,15 @@ import "fmt"
 
 // Uint128 contains 2 64bit unsigned integers
 type Uint128 struct {
-	Hi uint64
 	Lo uint64
+	Hi uint64
 }
 
 // castGoUint128 convert GO Uint128 to C uint128_t.
 func castGoUint128(u Uint128) C.uint128_t {
 	var c C.uint128_t
-	c.hi = C.uint64_t(u.Hi)
 	c.lo = C.uint64_t(u.Lo)
+	c.hi = C.uint64_t(u.Hi)
 	return c
 }
 
