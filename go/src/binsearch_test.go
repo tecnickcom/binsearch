@@ -168,19 +168,19 @@ func TestGetAddress(t *testing.T) {
 }
 
 func TestFindFirstUint8(t *testing.T) {
-	for i, tt := range testData8 {
+	for _, tt := range testData8 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindFirstUint8(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFirst, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 			}
 			if f != tt.foundFFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 			}
 			if l != tt.foundFLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 		})
 	}
@@ -194,19 +194,19 @@ func BenchmarkFindFirstUint8(b *testing.B) {
 }
 
 func TestFindLastUint8(t *testing.T) {
-	for i, tt := range testData8 {
+	for _, tt := range testData8 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindLastUint8(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLast, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 			}
 			if f != tt.foundLFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 			}
 			if l != tt.foundLLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 		})
 	}
@@ -220,19 +220,19 @@ func BenchmarkFindLastUint8(b *testing.B) {
 }
 
 func TestFindFirstUint16(t *testing.T) {
-	for i, tt := range testData16 {
+	for _, tt := range testData16 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindFirstUint16(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFirst, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 			}
 			if f != tt.foundFFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 			}
 			if l != tt.foundFLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 		})
 	}
@@ -246,19 +246,19 @@ func BenchmarkFindFirstUint16(b *testing.B) {
 }
 
 func TestFindLastUint16(t *testing.T) {
-	for i, tt := range testData16 {
+	for _, tt := range testData16 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindLastUint16(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLast, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 			}
 			if f != tt.foundLFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 			}
 			if l != tt.foundLLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 		})
 	}
@@ -272,16 +272,16 @@ func BenchmarkFindLastUint16(b *testing.B) {
 }
 
 func TestFindFirstUint32(t *testing.T) {
-	for i, tt := range testData32 {
+	for _, tt := range testData32 {
 		h, f, l := mf.FindFirstUint32(20, tt.blkpos, tt.first, tt.last, tt.search)
 		if h != tt.foundFirst {
-			t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFirst, h)
+			t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 		}
 		if f != tt.foundFFirst {
-			t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFFirst, f)
+			t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 		}
 		if l != tt.foundFLast {
-			t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFLast, l)
+			t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 		}
 	}
 }
@@ -294,19 +294,19 @@ func BenchmarkFindFirstUint32(b *testing.B) {
 }
 
 func TestFindLastUint32(t *testing.T) {
-	for i, tt := range testData32 {
+	for _, tt := range testData32 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindLastUint32(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLast, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 			}
 			if f != tt.foundLFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 			}
 			if l != tt.foundLLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 		})
 	}
@@ -320,19 +320,19 @@ func BenchmarkFindLastUint32(b *testing.B) {
 }
 
 func TestFindFirstUint64(t *testing.T) {
-	for i, tt := range testData64 {
+	for _, tt := range testData64 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindFirstUint64(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFirst, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 			}
 			if f != tt.foundFFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 			}
 			if l != tt.foundFLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 		})
 	}
@@ -346,19 +346,19 @@ func BenchmarkFindFirstUint64(b *testing.B) {
 }
 
 func TestFindLastUint64(t *testing.T) {
-	for i, tt := range testData64 {
+	for _, tt := range testData64 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindLastUint64(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLast, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 			}
 			if f != tt.foundLFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 			}
 			if l != tt.foundLLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 		})
 	}
@@ -372,19 +372,19 @@ func BenchmarkFindLastUint64(b *testing.B) {
 }
 
 func TestFindFirstUint128(t *testing.T) {
-	for i, tt := range testData128 {
+	for _, tt := range testData128 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindFirstUint128(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFirst, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 			}
 			if f != tt.foundFFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 			}
 			if l != tt.foundFLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundFLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 		})
 	}
@@ -398,19 +398,19 @@ func BenchmarkFindFirstUint128(b *testing.B) {
 }
 
 func TestFindLastUint128(t *testing.T) {
-	for i, tt := range testData128 {
+	for _, tt := range testData128 {
 		tt := tt
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 			h, f, l := mf.FindLastUint128(20, tt.blkpos, tt.first, tt.last, tt.search)
 			if h != tt.foundLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLast, h)
+				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 			}
 			if f != tt.foundLFirst {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLFirst, f)
+				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 			}
 			if l != tt.foundLLast {
-				t.Errorf("%d. Expected 0x%x, got 0x%x", i, tt.foundLLast, l)
+				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 		})
 	}
