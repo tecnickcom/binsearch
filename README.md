@@ -7,16 +7,16 @@
 
 * **category**    Libraries
 * **license**     MIT (see LICENSE)
+* **author**      Nicola Asuni
+* **copyright**   2017-2018 Nicola Asuni - Tecnick.com
 * **link**        https://github.com/tecnickcom/binsearch
 
 
 ## Description
 
-The functions provided here allows to search big-endian
-unsigned integers in a binary file made of adjacent
-constant-length binary blocks sorted in ascending order.
+The functions provided here allows to search big-endian unsigned integers in a binary file made of adjacent constant-length binary blocks sorted in ascending order.
 
-For example, the first 4 bytes of each 8-bytes blocks below represent a uint32 in big-endian.
+For example, the first 4 bytes of each 8-bytes blocks below represent a `uint32` in big-endian.
 The integers are sorted in ascending order.
 
 ```
@@ -31,7 +31,7 @@ The xxd command-line application can be used to convert a binary file to hexdump
 For example:
 
 ```
-xxd -p binaryfile.bin > hexfile.txt
+xxd -p -c8 binaryfile.bin > hexfile.txt
 xxd -r -p hexfile.txt > binaryfile.bin
 ```
 

@@ -22,7 +22,7 @@ static PyObject *py_find_last_uint64(PyObject *self, PyObject *args);
 static PyObject *py_find_first_uint128(PyObject *self, PyObject *args);
 static PyObject *py_find_last_uint128(PyObject *self, PyObject *args);
 
-PyMODINIT_FUNC initlibpybinsearch(void);
+PyMODINIT_FUNC initbinsearch(void);
 
 #define PYMMAPBINFILE_DOCSTRING "Memory map the specified file."
 #define PYMUNMAPBINFILE_DOCSTRING "Unmap and close the memory-mapped file."

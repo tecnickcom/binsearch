@@ -74,10 +74,10 @@ func GetAddress(blklen, blkpos, item uint64) uint64 {
 // binary file containing adjacent blocks of sorted binary data.
 // The 8 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindFirstUint8(blklen, blkpos, first, last uint64, search uint8) (uint64, uint64, uint64) {
+func (mf TMMFile) FindFirstUint8(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_uint8_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_first_uint8_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -85,10 +85,10 @@ func (mf TMMFile) FindFirstUint8(blklen, blkpos, first, last uint64, search uint
 // binary file containing adjacent blocks of sorted binary data.
 // The 8 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindLastUint8(blklen, blkpos, first, last uint64, search uint8) (uint64, uint64, uint64) {
+func (mf TMMFile) FindLastUint8(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_uint8_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_last_uint8_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -96,10 +96,10 @@ func (mf TMMFile) FindLastUint8(blklen, blkpos, first, last uint64, search uint8
 // binary file containing adjacent blocks of sorted binary data.
 // The 16 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindFirstUint16(blklen, blkpos, first, last uint64, search uint16) (uint64, uint64, uint64) {
+func (mf TMMFile) FindFirstUint16(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_uint16_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_first_uint16_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -107,10 +107,10 @@ func (mf TMMFile) FindFirstUint16(blklen, blkpos, first, last uint64, search uin
 // binary file containing adjacent blocks of sorted binary data.
 // The 16 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindLastUint16(blklen, blkpos, first, last uint64, search uint16) (uint64, uint64, uint64) {
+func (mf TMMFile) FindLastUint16(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_uint16_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_last_uint16_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -118,10 +118,10 @@ func (mf TMMFile) FindLastUint16(blklen, blkpos, first, last uint64, search uint
 // binary file containing adjacent blocks of sorted binary data.
 // The 32 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindFirstUint32(blklen, blkpos, first, last uint64, search uint32) (uint64, uint64, uint64) {
+func (mf TMMFile) FindFirstUint32(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_uint32_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_first_uint32_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -129,10 +129,10 @@ func (mf TMMFile) FindFirstUint32(blklen, blkpos, first, last uint64, search uin
 // binary file containing adjacent blocks of sorted binary data.
 // The 32 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindLastUint32(blklen, blkpos, first, last uint64, search uint32) (uint64, uint64, uint64) {
+func (mf TMMFile) FindLastUint32(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_uint32_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_last_uint32_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -140,10 +140,10 @@ func (mf TMMFile) FindLastUint32(blklen, blkpos, first, last uint64, search uint
 // binary file containing adjacent blocks of sorted binary data.
 // The 64 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindFirstUint64(blklen, blkpos, first, last uint64, search uint64) (uint64, uint64, uint64) {
+func (mf TMMFile) FindFirstUint64(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_uint64_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_first_uint64_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -151,10 +151,10 @@ func (mf TMMFile) FindFirstUint64(blklen, blkpos, first, last uint64, search uin
 // binary file containing adjacent blocks of sorted binary data.
 // The 64 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindLastUint64(blklen, blkpos, first, last uint64, search uint64) (uint64, uint64, uint64) {
+func (mf TMMFile) FindLastUint64(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_uint64_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_last_uint64_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -162,10 +162,10 @@ func (mf TMMFile) FindLastUint64(blklen, blkpos, first, last uint64, search uint
 // binary file containing adjacent blocks of sorted binary data.
 // The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindFirstUint128(blklen, blkpos, first, last uint64, search Uint128) (uint64, uint64, uint64) {
+func (mf TMMFile) FindFirstUint128(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search Uint128) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_uint128_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, castGoUint128(search)))
+	ret := uint64(C.find_first_uint128_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, castGoUint128(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
 
@@ -173,9 +173,9 @@ func (mf TMMFile) FindFirstUint128(blklen, blkpos, first, last uint64, search Ui
 // binary file containing adjacent blocks of sorted binary data.
 // The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
 // Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindLastUint128(blklen, blkpos, first, last uint64, search Uint128) (uint64, uint64, uint64) {
+func (mf TMMFile) FindLastUint128(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search Uint128) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_uint128_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, castGoUint128(search)))
+	ret := uint64(C.find_last_uint128_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, castGoUint128(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }
