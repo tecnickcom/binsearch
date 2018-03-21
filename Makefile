@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files
-.PHONY: help qa test tidy build python pytest cgo go doc format clean
+.PHONY: help qa test tidy build python pytest version cgo go doc format clean
 
 # Use bash as shell (Note: Ubuntu now uses dash which doesn't support PIPESTATUS).
 SHELL=/bin/bash
@@ -52,6 +52,7 @@ help:
 	@echo "    make build   : Build the library"
 	@echo "    make python  : Build the python module"
 	@echo "    make pytest  : Test the python module"
+	@echo "    make version : Set version from VERSION file"
 	@echo "    make cgo     : Test the golang cgo module"
 	@echo "    make go      : Test the native golang module"
 	@echo "    make doc     : Generate source code documentation"
@@ -115,8 +116,13 @@ build:
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./ && \
 	env CTEST_OUTPUT_ON_FAILURE=1 make test | tee test.log ; test $${PIPESTATUS[0]} -eq 0
 
+# Set the version from VERSION file
+version:
+	#sed -i "s/version:.*$$/version: $(VERSION).$(RELEASE)/" conda/meta.yaml
+	sed -i "s/__version__.*$$/__version__ = '$(VERSION)'/" python/binsearch/__init__.py
+
 # Build the python module
-python:
+python: version
 	cd python && \
 	rm -rf ./build && \
 	python3 setup.py build_ext --include-dirs=../src && \
@@ -127,6 +133,7 @@ python:
 pytest:
 	cd python && \
 	python3 setup.py test
+
 
 # Test golang cgo module
 cgo:

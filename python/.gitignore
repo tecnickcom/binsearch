@@ -1,6 +1,5 @@
 .cache
 .coverage*
-.benchmark
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -105,3 +104,5 @@ ENV/
 .mypy_cache/
 
 .tmp
+
+./README.md
