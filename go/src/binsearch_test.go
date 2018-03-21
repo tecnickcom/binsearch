@@ -424,7 +424,7 @@ func BenchmarkFindLastUint128(b *testing.B) {
 }
 
 func TestClose(t *testing.T) {
-	lmf, err := MmapBinFile("../../test/test_data_b.bin")
+	lmf, err := MmapBinFile("../../test/data/test_data_b.bin")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
