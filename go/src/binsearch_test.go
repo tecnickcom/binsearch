@@ -279,7 +279,7 @@ func TestMain(m *testing.M) {
 	var err error
 
 	// memory map the input file
-	mf, err = MmapBinFile("../../test/test_data.bin")
+	mf, err = MmapBinFile("../../test/data/test_data.bin")
 	if err != nil {
 		return
 	}
