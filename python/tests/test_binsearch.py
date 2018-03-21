@@ -165,6 +165,7 @@ testDataSub128 = [
     (4, 0, 99, 0x000028fca24c9148, 0x830a986a0be5c090, 44, 44, 43, 44, 45, 44),
 ]
 
+
 class TestFunctions(TestCase):
 
     @classmethod
@@ -187,143 +188,164 @@ class TestFunctions(TestCase):
 
     def test_find_first_uint8(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData8:
-            rp, rf, rl = bs.find_first_uint8(src, 20, blkpos, 0, 7, first, last, search)
+            rp, rf, rl = bs.find_first_uint8(
+                src, 20, blkpos, 0, 7, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint8(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData8:
-            rp, rf, rl = bs.find_last_uint8(src, 20, blkpos, 0, 7, first, last, search)
+            rp, rf, rl = bs.find_last_uint8(
+                src, 20, blkpos, 0, 7, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint16(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData16:
-            rp, rf, rl = bs.find_first_uint16(src, 20, blkpos, 0, 15, first, last, search)
+            rp, rf, rl = bs.find_first_uint16(
+                src, 20, blkpos, 0, 15, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint16(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData16:
-            rp, rf, rl = bs.find_last_uint16(src, 20, blkpos, 0, 15, first, last, search)
+            rp, rf, rl = bs.find_last_uint16(
+                src, 20, blkpos, 0, 15, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint32(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData32:
-            rp, rf, rl = bs.find_first_uint32(src, 20, blkpos, 0, 31, first, last, search)
+            rp, rf, rl = bs.find_first_uint32(
+                src, 20, blkpos, 0, 31, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint32(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData32:
-            rp, rf, rl = bs.find_last_uint32(src, 20, blkpos, 0, 31, first, last, search)
+            rp, rf, rl = bs.find_last_uint32(
+                src, 20, blkpos, 0, 31, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint64(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData64:
-            rp, rf, rl = bs.find_first_uint64(src, 20, blkpos, 0, 63, first, last, search)
+            rp, rf, rl = bs.find_first_uint64(
+                src, 20, blkpos, 0, 63, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint64(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData64:
-            rp, rf, rl = bs.find_last_uint64(src, 20, blkpos, 0, 63, first, last, search)
+            rp, rf, rl = bs.find_last_uint64(
+                src, 20, blkpos, 0, 63, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint128(self):
         for blkpos, first, last, searchHi, searchLo, fF, fFF, fFL, fL, fLF, fLL in testData128:
-            rp, rf, rl = bs.find_first_uint128(src, 20, blkpos, 0, 127, first, last, searchHi, searchLo)
+            rp, rf, rl = bs.find_first_uint128(
+                src, 20, blkpos, 0, 127, first, last, searchHi, searchLo)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint128(self):
         for blkpos, first, last, searchHi, searchLo, fF, fFF, fFL, fL, fLF, fLL in testData128:
-            rp, rf, rl = bs.find_last_uint128(src, 20, blkpos, 0, 127, first, last, searchHi, searchLo)
+            rp, rf, rl = bs.find_last_uint128(
+                src, 20, blkpos, 0, 127, first, last, searchHi, searchLo)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint8_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub8:
-            rp, rf, rl = bs.find_first_uint8(src, 20, blkpos, 2, 4, first, last, search)
+            rp, rf, rl = bs.find_first_uint8(
+                src, 20, blkpos, 2, 4, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint8_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub8:
-            rp, rf, rl = bs.find_last_uint8(src, 20, blkpos, 2, 4, first, last, search)
+            rp, rf, rl = bs.find_last_uint8(
+                src, 20, blkpos, 2, 4, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint16_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub16:
-            rp, rf, rl = bs.find_first_uint16(src, 20, blkpos, 2, 12, first, last, search)
+            rp, rf, rl = bs.find_first_uint16(
+                src, 20, blkpos, 2, 12, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint16_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub16:
-            rp, rf, rl = bs.find_last_uint16(src, 20, blkpos, 2, 12, first, last, search)
+            rp, rf, rl = bs.find_last_uint16(
+                src, 20, blkpos, 2, 12, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint32_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub32:
-            rp, rf, rl = bs.find_first_uint32(src, 20, blkpos, 2, 28, first, last, search)
+            rp, rf, rl = bs.find_first_uint32(
+                src, 20, blkpos, 2, 28, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint32_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub32:
-            rp, rf, rl = bs.find_last_uint32(src, 20, blkpos, 2, 28, first, last, search)
+            rp, rf, rl = bs.find_last_uint32(
+                src, 20, blkpos, 2, 28, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint64_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub64:
-            rp, rf, rl = bs.find_first_uint64(src, 20, blkpos, 2, 60, first, last, search)
+            rp, rf, rl = bs.find_first_uint64(
+                src, 20, blkpos, 2, 60, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint64_sub(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub64:
-            rp, rf, rl = bs.find_last_uint64(src, 20, blkpos, 2, 60, first, last, search)
+            rp, rf, rl = bs.find_last_uint64(
+                src, 20, blkpos, 2, 60, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint128_sub(self):
         for blkpos, first, last, searchHi, searchLo, fF, fFF, fFL, fL, fLF, fLL in testDataSub128:
-            rp, rf, rl = bs.find_first_uint128(src, 20, blkpos, 2, 124, first, last, searchHi, searchLo)
+            rp, rf, rl = bs.find_first_uint128(
+                src, 20, blkpos, 2, 124, first, last, searchHi, searchLo)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint128_sub(self):
         for blkpos, first, last, searchHi, searchLo, fF, fFF, fFL, fL, fLF, fLL in testDataSub128:
-            rp, rf, rl = bs.find_last_uint128(src, 20, blkpos, 2, 124, first, last, searchHi, searchLo)
+            rp, rf, rl = bs.find_last_uint128(
+                src, 20, blkpos, 2, 124, first, last, searchHi, searchLo)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
+
 
 class TestBenchmark(object):
 
@@ -409,7 +431,8 @@ class TestBenchmark(object):
     def test_find_first_uint128_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_uint128,
-            args=[src, 20, 4, 0, 127, 0, 99, 0x000027f35fb6e591, 0x6eb7abd90889e85e],
+            args=[src, 20, 4, 0, 127, 0, 99,
+                  0x000027f35fb6e591, 0x6eb7abd90889e85e],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -417,7 +440,8 @@ class TestBenchmark(object):
     def test_find_last_uint128_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_uint128,
-            args=[src, 20, 4, 0, 127, 0, 99, 0x000027f35fb6e591, 0x6eb7abd90889e85e],
+            args=[src, 20, 4, 0, 127, 0, 99,
+                  0x000027f35fb6e591, 0x6eb7abd90889e85e],
             setup=setup,
             iterations=1,
             rounds=10000)

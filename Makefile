@@ -78,7 +78,7 @@ test:
 	-DCMAKE_BUILD_TYPE=Coverage \
 	-DCMAKE_INSTALL_PREFIX=$(CMAKE_INSTALL_PATH) \
 	-DBUILD_SHARED_LIB=$(BS_BUILD_SHARED_LIB) \
-	-DBUILD_DOXYGEN=$(VH_BUILD_DOXYGEN) \
+	-DBUILD_DOXYGEN=$(BS_BUILD_DOXYGEN) \
 	../.. | tee cmake.log ; test $${PIPESTATUS[0]} -eq 0 && \
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./ && \
 	make | tee make.log ; test $${PIPESTATUS[0]} -eq 0 && \
@@ -88,7 +88,7 @@ test:
 	lcov --no-checksum --directory . --capture --output-file coverage/binsearch.info && \
 	lcov --remove coverage/binsearch.info "/test_*" --output-file coverage/binsearch.info && \
 	genhtml -o coverage -t "Binsearch Test Coverage" coverage/binsearch.info
-ifeq ($(VH_BUILD_DOXYGEN),ON)
+ifeq ($(BS_BUILD_DOXYGEN),ON)
 	cd target && \
 	make doc | tee doc.log ; test $${PIPESTATUS[0]} -eq 0
 endif
@@ -108,7 +108,7 @@ build:
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=$(CMAKE_INSTALL_PATH) \
 	-DBUILD_SHARED_LIB=$(BS_BUILD_SHARED_LIB) \
-	-DBUILD_DOXYGEN=$(VH_BUILD_DOXYGEN) \
+	-DBUILD_DOXYGEN=$(BS_BUILD_DOXYGEN) \
 	../.. | tee cmake.log ; test $${PIPESTATUS[0]} -eq 0 && \
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./ && \
 	make | tee make.log ; test $${PIPESTATUS[0]} -eq 0
@@ -155,16 +155,13 @@ format:
 	astyle --style=allman --recursive --suffix=none 'src/*.h'
 	astyle --style=allman --recursive --suffix=none 'src/*.c'
 	astyle --style=allman --recursive --suffix=none 'test/*.c'
-	astyle --style=allman --recursive --suffix=none 'python/src/*.h'
-	astyle --style=allman --recursive --suffix=none 'python/src/*.c'
-	autopep8 --in-place --aggressive --aggressive ./python/tests/*.py
+	astyle --style=allman --recursive --suffix=none 'python/binsearch/*.h'
+	astyle --style=allman --recursive --suffix=none 'python/binsearch/*.c'
+	autopep8 --in-place ./python/tests/*.py
 	cd cgo && make format
 	cd go && make format
 
 # Remove any build artifact
 clean:
-	rm -rf ./target
-	rm -rf ./python/build
-	rm -rf ./python/.cache
-	rm -rf ./python/tests/*.so
-	rm -rf ./python/tests/__pycache__
+	rm -rf target htmlcov build dist .cache .benchmarks ./tests/*.so ./tests/__pycache__ ./pytemp/__pycache__ ./pytemp.egg-info
+	find . -type f -name '*.pyc' -exec rm -f {} \;

@@ -64,27 +64,27 @@ uint8_t bytes_to_uint8_t(const unsigned char *src, uint64_t i, uint8_t bitstart,
 uint16_t bytes_to_uint16_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
 {
     return (((((uint16_t)src[i] << 8)
-            | (uint16_t)src[i+1]) << bitstart) >> (15 - bitend + bitstart));
+              | (uint16_t)src[i+1]) << bitstart) >> (15 - bitend + bitstart));
 }
 
 uint32_t bytes_to_uint32_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
 {
     return (((((uint32_t)src[i] << 24)
-            | ((uint32_t)src[i+1] << 16)
-            | ((uint32_t)src[i+2] << 8)
-            | (uint32_t)src[i+3]) << bitstart) >> (31 - bitend + bitstart));
+              | ((uint32_t)src[i+1] << 16)
+              | ((uint32_t)src[i+2] << 8)
+              | (uint32_t)src[i+3]) << bitstart) >> (31 - bitend + bitstart));
 }
 
 uint64_t bytes_to_uint64_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
 {
     return (((((uint64_t)src[i] << 56)
-            | ((uint64_t)src[i+1] << 48)
-            | ((uint64_t)src[i+2] << 40)
-            | ((uint64_t)src[i+3] << 32)
-            | ((uint64_t)src[i+4] << 24)
-            | ((uint64_t)src[i+5] << 16)
-            | ((uint64_t)src[i+6] << 8)
-            | (uint64_t)src[i+7]) << bitstart) >> (63 - bitend + bitstart));
+              | ((uint64_t)src[i+1] << 48)
+              | ((uint64_t)src[i+2] << 40)
+              | ((uint64_t)src[i+3] << 32)
+              | ((uint64_t)src[i+4] << 24)
+              | ((uint64_t)src[i+5] << 16)
+              | ((uint64_t)src[i+6] << 8)
+              | (uint64_t)src[i+7]) << bitstart) >> (63 - bitend + bitstart));
 }
 
 uint128_t bytes_to_uint128_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
