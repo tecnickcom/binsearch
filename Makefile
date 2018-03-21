@@ -137,11 +137,6 @@ pytest:
 	cd python && \
 	python3 setup.py test
 
-# Build a conda package
-conda: version
-	./conda/setup-conda.sh && \
-	${CONDA_ENV}/bin/conda build --prefix-length 160 --no-anaconda-upload --no-remove-work-dir --override-channels $(ARTIFACTORY_CONDA_CHANNELS) conda
-
 # Test golang cgo module
 cgo:
 	cd cgo && \

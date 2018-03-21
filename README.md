@@ -16,7 +16,7 @@
 
 The functions provided here allows to search big-endian unsigned integers in a binary file made of adjacent constant-length binary blocks sorted in ascending order.
 
-For example, the first 4 bytes of each 8-bytes blocks below represent a uint32 in big-endian.
+For example, the first 4 bytes of each 8-bytes blocks below represent a `uint32` in big-endian.
 The integers are sorted in ascending order.
 
 ```
