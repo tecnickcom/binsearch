@@ -6,7 +6,7 @@
 // @link       https://github.com/tecnickcom/binsearch
 
 #define PY_SSIZE_T_CLEAN
-#include "Python.h"
+#include <Python.h>
 
 static PyObject *py_mmap_binfile(PyObject *self, PyObject *args);
 static PyObject *py_munmap_binfile(PyObject *self, PyObject *args);
