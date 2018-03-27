@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 from codecs import open
-from os.path import abspath, dirname, join
+from os.path import dirname, join
 from subprocess import call
 from setuptools import setup, find_packages, Extension, Command
 
+def read(fname):
+    return open(join(dirname(__file__), fname)).read()
 
 class RunTests(Command):
     """Run all tests."""
@@ -25,12 +27,15 @@ class RunTests(Command):
 
 setup(
     name='binsearch',
-    version='3.0.3',
+    version='3.0.5',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
+    long_description=read('../README.md'),
     author='Nicola Asuni',
     author_email='info@tecnick.com',
     url='https://github.com/tecnickcom/binsearch',
+    license='MIT',
+    platforms='Linux',
     packages=find_packages(exclude=['docs', 'tests*']),
     ext_modules=[
         Extension('binsearch', [
