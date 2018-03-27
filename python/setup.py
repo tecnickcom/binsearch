@@ -25,7 +25,7 @@ class RunTests(Command):
 
 setup(
     name='binsearch',
-    version='3.0.1',
+    version='3.0.3',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     author='Nicola Asuni',
