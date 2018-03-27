@@ -122,7 +122,7 @@ build:
 # Set the version from VERSION file
 version:
 	sed -i "s/version:.*$$/version: $(VERSION).$(RELEASE)/" conda/meta.yaml
-	sed -i "s/__version__.*$$/__version__ = '$(VERSION)'/" python/binsearch/__init__.py
+	sed -i "s/version=.*,$$/version='$(VERSION)',/" python/setup.py
 
 # Build the python module
 python: version

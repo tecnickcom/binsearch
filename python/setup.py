@@ -4,7 +4,6 @@ from codecs import open
 from os.path import abspath, dirname, join
 from subprocess import call
 from setuptools import setup, find_packages, Extension, Command
-from binsearch import __version__ as VERSION
 
 
 class RunTests(Command):
@@ -26,7 +25,7 @@ class RunTests(Command):
 
 setup(
     name='binsearch',
-    version=VERSION,
+    version='3.0.0',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     author='Nicola Asuni',
