@@ -3,7 +3,6 @@
 
 import binsearch as bs
 import os
-import time
 from unittest import TestCase
 
 testData8 = [
