@@ -113,33 +113,6 @@ var testData64 = []struct {
 	{4, 0, 99, 0x000028fca24c9149, 100, 45, 44, 100, 45, 44},
 }
 
-var testData128 = []struct {
-	blkpos      uint64
-	first       uint64
-	last        uint64
-	search      Uint128
-	foundFirst  uint64
-	foundFFirst uint64
-	foundFLast  uint64
-	foundLast   uint64
-	foundLFirst uint64
-	foundLLast  uint64
-}{
-	{4, 0, 99, Uint128{0x000027225fb6e591, 0x6eb7abd92e3deb1d}, 0, 0, 1, 0, 1, 0},
-	{4, 0, 99, Uint128{0x000027c07b9621ec, 0x01f886390c06811d}, 10, 10, 9, 10, 11, 10},
-	{4, 0, 0, Uint128{0x000027225fb6e591, 0x6eb7abd92e3deb1a}, 1, 0, 0, 1, 0, 0},
-	{4, 0, 99, Uint128{0x000027c30981ef0f, 0x500126c20c059eb5}, 12, 12, 11, 12, 13, 12},
-	{4, 0, 99, Uint128{0x000027f35fb6e591, 0x6eb7abd90889e85e}, 13, 13, 12, 13, 14, 13},
-	{4, 0, 99, Uint128{0x000027f3d41a0ce2, 0xdf116bbc0bf2cf80}, 100, 14, 13, 100, 14, 13},
-	{4, 0, 99, Uint128{0x000027f53b9e3036, 0x5103b7a62e3fbbcc}, 100, 16, 15, 100, 16, 15},
-	{4, 0, 99, Uint128{0x000027f690c4deff, 0x765f63b80bf00517}, 16, 16, 15, 16, 17, 16},
-	{4, 0, 99, Uint128{0x000033f522a78fd9, 0x1acc7b430ac5ca22}, 99, 99, 98, 99, 100, 99},
-	{4, 0, 0, Uint128{0x0000000000000001, 0x0000000000000001}, 1, 0, 0, 1, 0, 0},
-	{4, 0, 0, Uint128{0xfffffffffffffff0, 0xfffffffffffffff0}, 1, 1, 0, 1, 1, 0},
-	{4, 0, 99, Uint128{0x000028060981ef0f, 0x500126c22f813253}, 100, 19, 18, 100, 19, 18},
-	{4, 0, 99, Uint128{0x000028fca24c9148, 0x830a986a0be5c095}, 100, 45, 44, 100, 45, 44},
-}
-
 var testDataSub8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -246,33 +219,6 @@ var testDataSub64 = []struct {
 	{4, 99, 99, 0x7fffffffffffffe, 100, 100, 99, 100, 100, 99},
 	{4, 0, 99, 0x500c1303de1, 19, 19, 18, 19, 20, 19},
 	{4, 0, 99, 0x51f94499229, 44, 44, 43, 44, 45, 44},
-}
-
-var testDataSub128 = []struct {
-	blkpos      uint64
-	first       uint64
-	last        uint64
-	search      Uint128
-	foundFirst  uint64
-	foundFFirst uint64
-	foundFLast  uint64
-	foundLast   uint64
-	foundLFirst uint64
-	foundLLast  uint64
-}{
-	{4, 0, 99, Uint128{0x000027225fb6e591, 0x6eb7abd92e3deb18}, 0, 0, 1, 0, 1, 0},
-	{4, 0, 99, Uint128{0x000027c07b9621ec, 0x01f886390c068118}, 10, 10, 9, 10, 11, 10},
-	{4, 0, 0, Uint128{0x000027225fb6e591, 0x6eb7abd92e3deb18}, 0, 0, 0, 0, 1, 0},
-	{4, 0, 99, Uint128{0x000027c30981ef0f, 0x500126c20c059eb0}, 12, 12, 11, 12, 13, 12},
-	{4, 0, 99, Uint128{0x000027f35fb6e591, 0x6eb7abd90889e858}, 13, 13, 12, 13, 14, 13},
-	{4, 0, 99, Uint128{0x000027f3d41a0ce2, 0xdf116bbc0bf2cf80}, 100, 14, 13, 100, 14, 13},
-	{4, 0, 99, Uint128{0x000027f53b9e3036, 0x5103b7a62e3fbbc8}, 100, 16, 15, 100, 16, 15},
-	{4, 0, 99, Uint128{0x000027f690c4deff, 0x765f63b80bf00510}, 16, 16, 15, 16, 17, 16},
-	{4, 0, 99, Uint128{0x000033f522a78fd9, 0x1acc7b430ac5ca20}, 99, 99, 98, 99, 100, 99},
-	{4, 0, 0, Uint128{0x0000000000000001, 0x0000000000000000}, 1, 0, 0, 1, 0, 0},
-	{4, 0, 0, Uint128{0x3ffffffffffffff0, 0xfffffffffffffff0}, 1, 1, 0, 1, 1, 0},
-	{4, 0, 99, Uint128{0x000028060981ef0f, 0x500126c22f813250}, 19, 19, 18, 19, 20, 19},
-	{4, 0, 99, Uint128{0x000028fca24c9148, 0x830a986a0be5c090}, 44, 44, 43, 44, 45, 44},
 }
 
 func TestMain(m *testing.M) {
@@ -506,58 +452,6 @@ func BenchmarkFindLastUint64(b *testing.B) {
 	}
 }
 
-func TestFindFirstUint128(t *testing.T) {
-	for _, tt := range testData128 {
-		tt := tt
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
-			h, f, l := mf.FindFirstUint128(20, tt.blkpos, 0, 127, tt.first, tt.last, tt.search)
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-		})
-	}
-}
-
-func BenchmarkFindFirstUint128(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		mf.FindFirstUint128(20, testData128[4].blkpos, 0, 127, 0, 99, testData128[4].search)
-	}
-}
-
-func TestFindLastUint128(t *testing.T) {
-	for _, tt := range testData128 {
-		tt := tt
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
-			h, f, l := mf.FindLastUint128(20, tt.blkpos, 0, 127, tt.first, tt.last, tt.search)
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-		})
-	}
-}
-
-func BenchmarkFindLastUint128(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		mf.FindLastUint128(20, testData128[4].blkpos, 0, 127, 0, 99, testData128[4].search)
-	}
-}
-
 func TestFindFirstUint8Sub(t *testing.T) {
 	for _, tt := range testDataSub8 {
 		tt := tt
@@ -706,46 +600,8 @@ func TestFindLastUint64Sub(t *testing.T) {
 	}
 }
 
-func TestFindFirstUint128Sub(t *testing.T) {
-	for _, tt := range testDataSub128 {
-		tt := tt
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
-			h, f, l := mf.FindFirstUint128(20, tt.blkpos, 2, 124, tt.first, tt.last, tt.search)
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-		})
-	}
-}
-
-func TestFindLastUint128Sub(t *testing.T) {
-	for _, tt := range testDataSub128 {
-		tt := tt
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
-			h, f, l := mf.FindLastUint128(20, tt.blkpos, 2, 124, tt.first, tt.last, tt.search)
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-		})
-	}
-}
-
 func TestClose(t *testing.T) {
-	lmf, err := MmapBinFile("../../test/data/test_data_b.bin")
+	lmf, err := MmapBinFile("../../c/test/data/test_data_b.bin")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}

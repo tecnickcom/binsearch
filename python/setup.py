@@ -21,13 +21,16 @@ class RunTests(Command):
 
     def run(self):
         """Run all tests!"""
-        errno = call(['py.test', '--verbose'])
+        errno = call([
+            'py.test',
+            '--verbose',
+        ])
         raise SystemExit(errno)
 
 
 setup(
     name='binsearch',
-    version='3.0.7',
+    version='4.0.0',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     long_description=read('../README.md'),
@@ -36,14 +39,14 @@ setup(
     url='https://github.com/tecnickcom/binsearch',
     license='MIT',
     platforms='Linux',
-    packages=find_packages(exclude=['docs', 'tests*']),
+    packages=find_packages(exclude=['docs', 'test*']),
     ext_modules=[
         Extension('binsearch', [
-             '../src/binsearch.c',
+             '../c/src/binsearch.c',
             'binsearch/pybinsearch.c'
         ],
         include_dirs=[
-            '../src',
+            '../c/src',
             'binsearch',
         ],
         extra_compile_args=[
@@ -74,7 +77,7 @@ setup(
             'pytest',
             'pytest-benchmark',
             'pytest-cov',
-            'pytest-pep8',
+            'pycodestyle',
         ],
     },
     cmdclass={'test': RunTests},

@@ -20,7 +20,7 @@
 
 /**
  * @file binsearch.h
- * @brief File containing the definition of public functions.
+ * @brief Functions to search values in binary files made of constant-length items.
  *
  * The functions provided here allows to search big-endian
  * unsigned integers in a binary file made of adjacent
@@ -55,35 +55,24 @@ extern "C" {
 #include <inttypes.h>
 
 /**
- * Struct containing 128 bits as 2 64bit unsigned integer
- */
-typedef struct uint128_t
-{
-    uint64_t lo; /*!< low 64 bits MSB */
-    uint64_t hi; /*!< high 64 bits LSB */
-} uint128_t;
-
-/**
  * Struct containing the memory mapped file info.
  */
 typedef struct mmfile_t
 {
-    /** Pointer to the memory map. */
-    unsigned char *src;
-    /** File descriptor. */
-    int fd;
-    /** File size in bytes. */
-    uint64_t size;
+    unsigned char *src; //!< Pointer to the memory map.
+    int fd;             //!< File descriptor.
+    uint64_t size;      //!< File size in bytes.
 } mmfile_t;
 
 /**
  * Memory map the specified file.
  *
  * @param file  Path to the file to map.
+ * @param mf    Structure containing the memory mapped file.
  *
  * @return Returns the memory-mapped file descriptors.
  */
-mmfile_t mmap_binfile(const char *file);
+void mmap_binfile(const char *file, mmfile_t *mf);
 
 /**
  * Unmap and close the memory-mapped file.
@@ -96,7 +85,7 @@ mmfile_t mmap_binfile(const char *file);
 int munmap_binfile(mmfile_t mf);
 
 /**
- * Returns the absolute file start position of the specified item (binary block).
+ * Returns the absolute file address position of the specified item (binary block).
  *
  * @param blklen    Length of the binary block in bytes.
  * @param blkpos    Indicates the position of the number to search inside a binary block.
@@ -107,7 +96,7 @@ int munmap_binfile(mmfile_t mf);
 uint64_t get_address(uint64_t blklen, uint64_t blkpos, uint64_t item);
 
 /**
- * Define generic comparison function for unsigned integers
+ * Convert bytes to the specified type.
  */
 #define define_declare_bytes_to(T) \
 /** Convert bytes in big-endian format to unsigned integer
@@ -123,24 +112,6 @@ define_declare_bytes_to(uint8_t)
 define_declare_bytes_to(uint16_t)
 define_declare_bytes_to(uint32_t)
 define_declare_bytes_to(uint64_t)
-define_declare_bytes_to(uint128_t)
-
-/**
- * Define generic comparison function for unsigned integers
- */
-#define define_declare_compare(T) \
-/** Compare two uinsigned integers
-@param a First integer to compare
-@param b Second integer to compare
-@return Negative value if a < b, positive value if a > b and zero if a == b.
-*/ \
-int compare_##T(T a, T b);
-
-define_declare_compare(uint8_t)
-define_declare_compare(uint16_t)
-define_declare_compare(uint32_t)
-define_declare_compare(uint64_t)
-define_declare_compare(uint128_t)
 
 /**
  * Generic function to search for the first occurrence of an unsigned integer
@@ -168,7 +139,6 @@ define_declare_find_first(uint8_t)
 define_declare_find_first(uint16_t)
 define_declare_find_first(uint32_t)
 define_declare_find_first(uint64_t)
-define_declare_find_first(uint128_t)
 
 /**
  * Generic function to search for the last occurrence of an unsigned integer
@@ -196,7 +166,6 @@ define_declare_find_last(uint8_t)
 define_declare_find_last(uint16_t)
 define_declare_find_last(uint32_t)
 define_declare_find_last(uint64_t)
-define_declare_find_last(uint128_t)
 
 #ifdef __cplusplus
 }

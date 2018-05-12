@@ -1,26 +1,12 @@
 package binsearch
 
 /*
-#include "../../src/binsearch.h"
-#include "../../src/binsearch.c"
+#include "../../c/src/binsearch.h"
+#include "../../c/src/binsearch.c"
 */
 import "C"
 import "unsafe"
 import "fmt"
-
-// Uint128 contains 2 64bit unsigned integers
-type Uint128 struct {
-	Lo uint64
-	Hi uint64
-}
-
-// castGoUint128 convert GO Uint128 to C uint128_t.
-func castGoUint128(u Uint128) C.uint128_t {
-	var c C.uint128_t
-	c.lo = C.uint64_t(u.Lo)
-	c.hi = C.uint64_t(u.Hi)
-	return c
-}
 
 // TMMFile contains the memory mapped file info
 type TMMFile struct {
@@ -45,7 +31,8 @@ func MmapBinFile(file string) (TMMFile, error) {
 	if flen > 0 {
 		p = unsafe.Pointer(&bfile[0]) /* #nosec */
 	}
-	mf := (C.mmap_binfile((*C.char)(p)))
+	var mf C.mmfile_t
+	C.mmap_binfile((*C.char)(p), &mf)
 	if mf.fd < 0 || mf.size == 0 || mf.src == nil {
 		return TMMFile{}, fmt.Errorf("unable to map the file: %s", file)
 	}
@@ -155,27 +142,5 @@ func (mf TMMFile) FindLastUint64(blklen, blkpos uint64, bitstart, bitend uint8, 
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
 	ret := uint64(C.find_last_uint64_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
-	return ret, uint64(cfirst), uint64(clast)
-}
-
-// FindFirstUint128 search for the first occurrence of a 128 bit unsigned integer on a memory mapped
-// binary file containing adjacent blocks of sorted binary data.
-// The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
-// Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindFirstUint128(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search Uint128) (uint64, uint64, uint64) {
-	cfirst := C.uint64_t(first)
-	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_uint128_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, castGoUint128(search)))
-	return ret, uint64(cfirst), uint64(clast)
-}
-
-// FindLastUint128 search for the last occurrence of a 128 bit unsigned integer on a memory mapped
-// binary file containing adjacent blocks of sorted binary data.
-// The 128 bit values in the file must encoded in big-endian format and sorted in ascending order.
-// Return the item number if found or (last + 1) if not found, plus the first and last positions.
-func (mf TMMFile) FindLastUint128(blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search Uint128) (uint64, uint64, uint64) {
-	cfirst := C.uint64_t(first)
-	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_uint128_t((*C.uchar)(mf.Src), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, castGoUint128(search)))
 	return ret, uint64(cfirst), uint64(clast)
 }

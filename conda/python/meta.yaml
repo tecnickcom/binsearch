@@ -1,9 +1,12 @@
 package:
   name: binsearch
-  version: 3.0.7.1
+  version: 4.0.0
 
 source:
-  path: ..
+  path: ../..
+
+build:
+  number: 1
 
 requirements:
   host:
@@ -20,12 +23,14 @@ test:
     - setuptools
     - coverage
     - pytest
-    - pytest-pep8
     - pytest-cov
     - pytest-benchmark
+    - pycodestyle
   imports:
     - binsearch
 
 about:
   home: https://github.com/tecnickcom/binsearch
   license: MIT
+  license_file: LICENSE
+  summary: Binary search for constant-lenght binary files.

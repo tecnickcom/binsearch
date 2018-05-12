@@ -6,7 +6,7 @@
 // @link       https://github.com/tecnickcom/binsearch
 
 #include <Python.h>
-#include "binsearch.h"
+#include "../../c/src/binsearch.h"
 #include "pybinsearch.h"
 
 #ifndef Py_UNUSED /* This is already defined for Python 3.4 onwards */
@@ -23,7 +23,8 @@ static PyObject* py_mmap_binfile(PyObject *Py_UNUSED(ignored), PyObject *args)
     const char *file;
     if (!PyArg_ParseTuple(args, "s", &file))
         return NULL;
-    mmfile_t h = mmap_binfile(file);
+    mmfile_t h;
+    mmap_binfile(file, &h);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, PyCapsule_New((void*)h.src, "src", NULL));
     PyTuple_SetItem(result, 1, Py_BuildValue("i", h.fd));
@@ -199,42 +200,6 @@ static PyObject* py_find_last_uint64(PyObject *Py_UNUSED(ignored), PyObject *arg
     return result;
 }
 
-static PyObject* py_find_first_uint128(PyObject *Py_UNUSED(ignored), PyObject *args)
-{
-    PyObject *result;
-    uint64_t blklen, blkpos, first, last;
-    uint8_t bitstart, bitend;
-    uint128_t search;
-    PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKBBKKKK", &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search.lo, &search.hi))
-        return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
-    uint64_t h = find_first_uint128_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
-    result = PyTuple_New(3);
-    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
-    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
-    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
-    return result;
-}
-
-static PyObject* py_find_last_uint128(PyObject *Py_UNUSED(ignored), PyObject *args)
-{
-    PyObject *result;
-    uint64_t blklen, blkpos, first, last;
-    uint8_t bitstart, bitend;
-    uint128_t search;
-    PyObject* mfsrc = NULL;
-    if (!PyArg_ParseTuple(args, "OKKBBKKKK", &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search.lo, &search.hi))
-        return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
-    uint64_t h = find_last_uint128_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
-    result = PyTuple_New(3);
-    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
-    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
-    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
-    return result;
-}
-
 static PyMethodDef PyBinsearchMethods[] =
 {
     {"mmap_binfile", py_mmap_binfile, METH_VARARGS, PYMMAPBINFILE_DOCSTRING},
@@ -248,8 +213,6 @@ static PyMethodDef PyBinsearchMethods[] =
     {"find_last_uint32", py_find_last_uint32, METH_VARARGS, PYFINDLASTUINT32_DOCSTRING},
     {"find_first_uint64", py_find_first_uint64, METH_VARARGS, PYFINDFIRSTUINT64_DOCSTRING},
     {"find_last_uint64", py_find_last_uint64, METH_VARARGS, PYFINDLASTUINT64_DOCSTRING},
-    {"find_first_uint128", py_find_first_uint128, METH_VARARGS, PYFINDFIRSTUINT128_DOCSTRING},
-    {"find_last_uint128", py_find_last_uint128, METH_VARARGS, PYFINDLASTUINT128_DOCSTRING},
     {NULL, NULL, 0, NULL}
 };
 
