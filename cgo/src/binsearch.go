@@ -1,8 +1,8 @@
 package binsearch
 
 /*
-#include "../../src/binsearch.h"
-#include "../../src/binsearch.c"
+#include "../../c/src/binsearch.h"
+#include "../../c/src/binsearch.c"
 */
 import "C"
 import "unsafe"

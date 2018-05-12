@@ -1,101 +1,61 @@
 # MAKEFILE
 #
+# @author      Nicola Asuni <info@tecnick.com>
 # @link        https://github.com/tecnickcom/binsearch
 # ------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files
-.PHONY: help version conda conda_dev build test doc format clean
-
-# Use bash as shell (Note: Ubuntu now uses dash which doesn't support PIPESTATUS).
-SHELL=/bin/bash
-
-# CVS path (path to the parent dir containing the project)
-CVSPATH=github.com/tecnickcom
-
-# Project owner
-OWNER=Tecnick.com
-
-# Project vendor
-VENDOR=tecnickcom
+.PHONY: help version build format clean
 
 # Project name
 PROJECT=binsearch
 
 # Project version
-VERSION=$(shell cat VERSION)
+VERSION=$(shell cat ../VERSION)
 
 # Project release number (packaging build number)
-RELEASE=$(shell cat RELEASE)
+RELEASE=$(shell cat ../RELEASE)
 
-# Name of RPM or DEB package
-PKGNAME=${VENDOR}-${PROJECT}
-
-# Current directory
-CURRENTDIR=$(shell pwd)
+# Include conda channels
+include ../conda/channels.mk
 
 # Conda environment
-CONDA_ENV=$(shell dirname ${CURRENTDIR})/env-${PROJECT}
-
-# Include configuration
-include $(CURRENTDIR)/../config.mk
-
-# extract all packages
-ALLPACKAGES=$(shell cat conda/meta.yaml | grep -oP '^\s*-\s\K(.*)' | sed "s/.*${PROJECT}//" | sed '/^\s*$$/d' | sort -u | tr '\r\n' ' ')
-
+CONDA_ENV=../../env-${PROJECT}
 
 # --- MAKE TARGETS ---
 
 # Display general help about this command
 help:
 	@echo ""
-	@echo "$(PROJECT) Makefile."
+	@echo "${PROJECT} Python Makefile."
 	@echo "The following commands are available:"
 	@echo ""
-	@echo "    make version    : Set version from VERSION file"
-	@echo "    make conda      : Build minimal Conda environment"
-	@echo "    make conda_dev  : Build development Conda environment"
-	@echo "    make build      : Build a Conda package"
-	@echo "    make test       : Execute test command - you shuould activate the conda_dev environment first"
-	@echo "    make doc        : Start a server to display source code documentation"
-	@echo "    make format     : Format the source code"
-	@echo "    make clean      : Remove any build artifact"
+	@echo "    make test    : Run the unit tests against source code"
+	@echo "    make build   : Build and test a minified version of the library"
+	@echo "    make format  : Format the source code"
+	@echo "    make clean   : Remove any build artifact"
 	@echo ""
 
-all: help
+all: clean format build
 
 # Set the version from VERSION file
 version:
-	sed -i "s/version:.*$$/version: $(VERSION)/" conda/meta.yaml
-	sed -i "s/number:.*$$/number: $(RELEASE)/" conda/meta.yaml
+	sed -i "s/version:.*$$/version: $(VERSION)/" ../conda/python/meta.yaml
+	sed -i "s/number:.*$$/number: $(RELEASE)/" ../conda/python/meta.yaml
+	sed -i "s/version=.*,$$/version='$(VERSION)',/" setup.py
 
-# Build minimal Conda environment
-conda:
-	./conda/setup-conda.sh
-
-# Build development Conda environment
-conda_dev:
-	ENV_NAME=env-dev-binsearch ./conda/setup-conda.sh
-	. ../env-dev-binsearch/bin/activate && \
-	../env-dev-binsearch/bin/conda install --override-channels $(CONDA_CHANNELS) -y $(ALLPACKAGES)
-
-# Build a conda package
-build: clean version conda
-	mkdir -p target
-	"${CONDA_ENV}/bin/conda" build --prefix-length 128 --no-anaconda-upload --no-remove-work-dir --override-channels $(CONDA_CHANNELS) conda
-
-# Test using setuptools
-test:
-	python setup.py develop test
-
-# Generate source code documentation
-doc:
-	pydoc -p 1234 $(PROJECT)
+# Build a minified version of the library
+build: version
+	../conda/setup-conda.sh
+	${CONDA_ENV}/bin/conda build --prefix-length 128 --no-anaconda-upload --no-remove-work-dir --override-channels $(ARTIFACTORY_CONDA_CHANNELS) ../conda/python
 
 # Format the source code
 format:
-	find . -path ./target -prune -o -type f -name '*.py' -exec autopep8 --in-place --max-line-length=255 {} \;
+	astyle --style=allman --recursive --suffix=none 'binsearch/*.h'
+	astyle --style=allman --recursive --suffix=none 'binsearch/*.c'
+	autopep8 --in-place --max-line-length=255 test/*.py
 
 # Remove any build artifact
 clean:
-	rm -rf target Dockerfile htmlcov build dist .cache .benchmarks ./tests/*.so ./tests/__pycache__ ./binsearch/__pycache__ ./binsearch.egg-info
+	rm -rf htmlcov build dist .cache .benchmarks tests/*.so tests/__pycache__ binsearch/__pycache__ binsearch.egg-info
 	find . -type f -name '*.pyc' -exec rm -f {} \;

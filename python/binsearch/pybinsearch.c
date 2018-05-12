@@ -6,7 +6,7 @@
 // @link       https://github.com/tecnickcom/binsearch
 
 #include <Python.h>
-#include "binsearch.h"
+#include "../../c/src/binsearch.h"
 #include "pybinsearch.h"
 
 #ifndef Py_UNUSED /* This is already defined for Python 3.4 onwards */

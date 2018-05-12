@@ -24,9 +24,6 @@ class RunTests(Command):
         errno = call([
             'py.test',
             '--verbose',
-            '--cov=binsearch',
-            '--cov-report=term-missing',
-            '--cov-config=.coveragerc',
         ])
         raise SystemExit(errno)
 
@@ -42,14 +39,14 @@ setup(
     url='https://github.com/tecnickcom/binsearch',
     license='MIT',
     platforms='Linux',
-    packages=find_packages(exclude=['docs', 'tests*']),
+    packages=find_packages(exclude=['docs', 'test*']),
     ext_modules=[
         Extension('binsearch', [
-             '../src/binsearch.c',
+             '../c/src/binsearch.c',
             'binsearch/pybinsearch.c'
         ],
         include_dirs=[
-            '../src',
+            '../c/src',
             'binsearch',
         ],
         extra_compile_args=[
