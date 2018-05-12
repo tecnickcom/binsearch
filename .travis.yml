@@ -14,4 +14,4 @@ script:
   - make c
 
 after_success:
-  - coveralls-lcov /home/travis/build/tecnickcom/binsearch/target/test/coverage/binsearch.info
+  - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
