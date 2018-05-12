@@ -21,13 +21,19 @@ class RunTests(Command):
 
     def run(self):
         """Run all tests!"""
-        errno = call(['py.test', '--verbose'])
+        errno = call([
+            'py.test',
+            '--verbose',
+            '--cov=binsearch',
+            '--cov-report=term-missing',
+            '--cov-config=.coveragerc',
+        ])
         raise SystemExit(errno)
 
 
 setup(
     name='binsearch',
-    version='3.0.7',
+    version='4.0.0',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     long_description=read('../README.md'),
@@ -74,7 +80,7 @@ setup(
             'pytest',
             'pytest-benchmark',
             'pytest-cov',
-            'pytest-pep8',
+            'pycodestyle',
         ],
     },
     cmdclass={'test': RunTests},

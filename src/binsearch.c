@@ -24,21 +24,19 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 
-mmfile_t mmap_binfile(const char *file)
+void mmap_binfile(const char *file, mmfile_t *mf)
 {
-    mmfile_t mf = {MAP_FAILED, -1, 0};
+    mf->src = MAP_FAILED; // NOLINT
+    mf->fd = -1;
+    mf->size = 0;
     struct stat statbuf;
-    if (((mf.fd = open(file, O_RDONLY)) < 0) || (fstat(mf.fd, &statbuf) < 0))
+    if (((mf->fd = open(file, O_RDONLY)) < 0) || (fstat(mf->fd, &statbuf) < 0))
     {
-        return mf;
+        return;
     }
-    mf.size = (uint64_t)statbuf.st_size;
-    mf.src = mmap(0, mf.size, PROT_READ, MAP_PRIVATE, mf.fd, 0);
-    if (mf.src == MAP_FAILED)
-    {
-        return mf;
-    }
-    return mf;
+    mf->size = (uint64_t)statbuf.st_size;
+    mf->src = mmap(0, mf->size, PROT_READ, MAP_PRIVATE, mf->fd, 0);
+    return;
 }
 
 int munmap_binfile(mmfile_t mf)
@@ -51,23 +49,23 @@ int munmap_binfile(mmfile_t mf)
     return close(mf.fd);
 }
 
-uint64_t get_address(uint64_t blklen, uint64_t blkpos, uint64_t item)
+inline uint64_t get_address(uint64_t blklen, uint64_t blkpos, uint64_t item)
 {
     return ((blklen * item) + blkpos);
 }
 
-uint8_t bytes_to_uint8_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
+inline uint8_t bytes_to_uint8_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
 {
     return ((((uint8_t)src[i]) << bitstart) >> (7 - bitend + bitstart));
 }
 
-uint16_t bytes_to_uint16_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
+inline uint16_t bytes_to_uint16_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
 {
     return (((((uint16_t)src[i] << 8)
               | (uint16_t)src[i+1]) << bitstart) >> (15 - bitend + bitstart));
 }
 
-uint32_t bytes_to_uint32_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
+inline uint32_t bytes_to_uint32_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
 {
     return (((((uint32_t)src[i] << 24)
               | ((uint32_t)src[i+1] << 16)
@@ -75,7 +73,7 @@ uint32_t bytes_to_uint32_t(const unsigned char *src, uint64_t i, uint8_t bitstar
               | (uint32_t)src[i+3]) << bitstart) >> (31 - bitend + bitstart));
 }
 
-uint64_t bytes_to_uint64_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
+inline uint64_t bytes_to_uint64_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
 {
     return (((((uint64_t)src[i] << 56)
               | ((uint64_t)src[i+1] << 48)
@@ -87,48 +85,17 @@ uint64_t bytes_to_uint64_t(const unsigned char *src, uint64_t i, uint8_t bitstar
               | (uint64_t)src[i+7]) << bitstart) >> (63 - bitend + bitstart));
 }
 
-uint128_t bytes_to_uint128_t(const unsigned char *src, uint64_t i, uint8_t bitstart, uint8_t bitend)
-{
-    return (uint128_t)
-    {
-        .lo = bytes_to_uint64_t(src, i, bitstart, 63),
-         .hi = (bytes_to_uint64_t(src, i + 8, 0, (bitend - 64)) << (127 - bitend))
-    };
-}
-
-#define define_compare(T) int compare_##T(T a, T b) {return (a < b) ? -1 : (a > b);}
-
-define_compare(uint8_t)
-define_compare(uint16_t)
-define_compare(uint32_t)
-define_compare(uint64_t)
-
-int compare_uint128_t(uint128_t a, uint128_t b)
-{
-    if (a.lo < b.lo)
-    {
-        return -1;
-    }
-    if (a.lo > b.lo)
-    {
-        return 1;
-    }
-    return compare_uint64_t(a.hi, b.hi);
-}
-
 #define define_find_first(T) \
-uint64_t find_first_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
+inline uint64_t find_first_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
 { \
     uint64_t i, middle, found = (*last + 1); \
     T x; \
-    int cmp; \
     while (*first <= *last) \
     { \
         middle = (*first + ((*last - *first) >> 1)); \
         i = get_address(blklen, blkpos, middle); \
         x = bytes_to_##T(src, i, bitstart, bitend); \
-        cmp = compare_##T(x, search); \
-        if (cmp == 0) \
+        if (x == search) \
         { \
             if (middle == 0) { \
                 return middle; \
@@ -137,7 +104,7 @@ uint64_t find_first_##T(const unsigned char *src, uint64_t blklen, uint64_t blkp
             *last = (middle - 1); \
         } \
         else { \
-            if (cmp < 0) { \
+            if (x < search) { \
                 *first = (middle + 1); \
             } \
             else \
@@ -159,28 +126,25 @@ define_find_first(uint8_t)
 define_find_first(uint16_t)
 define_find_first(uint32_t)
 define_find_first(uint64_t)
-define_find_first(uint128_t)
 
 #define define_find_last(T) \
-uint64_t find_last_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
+inline uint64_t find_last_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
 { \
     uint64_t i, middle, found = (*last + 1); \
     T x; \
-    int cmp; \
     while (*first <= *last) \
     { \
         middle = (*first + ((*last - *first) >> 1)); \
         i = get_address(blklen, blkpos, middle); \
         x = bytes_to_##T(src, i, bitstart, bitend); \
-        cmp = compare_##T(x, search); \
-        if (cmp == 0) \
+        if (x == search) \
         { \
             found = middle; \
             *first = (middle + 1); \
         } \
         else \
         { \
-            if (cmp < 0) { \
+            if (x < search) { \
                 *first = (middle + 1); \
             } \
             else \
@@ -202,4 +166,3 @@ define_find_last(uint8_t)
 define_find_last(uint16_t)
 define_find_last(uint32_t)
 define_find_last(uint64_t)
-define_find_last(uint128_t)

@@ -207,54 +207,6 @@ static t_test_uint64_t test_data_sub_uint64_t[TEST_DATA_SIZE] =
     {4, 0, 99, 0x51f94499229, 44, 44, 43, 44, 45, 44},
 };
 
-typedef struct t_test_data_uint128_t
-{
-    uint64_t blkpos;
-    uint64_t first;
-    uint64_t last;
-    uint128_t search;
-    uint64_t foundFirst;
-    uint64_t foundFFirst;
-    uint64_t foundFLast;
-    uint64_t foundLast;
-    uint64_t foundLFirst;
-    uint64_t foundLLast;
-} t_test_data_uint128_t;
-
-static t_test_data_uint128_t test_data_uint128_t[TEST_DATA_SIZE] =
-{
-    {4, 0, 99, {0x000027225fb6e591, 0x6eb7abd92e3deb1d}, 0, 0, 1, 0, 1, 0},
-    {4, 0, 99, {0x000027c07b9621ec, 0x01f886390c06811d}, 10, 10, 9, 10, 11, 10},
-    {4, 0, 0,  {0x000027225fb6e591, 0x6eb7abd92e3deb1a}, 1, 0, 0, 1, 0, 0},
-    {4, 0, 99, {0x000027c30981ef0f, 0x500126c20c059eb5}, 12, 12, 11, 12, 13, 12},
-    {4, 0, 99, {0x000027f35fb6e591, 0x6eb7abd90889e85e}, 13, 13, 12, 13, 14, 13},
-    {4, 0, 99, {0x000027f3d41a0ce2, 0xdf116bbc0bf2cf80}, 100, 14, 13, 100, 14, 13},
-    {4, 0, 99, {0x000027f53b9e3036, 0x5103b7a62e3fbbcc}, 100, 16, 15, 100, 16, 15},
-    {4, 0, 99, {0x000027f690c4deff, 0x765f63b80bf00517}, 16, 16, 15, 16, 17, 16},
-    {4, 0, 99, {0x000033f522a78fd9, 0x1acc7b430ac5ca22}, 99, 99, 98, 99, 100, 99},
-    {4, 0, 0,  {0x0000000000000001, 0x0000000000000001}, 1, 0, 0, 1, 0, 0},
-    {4, 0, 0,  {0xfffffffffffffff0, 0xfffffffffffffff0}, 1, 1, 0, 1, 1, 0},
-    {4, 0, 99, {0x000028060981ef0f, 0x500126c22f813253}, 100, 19, 18, 100, 19, 18},
-    {4, 0, 99, {0x000028fca24c9148, 0x830a986a0be5c095}, 100, 45, 44, 100, 45, 44},
-};
-
-static t_test_data_uint128_t test_data_sub_uint128_t[TEST_DATA_SIZE] =
-{
-    {4, 0, 99, {0x000027225fb6e591, 0x6eb7abd92e3deb18}, 0, 0, 1, 0, 1, 0},
-    {4, 0, 99, {0x000027c07b9621ec, 0x01f886390c068118}, 10, 10, 9, 10, 11, 10},
-    {4, 0, 0, {0x000027225fb6e591, 0x6eb7abd92e3deb18}, 0, 0, 0, 0, 1, 0},
-    {4, 0, 99, {0x000027c30981ef0f, 0x500126c20c059eb0}, 12, 12, 11, 12, 13, 12},
-    {4, 0, 99, {0x000027f35fb6e591, 0x6eb7abd90889e858}, 13, 13, 12, 13, 14, 13},
-    {4, 0, 99, {0x000027f3d41a0ce2, 0xdf116bbc0bf2cf80}, 100, 14, 13, 100, 14, 13},
-    {4, 0, 99, {0x000027f53b9e3036, 0x5103b7a62e3fbbc8}, 100, 16, 15, 100, 16, 15},
-    {4, 0, 99, {0x000027f690c4deff, 0x765f63b80bf00510}, 16, 16, 15, 16, 17, 16},
-    {4, 0, 99, {0x000033f522a78fd9, 0x1acc7b430ac5ca20}, 99, 99, 98, 99, 100, 99},
-    {4, 0, 0, {0x0000000000000001, 0x0000000000000000}, 1, 0, 0, 1, 0, 0},
-    {4, 0, 0, {0x3ffffffffffffff0, 0xfffffffffffffff0}, 1, 1, 0, 1, 1, 0},
-    {4, 0, 99, {0x000028060981ef0f, 0x500126c22f813250}, 19, 19, 18, 19, 20, 19},
-    {4, 0, 99, {0x000028fca24c9148, 0x830a986a0be5c090}, 44, 44, 43, 44, 45, 44},
-};
-
 #define define_test_find_first(T) \
 int test_find_first_##T(mmfile_t mf, uint64_t blklen, uint8_t bitstart, uint8_t bitend) \
 { \
@@ -359,8 +311,6 @@ define_test_find_first(uint32_t)
 define_test_find_last(uint32_t)
 define_test_find_first(uint64_t)
 define_test_find_last(uint64_t)
-define_test_find_first(uint128_t)
-define_test_find_last(uint128_t)
 
 // returns current time in nanoseconds
 uint64_t get_time()
@@ -412,12 +362,11 @@ define_benchmark_find_first(uint32_t)
 define_benchmark_find_last(uint32_t)
 define_benchmark_find_first(uint64_t)
 define_benchmark_find_last(uint64_t)
-define_benchmark_find_first(uint128_t)
-define_benchmark_find_last(uint128_t)
 
 int test_mmap_binfile_error(const char* file)
 {
-    mmfile_t mf = mmap_binfile(file);
+    mmfile_t mf;
+    mmap_binfile(file, &mf);
     if (mf.src != MAP_FAILED)
     {
         fprintf(stderr, "An mmap error was expected\n");
@@ -450,7 +399,8 @@ int main()
     uint64_t blklen = 20; // length of each binary block
     uint64_t nitems; // number of binary blocks in the file
 
-    mmfile_t mf = mmap_binfile(file);
+    mmfile_t mf;
+    mmap_binfile(file, &mf);
 
     if (mf.fd < 0)
     {
@@ -487,9 +437,6 @@ int main()
     errors += test_find_first_uint64_t(mf, blklen, 0, 63);
     errors += test_find_last_uint64_t(mf, blklen, 0, 63);
 
-    errors += test_find_first_uint128_t(mf, blklen, 0, 127);
-    errors += test_find_last_uint128_t(mf, blklen, 0, 127);
-
     benchmark_find_first_uint8_t(mf, blklen, nitems, 0, 7);
     benchmark_find_last_uint8_t(mf, blklen, nitems, 0, 7);
 
@@ -501,9 +448,6 @@ int main()
 
     benchmark_find_first_uint64_t(mf, blklen, 0, 63, nitems);
     benchmark_find_last_uint64_t(mf, blklen, 0, 63, nitems);
-
-    benchmark_find_first_uint128_t(mf, blklen, 0, 127, nitems);
-    benchmark_find_last_uint128_t(mf, blklen, 0, 127, nitems);
 
     int e = munmap_binfile(mf);
     if (e != 0)
