@@ -11,7 +11,7 @@ install:
   - gem install coveralls-lcov
 
 script:
-  - make c
+  - cd c && make test
 
 after_success:
   - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
