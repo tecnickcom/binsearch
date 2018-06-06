@@ -31,7 +31,7 @@ func MmapBinFile(file string) (TMMFile, error) {
 	flen := len(bfile)
 	var p unsafe.Pointer
 	if flen > 0 {
-		p = unsafe.Pointer(&bfile[0]) /* #nosec */
+		p = unsafe.Pointer(&bfile[0]) // #nosec
 	}
 	var mf C.mmfile_t
 	C.mmap_binfile((*C.char)(p), &mf)

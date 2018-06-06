@@ -62,8 +62,8 @@ typedef struct mmfile_t
     unsigned char *src; //!< Pointer to the memory map.
     int fd;             //!< File descriptor.
     uint64_t size;      //!< File size in bytes.
-    uint64_t last;      //!< Index of the last element (if set as last 4 bytes)
-    uint64_t *index;    //!< Index of elements (if set)
+    uint64_t last;      //!< Index of the last element (if set as last 4 bytes) or it can be used as index size.
+    uint64_t *index;    //!< Index of elements (if required)
 } mmfile_t;
 
 /**
