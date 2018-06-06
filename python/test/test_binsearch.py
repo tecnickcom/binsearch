@@ -137,12 +137,12 @@ class TestFunctions(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        global src, fd, size
+        global src, fd, size, last
         inputfile = os.path.realpath(
             os.path.dirname(
                 os.path.realpath(__file__)) +
             "/../../c/test/data/test_data.bin")
-        src, fd, size = bs.mmap_binfile(inputfile)
+        src, fd, size, last = bs.mmap_binfile(inputfile)
         if fd < 0 or size != 2000:
             assert False, "Unable to open the file"
 
@@ -155,127 +155,119 @@ class TestFunctions(TestCase):
 
     def test_find_first_uint8(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData8:
-            rp, rf, rl = bs.find_first_uint8(
-                src, 20, blkpos, 0, 7, first, last, search)
+            rp, rf, rl = bs.find_first_uint8(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint8(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData8:
-            rp, rf, rl = bs.find_last_uint8(
-                src, 20, blkpos, 0, 7, first, last, search)
+            rp, rf, rl = bs.find_last_uint8(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint16(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData16:
-            rp, rf, rl = bs.find_first_uint16(
-                src, 20, blkpos, 0, 15, first, last, search)
+            rp, rf, rl = bs.find_first_uint16(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint16(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData16:
-            rp, rf, rl = bs.find_last_uint16(
-                src, 20, blkpos, 0, 15, first, last, search)
+            rp, rf, rl = bs.find_last_uint16(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint32(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData32:
-            rp, rf, rl = bs.find_first_uint32(
-                src, 20, blkpos, 0, 31, first, last, search)
+            rp, rf, rl = bs.find_first_uint32(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint32(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData32:
-            rp, rf, rl = bs.find_last_uint32(
-                src, 20, blkpos, 0, 31, first, last, search)
+            rp, rf, rl = bs.find_last_uint32(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
     def test_find_first_uint64(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData64:
-            rp, rf, rl = bs.find_first_uint64(
-                src, 20, blkpos, 0, 63, first, last, search)
+            rp, rf, rl = bs.find_first_uint64(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
     def test_find_last_uint64(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testData64:
-            rp, rf, rl = bs.find_last_uint64(
-                src, 20, blkpos, 0, 63, first, last, search)
+            rp, rf, rl = bs.find_last_uint64(src, 20, blkpos, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
-    def test_find_first_uint8_sub(self):
+    def test_find_first_sub_uint8(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub8:
-            rp, rf, rl = bs.find_first_uint8(
+            rp, rf, rl = bs.find_first_sub_uint8(
                 src, 20, blkpos, 2, 4, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
-    def test_find_last_uint8_sub(self):
+    def test_find_last_sub_uint8(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub8:
-            rp, rf, rl = bs.find_last_uint8(
+            rp, rf, rl = bs.find_last_sub_uint8(
                 src, 20, blkpos, 2, 4, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
-    def test_find_first_uint16_sub(self):
+    def test_find_first_sub_uint16(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub16:
-            rp, rf, rl = bs.find_first_uint16(
+            rp, rf, rl = bs.find_first_sub_uint16(
                 src, 20, blkpos, 2, 12, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
-    def test_find_last_uint16_sub(self):
+    def test_find_last_sub_uint16(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub16:
-            rp, rf, rl = bs.find_last_uint16(
+            rp, rf, rl = bs.find_last_sub_uint16(
                 src, 20, blkpos, 2, 12, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
-    def test_find_first_uint32_sub(self):
+    def test_find_first_sub_uint32(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub32:
-            rp, rf, rl = bs.find_first_uint32(
+            rp, rf, rl = bs.find_first_sub_uint32(
                 src, 20, blkpos, 2, 28, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
-    def test_find_last_uint32_sub(self):
+    def test_find_last_sub_uint32(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub32:
-            rp, rf, rl = bs.find_last_uint32(
+            rp, rf, rl = bs.find_last_sub_uint32(
                 src, 20, blkpos, 2, 28, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
 
-    def test_find_first_uint64_sub(self):
+    def test_find_first_sub_uint64(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub64:
-            rp, rf, rl = bs.find_first_uint64(
+            rp, rf, rl = bs.find_first_sub_uint64(
                 src, 20, blkpos, 2, 60, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
 
-    def test_find_last_uint64_sub(self):
+    def test_find_last_sub_uint64(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataSub64:
-            rp, rf, rl = bs.find_last_uint64(
+            rp, rf, rl = bs.find_last_sub_uint64(
                 src, 20, blkpos, 2, 60, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
@@ -287,7 +279,7 @@ class TestBenchmark(object):
     global setup
 
     def setup():
-        global src, fd, size
+        global src, fd, size, last
         if fd >= 0:
             pass
         bs.munmap_binfile(src, fd, size)
@@ -295,14 +287,14 @@ class TestBenchmark(object):
             os.path.dirname(
                 os.path.realpath(__file__)) +
             "/../../c/test/data/test_data.bin")
-        src, fd, size = bs.mmap_binfile(inputfile)
+        src, fd, size, last = bs.mmap_binfile(inputfile)
         if fd < 0 or size != 2000:
             assert False, "Unable to open the file"
 
     def test_find_first_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_uint8,
-            args=[src, 20, 6, 0, 7, 0, 99, 0x27],
+            args=[src, 20, 6, 0, 99, 0x27],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -310,7 +302,7 @@ class TestBenchmark(object):
     def test_find_last_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_uint8,
-            args=[src, 20, 6, 0, 7, 0, 99, 0x27],
+            args=[src, 20, 6, 0, 99, 0x27],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -318,7 +310,7 @@ class TestBenchmark(object):
     def test_find_first_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_uint16,
-            args=[src, 20, 6, 0, 15, 0, 99, 0x27f3],
+            args=[src, 20, 6, 0, 99, 0x27f3],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -326,7 +318,7 @@ class TestBenchmark(object):
     def test_find_last_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_uint16,
-            args=[src, 20, 6, 0, 15, 0, 99, 0x27f3],
+            args=[src, 20, 6, 0, 99, 0x27f3],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -334,7 +326,7 @@ class TestBenchmark(object):
     def test_find_first_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_uint32,
-            args=[src, 20, 4, 0, 31, 0, 99, 0x000027f3],
+            args=[src, 20, 4, 0, 99, 0x000027f3],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -342,7 +334,7 @@ class TestBenchmark(object):
     def test_find_last_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_uint32,
-            args=[src, 20, 4, 0, 31, 0, 99, 0x000027f3],
+            args=[src, 20, 4, 0, 99, 0x000027f3],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -350,7 +342,7 @@ class TestBenchmark(object):
     def test_find_first_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_uint64,
-            args=[src, 20, 4, 0, 63, 0, 99, 0x000027f35fb6e591],
+            args=[src, 20, 4, 0, 99, 0x000027f35fb6e591],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -358,6 +350,70 @@ class TestBenchmark(object):
     def test_find_last_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_uint64,
+            args=[src, 20, 4, 0, 99, 0x000027f35fb6e591],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_first_sub_uint8_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_first_sub_uint8,
+            args=[src, 20, 6, 0, 7, 0, 99, 0x27],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_last_sub_uint8_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_last_sub_uint8,
+            args=[src, 20, 6, 0, 7, 0, 99, 0x27],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_first_sub_uint16_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_first_sub_uint16,
+            args=[src, 20, 6, 0, 15, 0, 99, 0x27f3],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_last_sub_uint16_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_last_sub_uint16,
+            args=[src, 20, 6, 0, 15, 0, 99, 0x27f3],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_first_sub_uint32_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_first_sub_uint32,
+            args=[src, 20, 4, 0, 31, 0, 99, 0x000027f3],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_last_sub_uint32_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_last_sub_uint32,
+            args=[src, 20, 4, 0, 31, 0, 99, 0x000027f3],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_first_sub_uint64_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_first_sub_uint64,
+            args=[src, 20, 4, 0, 63, 0, 99, 0x000027f35fb6e591],
+            setup=setup,
+            iterations=1,
+            rounds=10000)
+
+    def test_find_last_sub_uint64_benchmark(self, benchmark):
+        benchmark.pedantic(
+            bs.find_last_sub_uint64,
             args=[src, 20, 4, 0, 63, 0, 99, 0x000027f35fb6e591],
             setup=setup,
             iterations=1,
