@@ -1,20 +1,18 @@
+os: linux
+dist: trusty
+sudo: required
+addons:
+  apt:
+    packages:
+    - lcov
+install:
+  - gem install coveralls-lcov
+
 matrix:
   include:
-    - os: linux
-      dist: trusty
-      sudo: required
-      addons:
-        apt:
-          packages:
-          - lcov
-      install:
-        - gem install coveralls-lcov
-      - language: clang
-        script:
-          - cd c && make all
-        after_success:
-          - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
-      - language: go
-        script:
-          - cd go && make all
+    - language: clang
+      script:
+        - cd c && make all
+      after_success:
+        - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
       
