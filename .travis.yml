@@ -9,12 +9,13 @@ addons:
     - devscripts
     - python
     - python-pip
+    - doxygen
 install:
   - gem install coveralls-lcov
 
 matrix:
   include:
-    - language: clang
+    - language: c
       script:
         - cd c && make all
       after_success:
@@ -22,4 +23,8 @@ matrix:
     - language: go
       script:
         - cd go && make all
+        - cd cgo && make all
+    - language: python
+      script:
+        - cd python && make all
       
