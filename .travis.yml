@@ -5,6 +5,10 @@ addons:
   apt:
     packages:
     - lcov
+    - astyle
+    - devscripts
+    - python
+    - python-pip
 install:
   - gem install coveralls-lcov
 
@@ -15,4 +19,7 @@ matrix:
         - cd c && make all
       after_success:
         - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
+    - language: go
+      script:
+        - cd go && make all
       
