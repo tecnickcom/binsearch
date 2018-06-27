@@ -11,6 +11,6 @@ matrix:
         - gem install coveralls-lcov
       - language: clang
         script:
-          - cd c && make test
+          - cd c && make all
         after_success:
           - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
