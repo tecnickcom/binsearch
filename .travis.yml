@@ -3,14 +3,14 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      language: clang
       addons:
         apt:
           packages:
           - lcov
       install:
         - gem install coveralls-lcov
-      script:
-        - cd c && make test
-      after_success:
-        - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
+      - language: clang
+        script:
+          - cd c && make test
+        after_success:
+          - coveralls-lcov /home/travis/build/tecnickcom/binsearch/c/target/test/coverage/binsearch.info
