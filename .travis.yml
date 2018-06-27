@@ -9,6 +9,7 @@ addons:
     - devscripts
     - python
     - python-pip
+    - python-autopep8
     - doxygen
 install:
   - gem install coveralls-lcov
