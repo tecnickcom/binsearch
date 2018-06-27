@@ -24,6 +24,8 @@ matrix:
     - language: go
       script:
         - cd go && make all
+    - language: go
+      script:
         - cd cgo && make all
     - language: python
       script:
