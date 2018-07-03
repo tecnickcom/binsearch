@@ -577,3 +577,235 @@ func (mf TMMFile) FindLastSubUint64(blklen, blkpos uint64, bitstart, bitend uint
 	}
 	return found, first, last
 }
+
+// HasNextUint8 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint8 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint8 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextUint8(blklen, blkpos, pos, last uint64, search uint8) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	return (search == mf.BytesToUint8(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasNextUint16 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint16 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint16 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextUint16(blklen, blkpos, pos, last uint64, search uint16) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	return (search == mf.BytesToUint16(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasNextUint32 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint32 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint32 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextUint32(blklen, blkpos, pos, last uint64, search uint32) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	return (search == mf.BytesToUint32(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasNextUint64 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint64 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint64 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextUint64(blklen, blkpos, pos, last uint64, search uint64) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	return (search == mf.BytesToUint64(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasNextSubUint8 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint8 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint8 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextSubUint8(blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint8) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	rshift := ((1 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint8(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
+
+// HasNextSubUint16 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint16 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint16 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextSubUint16(blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint16) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	rshift := ((2 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint16(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
+
+// HasNextSubUint32 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint32 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint32 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextSubUint32(blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint32) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	rshift := ((4 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint32(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
+
+// HasNextSubUint64 checks if the next occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindFirstUint64 to get the next elements that still satisfy the search.
+// The item returned by FindFirstUint64 should be set as the "pos" parameter in this function.
+// Return true if the next item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasNextSubUint64(blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint64) (bool, uint64) {
+	if pos >= last {
+		return false, pos
+	}
+	pos++
+	rshift := ((8 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint64(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
+
+// HasPrevUint8 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint8 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint8 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevUint8(blklen, blkpos, first, pos uint64, search uint8) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	return (search == mf.BytesToUint8(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasPrevUint16 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint16 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint16 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevUint16(blklen, blkpos, first, pos uint64, search uint16) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	return (search == mf.BytesToUint16(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasPrevUint32 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint32 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint32 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevUint32(blklen, blkpos, first, pos uint64, search uint32) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	return (search == mf.BytesToUint32(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasPrevUint64 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint64 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint64 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevUint64(blklen, blkpos, first, pos uint64, search uint64) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	return (search == mf.BytesToUint64(int(GetAddress(blklen, blkpos, pos)))), pos
+}
+
+// HasPrevSubUint8 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint8 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint8 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevSubUint8(blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint8) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	rshift := ((1 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint8(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
+
+// HasPrevSubUint16 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint16 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint16 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevSubUint16(blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint16) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	rshift := ((2 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint16(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
+
+// HasPrevSubUint32 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint32 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint32 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevSubUint32(blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint32) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	rshift := ((4 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint32(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
+
+// HasPrevSubUint64 checks if the previous occurrence of an unsigned integer on a memory mapped
+// binary file containing adjacent blocks of sorted binary data still matches the search value.
+// The values in the file must encoded in big-endian format and sorted in ascending order.
+// This function can be used after FindLastUint64 to get the previous elements that still satisfy the search.
+// The item returned by FindLastUint64 should be set as the "pos" parameter in this function.
+// Return true if the previous item is valid, false otherwise, plus the position.
+func (mf TMMFile) HasPrevSubUint64(blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint64) (bool, uint64) {
+	if pos <= first {
+		return false, pos
+	}
+	pos--
+	rshift := ((8 * 8) - 1 - bitend + bitstart)
+	return (search == ((mf.BytesToUint64(int(GetAddress(blklen, blkpos, pos))) << bitstart) >> rshift)), pos
+}
