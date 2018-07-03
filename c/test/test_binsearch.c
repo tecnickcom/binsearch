@@ -234,7 +234,7 @@ int test_find_first_##T(mmfile_t mf, uint64_t blklen, uint8_t bitstart, uint8_t 
             ++errors; \
         } \
         numitems = (test_data_##T[i].foundLast - test_data_##T[i].foundFirst); \
-        if ((ffound <= test_data_##T[i].last) && (numitems > 0)) \
+        if ((ffound <= test_data_##T[i].last) && (numitems >= 0)) \
         { \
             pos = ffound; \
             counter = 0; \
@@ -267,7 +267,7 @@ int test_find_first_##T(mmfile_t mf, uint64_t blklen, uint8_t bitstart, uint8_t 
             ++errors; \
         } \
         numitems = (test_data_sub_##T[i].foundLast - test_data_sub_##T[i].foundFirst); \
-        if ((lfound <= test_data_sub_##T[i].last) && (numitems > 0)) \
+        if ((lfound <= test_data_sub_##T[i].last) && (numitems >= 0)) \
         { \
             pos = lfound; \
             counter = 0; \
@@ -317,7 +317,7 @@ int test_find_last_##T(mmfile_t mf, uint64_t blklen, uint8_t bitstart, uint8_t b
             ++errors; \
         } \
         numitems = (test_data_##T[i].foundLast - test_data_##T[i].foundFirst); \
-        if ((ffound <= test_data_##T[i].last) && (numitems > 0)) \
+        if ((ffound <= test_data_##T[i].last) && (numitems >= 0)) \
         { \
             pos = ffound; \
             counter = 0; \
@@ -350,7 +350,7 @@ int test_find_last_##T(mmfile_t mf, uint64_t blklen, uint8_t bitstart, uint8_t b
             ++errors; \
         } \
         numitems = (test_data_sub_##T[i].foundLast - test_data_sub_##T[i].foundFirst); \
-        if ((lfound <= test_data_sub_##T[i].last) && (numitems > 0)) \
+        if ((lfound <= test_data_sub_##T[i].last) && (numitems >= 0)) \
         { \
             pos = lfound; \
             counter = 0; \
