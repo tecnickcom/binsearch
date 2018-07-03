@@ -30,7 +30,7 @@ class RunTests(Command):
 
 setup(
     name='binsearch',
-    version='5.0.4',
+    version='5.1.0',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     long_description=read('../README.md'),
