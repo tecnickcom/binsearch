@@ -266,7 +266,7 @@ func TestFindFirstUint8(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -305,7 +305,7 @@ func TestFindFirstUint8Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -344,7 +344,7 @@ func TestFindLastUint8(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -390,7 +390,7 @@ func TestFindLastUint8Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -424,7 +424,7 @@ func TestFindFirstUint16(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -463,7 +463,7 @@ func TestFindFirstUint16Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -502,7 +502,7 @@ func TestFindLastUint16(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -548,7 +548,7 @@ func TestFindLastUint16Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -582,7 +582,7 @@ func TestFindFirstUint32(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -621,7 +621,7 @@ func TestFindFirstUint32Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -660,7 +660,7 @@ func TestFindLastUint32(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -706,7 +706,7 @@ func TestFindLastUint32Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -740,7 +740,7 @@ func TestFindFirstUint64(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -779,7 +779,7 @@ func TestFindFirstUint64Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -818,7 +818,7 @@ func TestFindLastUint64(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64
@@ -864,7 +864,7 @@ func TestFindLastUint64Sub(t *testing.T) {
 				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
 			}
 			numitems := tt.foundLast - tt.foundFirst + 1
-			if (h <= tt.last) && (numitems >= 1) {
+			if (h <= tt.last) && (numitems > 0) {
 				pos := h
 				ret := true
 				var counter uint64

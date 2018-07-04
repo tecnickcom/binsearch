@@ -161,7 +161,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -177,7 +177,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -193,7 +193,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -209,7 +209,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -225,7 +225,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -241,7 +241,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -257,7 +257,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -273,7 +273,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -290,7 +290,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -307,7 +307,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -324,7 +324,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -341,7 +341,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -358,7 +358,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -375,7 +375,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -392,7 +392,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -409,7 +409,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp <= last) and (numitems >= 1):
+            if (rp <= last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
