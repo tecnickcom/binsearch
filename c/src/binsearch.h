@@ -30,9 +30,9 @@
  * represent a uint32 in big-endian. The integers are sorted in
  * ascending order.
  *
- * 2f 81 f5 77 1a cc 7b 43
- * 2f 81 f5 78 76 5f 63 b8
- * 2f 81 f5 79 ca a9 a6 52
+ *   - 2f 81 f5 77 1a cc 7b 43
+ *   - 2f 81 f5 78 76 5f 63 b8
+ *   - 2f 81 f5 79 ca a9 a6 52
  *
  * This binary representation can be used to encode sortable key-value data,
  * even with nested keys.
@@ -40,8 +40,8 @@
  * The xxd command-line application can be used to convert a binary file to
  * hexdump and reverse. For example:
  *
- * xxd -p binaryfile.bin > hexfile.txt
- * xxd -r -p hexfile.txt > binaryfile.bin
+ *   - xxd -p binaryfile.bin > hexfile.txt
+ *   - xxd -r -p hexfile.txt > binaryfile.bin
  *
  */
 
@@ -91,7 +91,7 @@ int munmap_binfile(mmfile_t mf);
  * Returns the absolute file address position of the specified item (binary block).
  *
  * @param blklen    Length of the binary block in bytes.
- * @param blkpos    Indicates the position of the number to search inside a binary block.
+ * @param blkpos    Indicates the position of the value to search inside a binary block.
  * @param item      Item number to search.
  *
  * Return First byte position of the specified item number.
