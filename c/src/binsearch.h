@@ -55,6 +55,128 @@ extern "C" {
 #include <inttypes.h>
 #include <stdbool.h>
 
+// Account for Endianness
+
+//!< \cond
+
+#ifdef WORDS_BIGENDIAN
+#undef BINSEARCH_BIG_ENDIAN
+#define BINSEARCH_BIG_ENDIAN 1
+#endif
+
+#if defined(BINSEARCH_LITTLE_ENDIAN) && defined(BINSEARCH_BIG_ENDIAN)
+#error
+#endif
+
+#if !defined(BINSEARCH_LITTLE_ENDIAN) && !defined(BINSEARCH_BIG_ENDIAN)
+#define BINSEARCH_UNKNOWN_ENDIAN 1
+#endif
+
+#if !defined(bswap_16) ||  !defined(bswap_32) || !defined(bswap_64)
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+
+#if defined(HAVE_BUILTIN_BSWAP) || defined(__clang__) || (defined(__GNUC__) && ((__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || __GNUC__ >= 5))
+#define bswap_16(x) __builtin_bswap16(x)
+#define bswap_32(x) __builtin_bswap32(x)
+#define bswap_64(x) __builtin_bswap64(x)
+#endif
+
+#endif
+
+#if defined(BINSEARCH_UNKNOWN_ENDIAN) || !defined(bswap_64)
+
+#ifdef _MSC_VER
+
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+#define bswap_16(x) _byteswap_ushort(x)
+#define bswap_32(x) _byteswap_ulong(x)
+#define bswap_64(x) _byteswap_uint64(x)
+
+#elif defined(__APPLE__)
+
+// Mac OS X / Darwin
+#include <libkern/OSByteOrder.h>
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+#define bswap_16(x) OSSwapInt16(x)
+#define bswap_32(x) OSSwapInt32(x)
+#define bswap_64(x) OSSwapInt64(x)
+
+#elif defined(__sun) || defined(sun)
+
+#include <sys/byteorder.h>
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+#define bswap_16(x) BSWAP_16(x)
+#define bswap_32(x) BSWAP_32(x)
+#define bswap_64(x) BSWAP_64(x)
+
+#elif defined(__FreeBSD__)
+
+#include <sys/endian.h>
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+#define bswap_16(x) bswap16(x)
+#define bswap_32(x) bswap32(x)
+#define bswap_64(x) bswap64(x)
+
+#elif defined(__OpenBSD__)
+
+#include <sys/types.h>
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+#define bswap_16(x) swap16(x)
+#define bswap_32(x) swap32(x)
+#define bswap_64(x) swap64(x)
+
+#elif defined(__NetBSD__)
+
+#include <sys/types.h>
+#include <machine/bswap.h>
+#if defined(__BSWAP_RENAME) && !defined(__bswap_32)
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+#define bswap_16(x) bswap16(x)
+#define bswap_32(x) bswap32(x)
+#define bswap_64(x) bswap64(x)
+#endif
+
+#else
+
+#undef bswap_16
+#undef bswap_32
+#undef bswap_64
+#include <byteswap.h>
+
+#endif
+
+#ifdef WORDS_BIGENDIAN
+#define BINSEARCH_BIG_ENDIAN 1
+#endif
+
+#endif
+
+//!< \endcond
+
+#ifdef BINSEARCH_BIG_ENDIAN
+#define order_uint16_t(x) (x) //!< Return uint16_t in the correct endianness order
+#define order_uint32_t(x) (x) //!< Return uint32_t in the correct endianness order
+#define order_uint64_t(x) (x) //!< Return uint64_t in the correct endianness order
+#else
+#define order_uint16_t(x) (bswap_16(x)) //!< Return uint16_t in the correct endianness order
+#define order_uint32_t(x) (bswap_32(x)) //!< Return uint32_t in the correct endianness order
+#define order_uint64_t(x) (bswap_64(x)) //!< Return uint64_t in the correct endianness order
+#endif
+
 /**
  * Struct containing the memory mapped file info.
  */

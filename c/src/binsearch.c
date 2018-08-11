@@ -64,27 +64,20 @@ uint8_t bytes_to_uint8_t(const unsigned char *src, uint64_t i)
 
 uint16_t bytes_to_uint16_t(const unsigned char *src, uint64_t i)
 {
-    return (((uint16_t)src[i] << 8) | (uint16_t)src[i+1]);
+    const uint16_t *pos = (const uint16_t *)(src + i);
+    return order_uint16_t(*pos);
 }
 
 uint32_t bytes_to_uint32_t(const unsigned char *src, uint64_t i)
 {
-    return (((uint32_t)src[i] << 24)
-            | ((uint32_t)src[i+1] << 16)
-            | ((uint32_t)src[i+2] << 8)
-            | (uint32_t)src[i+3]);
+    const uint32_t *pos = (const uint32_t *)(src + i);
+    return order_uint32_t(*pos);
 }
 
 uint64_t bytes_to_uint64_t(const unsigned char *src, uint64_t i)
 {
-    return (((uint64_t)src[i] << 56)
-            | ((uint64_t)src[i+1] << 48)
-            | ((uint64_t)src[i+2] << 40)
-            | ((uint64_t)src[i+3] << 32)
-            | ((uint64_t)src[i+4] << 24)
-            | ((uint64_t)src[i+5] << 16)
-            | ((uint64_t)src[i+6] << 8)
-            | (uint64_t)src[i+7]);
+    const uint64_t *pos = (const uint64_t *)(src + i);
+    return order_uint64_t(*pos);
 }
 
 #define define_find_first(T) \
