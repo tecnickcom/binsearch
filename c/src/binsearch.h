@@ -167,6 +167,8 @@ extern "C" {
 
 //!< \endcond
 
+#define order_uint8_t(x) (x) //!< Return uint8_t
+
 #ifdef BINSEARCH_BIG_ENDIAN
 #define order_uint16_t(x) (x) //!< Return uint16_t in the correct endianness order
 #define order_uint32_t(x) (x) //!< Return uint32_t in the correct endianness order
