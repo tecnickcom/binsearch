@@ -536,7 +536,7 @@ int main()
         return 1;
     }
 
-    nitems = (uint64_t)(mf.size / blklen);
+    nitems = (mf.size / blklen);
     if (nitems != 100)
     {
         fprintf(stderr, "Expecting 100 items, got instead: %" PRIu64 "\n", nitems);

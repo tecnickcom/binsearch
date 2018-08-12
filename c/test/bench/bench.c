@@ -50,7 +50,7 @@ int benchmark_find_first_uint64()
 
     uint64_t i;
 
-    FILE *f = fopen(filename, "w");
+    FILE *f = fopen(filename, "we");
     if (f == NULL)
     {
         fprintf(stderr, " * %s Unable to open %s file in writing mode.\n", __func__, filename);
@@ -69,7 +69,7 @@ int benchmark_find_first_uint64()
 
     mmfile_t mf = {0};
     mmap_binfile(filename, &mf);
-    uint64_t nitems = (uint64_t)(mf.size / 8);
+    uint64_t nitems = (mf.size / 8);
     if (nitems != TEST_DATA_SIZE)
     {
         fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nitems);
