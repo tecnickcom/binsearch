@@ -87,6 +87,7 @@ set(CPACK_DEB_COMPONENT_INSTALL TRUE)
 # Add subdirectories
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(test/bench)
 
 # Build Documentation
 find_package(Doxygen QUIET)

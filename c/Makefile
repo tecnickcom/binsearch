@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # List special make targets that are not associated with files
-.PHONY: help testcpp test tidy build doc format clean
+.PHONY: help testcpp test tidy build doc format clean bench
 
 # Use bash as shell (Note: Ubuntu now uses dash which doesn't support PIPESTATUS).
 SHELL=/bin/bash
@@ -43,6 +43,7 @@ help:
 	@echo "    make doc        : Generate source code documentation"
 	@echo "    make format     : Format the source code"
 	@echo "    make clean      : Remove any build artifact"
+	@echo "    make bench      : Benchmark test"
 	@echo ""
 
 all: clean format test tidy build doc
@@ -80,7 +81,7 @@ endif
 
 # use clang-tidy
 tidy:
-	clang-tidy -checks='*,-llvm-header-guard,-llvm-include-order,-android-cloexec-open' -header-filter=.* -p . src/*.c
+	clang-tidy-5.0 -checks='*,-llvm-header-guard,-llvm-include-order,-android-cloexec-open,-hicpp-no-assembler' -header-filter=.* -p . src/*.c
 
 # Build the library
 build:
@@ -115,3 +116,7 @@ format:
 # Remove any build artifact
 clean:
 	rm -rf target
+
+# Benchmark test
+bench: build
+	cd target/build/test/bench && ./bench
