@@ -179,6 +179,18 @@ extern "C" {
 #define order_uint64_t(x) (bswap_64(x)) //!< Return uint64_t in the correct endianness order
 #endif
 
+
+/**
+ * Returns the absolute file address position of the specified item (binary block).
+ *
+ * @param blklen    Length of the binary block in bytes.
+ * @param blkpos    Indicates the position of the value to search inside a binary block.
+ * @param item      Item number to search.
+ *
+ * Return First byte position of the specified item number.
+ */
+#define get_address(blklen, blkpos, item) ((blklen * item) + blkpos)
+
 /**
  * Struct containing the memory mapped file info.
  */
@@ -210,17 +222,6 @@ void mmap_binfile(const char *file, mmfile_t *mf);
  *         on failure -1, and errno is set (probably to EINVAL).
  */
 int munmap_binfile(mmfile_t mf);
-
-/**
- * Returns the absolute file address position of the specified item (binary block).
- *
- * @param blklen    Length of the binary block in bytes.
- * @param blkpos    Indicates the position of the value to search inside a binary block.
- * @param item      Item number to search.
- *
- * Return First byte position of the specified item number.
- */
-uint64_t get_address(uint64_t blklen, uint64_t blkpos, uint64_t item);
 
 /**
  * Convert bytes to the specified type.

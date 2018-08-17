@@ -52,11 +52,6 @@ int munmap_binfile(mmfile_t mf)
     return close(mf.fd);
 }
 
-uint64_t get_address(uint64_t blklen, uint64_t blkpos, uint64_t item)
-{
-    return ((blklen * item) + blkpos);
-}
-
 #define define_bytes_to(T) \
 T bytes_to_##T(const unsigned char *src, uint64_t i) \
 { \
