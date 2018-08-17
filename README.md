@@ -48,3 +48,8 @@ make help
 ```
 
 use the command ```make all``` to build and test all the implementations.
+
+## NOTE
+
+* the "_be_" or "BE" functions refer to source files sorted in Big-Endian.
+* the "_le_" or "LE" functions refer to source files sorted in Little-Endian.
