@@ -34,7 +34,7 @@
 #include <sys/mman.h>
 #include "../../src/binsearch.h"
 
-#define TEST_DATA_SIZE 100000000ULL
+#define TEST_DATA_SIZE 10000000ULL
 
 // returns current time in nanoseconds
 uint64_t get_time()
@@ -44,7 +44,7 @@ uint64_t get_time()
     return (((uint64_t)t.tv_sec * 1000000000) + (uint64_t)t.tv_nsec);
 }
 
-int benchmark_find_first_uint64()
+int benchmark_find_first_be_uint64()
 {
     const char *filename = "test.bin";
 
@@ -101,7 +101,72 @@ int benchmark_find_first_uint64()
         {
             first = 0;
             last = lastitem;
-            sum += find_first_uint64_t(mf.src, 8, 0, &first, &last, i);
+            sum += find_first_be_uint64_t(mf.src, 8, 0, &first, &last, i);
+        }
+        tend = get_time();
+        fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, (tend - tstart - offset), (tend - tstart - offset)/(uint64_t)TEST_DATA_SIZE);
+    }
+    return 0;
+}
+
+int benchmark_find_first_le_uint64()
+{
+    const char *filename = "test.bin";
+
+    uint64_t i;
+
+    FILE *f = fopen(filename, "we");
+    if (f == NULL)
+    {
+        fprintf(stderr, " * %s Unable to open %s file in writing mode.\n", __func__, filename);
+        return 1;
+    }
+    unsigned char b0, b1, b2, b3, z = 0;
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
+    {
+        b0 = i & 0xFF;
+        b1 = (i >> 8) & 0xFF;
+        b2 = (i >> 16) & 0xFF;
+        b3 = (i >> 24) & 0xFF;
+        fprintf(f, "%c%c%c%c%c%c%c%c", b0, b1, b2, b3, z, z, z, z);
+    }
+    fclose(f);
+
+    mmfile_t mf = {0};
+    mmap_binfile(filename, &mf);
+    uint64_t nitems = (mf.size / 8);
+    if (nitems != TEST_DATA_SIZE)
+    {
+        fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nitems);
+        return 1;
+    }
+
+    uint64_t tstart, tend, offset;
+    volatile uint64_t sum = 0;
+    uint64_t first, last;
+    uint64_t lastitem = (nitems - 1);
+
+    tstart = get_time();
+    for (i=0 ; i < TEST_DATA_SIZE; i++)
+    {
+        first = 0;
+        last = lastitem;
+        sum += i;
+    }
+    tend = get_time();
+    offset = (tend - tstart);
+    fprintf(stdout, " * %s sum: %" PRIu64 "\n", __func__, sum);
+
+    int j;
+    for (j=0 ; j < 3; j++)
+    {
+        sum = 0;
+        tstart = get_time();
+        for (i=0 ; i < TEST_DATA_SIZE; i++)
+        {
+            first = 0;
+            last = lastitem;
+            sum += find_first_le_uint64_t(mf.src, 8, 0, &first, &last, i);
         }
         tend = get_time();
         fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, (tend - tstart - offset), (tend - tstart - offset)/(uint64_t)TEST_DATA_SIZE);
@@ -111,5 +176,7 @@ int benchmark_find_first_uint64()
 
 int main()
 {
-    return benchmark_find_first_uint64();
+    benchmark_find_first_be_uint64();
+    benchmark_find_first_le_uint64();
+    return 0;
 }
