@@ -14,7 +14,7 @@
 
 ## Description
 
-The functions provided here allows to search big-endian unsigned integers in a binary file made of adjacent constant-length binary blocks sorted in ascending order.
+The functions provided here allows to search unsigned integers in a binary file made of adjacent constant-length binary blocks sorted in ascending order.
 
 For example, the first 4 bytes of each 8-bytes blocks below represent a `uint32` in big-endian.
 The integers are sorted in ascending order.
@@ -48,3 +48,8 @@ make help
 ```
 
 use the command ```make all``` to build and test all the implementations.
+
+## NOTE
+
+* the "_be_" or "BE" functions refer to source files sorted in Big-Endian.
+* the "_le_" or "LE" functions refer to source files sorted in Little-Endian.
