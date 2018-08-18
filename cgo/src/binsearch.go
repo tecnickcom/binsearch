@@ -1,6 +1,7 @@
 package binsearch
 
 /*
+#cgo CFLAGS: -O3 -pedantic -std=c99 -Wextra -Wno-strict-prototypes -Wcast-align -Wundef -Wformat-security -Wshadow
 #include "../../c/src/binsearch.h"
 #include "../../c/src/binsearch.c"
 */
