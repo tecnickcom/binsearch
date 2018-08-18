@@ -17,6 +17,15 @@
 #endif
 #endif
 
+static const unsigned char *py_get_mmsrc(PyObject *src)
+{
+    if (src == Py_None)
+    {
+        return NULL;
+    }
+    return (const unsigned char *)PyCapsule_GetPointer(src, "src");
+}
+
 static PyObject* py_mmap_binfile(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
 {
     PyObject *result;
