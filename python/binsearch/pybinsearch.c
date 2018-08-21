@@ -5,6 +5,8 @@
 // @license    MIT (see LICENSE)
 // @link       https://github.com/tecnickcom/binsearch
 
+#define MODULE_NAME "binsearch"
+
 #include <Python.h>
 #include "../../c/src/binsearch.h"
 #include "pybinsearch.h"
@@ -16,15 +18,6 @@
 #define Py_UNUSED(name) _unused_ ## name
 #endif
 #endif
-
-static const unsigned char *py_get_mmsrc(PyObject *src)
-{
-    if (src == Py_None)
-    {
-        return NULL;
-    }
-    return (const unsigned char *)PyCapsule_GetPointer(src, "src");
-}
 
 static PyObject* py_mmap_binfile(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
 {
@@ -1329,6 +1322,8 @@ static PyMethodDef PyBinsearchMethods[] =
     {NULL, NULL, 0, NULL}
 };
 
+static const char modulename[] = MODULE_NAME;
+
 struct module_state
 {
     PyObject *error;
@@ -1342,7 +1337,6 @@ static struct module_state _state;
 #endif
 
 #if PY_MAJOR_VERSION >= 3
-
 static int myextension_traverse(PyObject *m, visitproc visit, void *arg)
 {
     Py_VISIT(GETSTATE(m)->error);
@@ -1358,7 +1352,7 @@ static int myextension_clear(PyObject *m)
 static struct PyModuleDef moduledef =
 {
     PyModuleDef_HEAD_INIT,
-    "binsearch",
+    modulename,
     NULL,
     sizeof(struct module_state),
     PyBinsearchMethods,
@@ -1371,32 +1365,29 @@ static struct PyModuleDef moduledef =
 #define INITERROR return NULL
 
 PyObject* PyInit_binsearch(void)
-
 #else
 #define INITERROR return
 
-void
-initbinsearch(void)
+void initbinsearch(void)
 #endif
 {
 #if PY_MAJOR_VERSION >= 3
     PyObject *module = PyModule_Create(&moduledef);
 #else
-    PyObject *module = Py_InitModule("binsearch", PyBinsearchMethods);
+    PyObject *module = Py_InitModule(modulename, PyBinsearchMethods);
 #endif
     struct module_state *st = NULL;
-
     if (module == NULL)
+    {
         INITERROR;
+    }
     st = GETSTATE(module);
-
-    st->error = PyErr_NewException("binsearch.Error", NULL, NULL);
+    st->error = PyErr_NewException(MODULE_NAME ".Error", NULL, NULL);
     if (st->error == NULL)
     {
         Py_DECREF(module);
         INITERROR;
     }
-
 #if PY_MAJOR_VERSION >= 3
     return module;
 #endif
