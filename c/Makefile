@@ -81,7 +81,7 @@ endif
 
 # use clang-tidy
 tidy:
-	clang-tidy -checks='*,-llvm-header-guard,-llvm-include-order,-android-cloexec-open,-hicpp-no-assembler' -header-filter=.* -p . src/*.c test/*.c test/bench/*.c
+	clang-tidy -checks='*,-llvm-header-guard,-llvm-include-order,-android-cloexec-open,-hicpp-no-assembler,-hicpp-signed-bitwise' -header-filter=.* -p . src/*.c test/*.c test/bench/*.c
 
 # Build the library
 build:
