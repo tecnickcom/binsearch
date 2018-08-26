@@ -284,6 +284,116 @@ define_has_prev_sub(le, uint16_t)
 define_has_prev_sub(le, uint32_t)
 define_has_prev_sub(le, uint64_t)
 
+// --- COLUMN MODE ---
+
+#define define_col_find_first(T) \
+uint64_t col_find_first_##T(const T *src, uint64_t *first, uint64_t *last, T search) \
+{ \
+FIND_START_LOOP_BLOCK(T) \
+COL_GET_ITEM_TASK \
+FIND_FIRST_INNER_CHECK \
+FIND_END_LOOP_BLOCK \
+}
+
+define_col_find_first(uint8_t)
+define_col_find_first(uint16_t)
+define_col_find_first(uint32_t)
+define_col_find_first(uint64_t)
+
+#define define_col_find_first_sub(T) \
+uint64_t col_find_first_sub_##T(const T *src, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
+{ \
+SUB_ITEM_VARS(T) \
+FIND_START_LOOP_BLOCK(T) \
+COL_GET_SUB_ITEM_TASK \
+FIND_FIRST_INNER_CHECK \
+FIND_END_LOOP_BLOCK \
+}
+
+define_col_find_first_sub(uint8_t)
+define_col_find_first_sub(uint16_t)
+define_col_find_first_sub(uint32_t)
+define_col_find_first_sub(uint64_t)
+
+#define define_col_find_last(T) \
+uint64_t col_find_last_##T(const T *src, uint64_t *first, uint64_t *last, T search) \
+{ \
+FIND_START_LOOP_BLOCK(T) \
+COL_GET_ITEM_TASK \
+FIND_LAST_INNER_CHECK \
+FIND_END_LOOP_BLOCK \
+}
+
+define_col_find_last(uint8_t)
+define_col_find_last(uint16_t)
+define_col_find_last(uint32_t)
+define_col_find_last(uint64_t)
+
+#define define_col_find_last_sub(T) \
+uint64_t col_find_last_sub_##T(const T *src, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
+{ \
+SUB_ITEM_VARS(T) \
+FIND_START_LOOP_BLOCK(T) \
+COL_GET_SUB_ITEM_TASK \
+FIND_LAST_INNER_CHECK \
+FIND_END_LOOP_BLOCK \
+}
+
+define_col_find_last_sub(uint8_t)
+define_col_find_last_sub(uint16_t)
+define_col_find_last_sub(uint32_t)
+define_col_find_last_sub(uint64_t)
+
+#define define_col_has_next(T) \
+bool col_has_next_##T(const T *src, uint64_t *pos, uint64_t last, T search) \
+{ \
+HAS_NEXT_START_BLOCK \
+COL_HAS_END_BLOCK(T) \
+}
+
+define_col_has_next(uint8_t)
+define_col_has_next(uint16_t)
+define_col_has_next(uint32_t)
+define_col_has_next(uint64_t)
+
+#define define_col_has_next_sub(T) \
+bool col_has_next_sub_##T(const T *src, uint8_t bitstart, uint8_t bitend, uint64_t *pos, uint64_t last, T search) \
+{ \
+HAS_NEXT_START_BLOCK \
+SUB_ITEM_VARS(T) \
+COL_HAS_SUB_END_BLOCK(T) \
+}
+
+define_col_has_next_sub(uint8_t)
+define_col_has_next_sub(uint16_t)
+define_col_has_next_sub(uint32_t)
+define_col_has_next_sub(uint64_t)
+
+#define define_col_has_prev(T) \
+bool col_has_prev_##T(const T *src, uint64_t first, uint64_t *pos, T search) \
+{ \
+HAS_PREV_START_BLOCK \
+COL_HAS_END_BLOCK(T) \
+}
+
+define_col_has_prev(uint8_t)
+define_col_has_prev(uint16_t)
+define_col_has_prev(uint32_t)
+define_col_has_prev(uint64_t)
+
+#define define_col_has_prev_sub(T) \
+bool col_has_prev_sub_##T(const T *src, uint8_t bitstart, uint8_t bitend, uint64_t first, uint64_t *pos, T search) \
+{ \
+HAS_PREV_START_BLOCK \
+SUB_ITEM_VARS(T) \
+COL_HAS_SUB_END_BLOCK(T) \
+}
+
+define_col_has_prev_sub(uint8_t)
+define_col_has_prev_sub(uint16_t)
+define_col_has_prev_sub(uint32_t)
+define_col_has_prev_sub(uint64_t)
+
 // --- FILE ---
 
 void mmap_binfile(const char *file, mmfile_t *mf)
