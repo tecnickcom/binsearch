@@ -276,36 +276,6 @@ define_declare_find_first(le, uint32_t)
 define_declare_find_first(le, uint64_t)
 
 /**
- * Generic function to search for the last occurrence of an unsigned integer
- * on a memory mapped binary file containing adjacent blocks of sorted binary data.
- *
- * @param O Endiannes: be or le.
- * @param T Unsigned integer type, one of: uint8_t, uint16_t, uint32_t, uint64_t
- */
-#define define_declare_find_last(O, T) \
-/** Search for the last occurrence of an unsigned integer on a memory mapped
-binary file containing adjacent blocks of sorted binary data.
-The values in the file must be encoded in "O" format and sorted in ascending order.
-@param src       Memory mapped file address.
-@param blklen    Length of the binary block in bytes.
-@param blkpos    Indicates the position of the number to search inside a binary block.
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
-@param search    Unsigned number to search (type T).
-@return Item number if found or (last + 1) if not found.
-*/ \
-uint64_t find_last_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *first, uint64_t *last, T search);
-
-define_declare_find_last(be, uint8_t)
-define_declare_find_last(be, uint16_t)
-define_declare_find_last(be, uint32_t)
-define_declare_find_last(be, uint64_t)
-define_declare_find_last(le, uint8_t)
-define_declare_find_last(le, uint16_t)
-define_declare_find_last(le, uint32_t)
-define_declare_find_last(le, uint64_t)
-
-/**
  * Generic function to search for the first occurrence of an unsigned integer
  * on a memory mapped binary file containing adjacent blocks of sorted binary data.
  *
@@ -336,6 +306,36 @@ define_declare_find_first_sub(le, uint8_t)
 define_declare_find_first_sub(le, uint16_t)
 define_declare_find_first_sub(le, uint32_t)
 define_declare_find_first_sub(le, uint64_t)
+
+/**
+ * Generic function to search for the last occurrence of an unsigned integer
+ * on a memory mapped binary file containing adjacent blocks of sorted binary data.
+ *
+ * @param O Endiannes: be or le.
+ * @param T Unsigned integer type, one of: uint8_t, uint16_t, uint32_t, uint64_t
+ */
+#define define_declare_find_last(O, T) \
+/** Search for the last occurrence of an unsigned integer on a memory mapped
+binary file containing adjacent blocks of sorted binary data.
+The values in the file must be encoded in "O" format and sorted in ascending order.
+@param src       Memory mapped file address.
+@param blklen    Length of the binary block in bytes.
+@param blkpos    Indicates the position of the number to search inside a binary block.
+@param first     Pointer to the first element of the range to search (min value = 0).
+@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param search    Unsigned number to search (type T).
+@return Item number if found or (last + 1) if not found.
+*/ \
+uint64_t find_last_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *first, uint64_t *last, T search);
+
+define_declare_find_last(be, uint8_t)
+define_declare_find_last(be, uint16_t)
+define_declare_find_last(be, uint32_t)
+define_declare_find_last(be, uint64_t)
+define_declare_find_last(le, uint8_t)
+define_declare_find_last(le, uint16_t)
+define_declare_find_last(le, uint32_t)
+define_declare_find_last(le, uint64_t)
 
 /**
  * Generic function to search for the last occurrence of an unsigned integer

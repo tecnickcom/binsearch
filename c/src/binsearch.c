@@ -40,40 +40,27 @@ define_bytes_to(le, uint16_t)
 define_bytes_to(le, uint32_t)
 define_bytes_to(le, uint64_t)
 
-#define define_get_bitmask(T) \
-static inline T get_bitmask_##T(uint8_t mbit, uint8_t bitstart) \
-{ \
-    T bitmask = ((T)1 << (mbit - bitstart)); \
-    return (bitmask ^ (bitmask - 1)); \
-}
-
-define_get_bitmask(uint8_t)
-define_get_bitmask(uint16_t)
-define_get_bitmask(uint32_t)
-define_get_bitmask(uint64_t)
-
 #define FIND_START_LOOP_BLOCK(T) \
     uint64_t middle, found = (*last + 1); \
     T x; \
     while (*first <= *last) \
-    {
+    { \
+        middle = get_middle_point(*first, *last); \
 
 #define FIND_END_LOOP_BLOCK \
     } \
     return found;
 
 #define SUB_ITEM_VARS(T) \
-    static const uint8_t mbit = ((uint8_t)(sizeof(T) * 8) - 1); \
-    const T bitmask = get_bitmask_##T(mbit, bitstart); \
-    const uint8_t rshift = (mbit - bitend);
+    T bitmask = ((T)1 << (bitend - bitstart)); \
+    bitmask ^= (bitmask - 1); \
+    const uint8_t rshift = (((uint8_t)(sizeof(T) * 8) - 1) - bitend);
 
 #define GET_ITEM_TASK(O, T) \
-        middle = get_middle_point(*first, *last); \
         x = bytes_##O##_to_##T(src, get_address(blklen, blkpos, middle));
 
 #define GET_SUB_ITEM_TASK(O, T) \
-        middle = get_middle_point(*first, *last); \
-        x = ((bytes_##O##_to_##T(src, get_address(blklen, blkpos, middle)) & bitmask) >> rshift);
+        x = ((bytes_##O##_to_##T(src, get_address(blklen, blkpos, middle)) >> rshift) & bitmask);
 
 #define FIND_FIRST_INNER_CHECK \
         if (x == search) \
@@ -141,24 +128,6 @@ define_find_first(le, uint16_t)
 define_find_first(le, uint32_t)
 define_find_first(le, uint64_t)
 
-#define define_find_last(O, T) \
-uint64_t find_last_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *first, uint64_t *last, T search) \
-{ \
-FIND_START_LOOP_BLOCK(T) \
-GET_ITEM_TASK(O, T) \
-FIND_LAST_INNER_CHECK \
-FIND_END_LOOP_BLOCK \
-}
-
-define_find_last(be, uint8_t)
-define_find_last(be, uint16_t)
-define_find_last(be, uint32_t)
-define_find_last(be, uint64_t)
-define_find_last(le, uint8_t)
-define_find_last(le, uint16_t)
-define_find_last(le, uint32_t)
-define_find_last(le, uint64_t)
-
 #define define_find_first_sub(O, T) \
 uint64_t find_first_sub_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
 { \
@@ -177,6 +146,24 @@ define_find_first_sub(le, uint8_t)
 define_find_first_sub(le, uint16_t)
 define_find_first_sub(le, uint32_t)
 define_find_first_sub(le, uint64_t)
+
+#define define_find_last(O, T) \
+uint64_t find_last_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *first, uint64_t *last, T search) \
+{ \
+FIND_START_LOOP_BLOCK(T) \
+GET_ITEM_TASK(O, T) \
+FIND_LAST_INNER_CHECK \
+FIND_END_LOOP_BLOCK \
+}
+
+define_find_last(be, uint8_t)
+define_find_last(be, uint16_t)
+define_find_last(be, uint32_t)
+define_find_last(be, uint64_t)
+define_find_last(le, uint8_t)
+define_find_last(le, uint16_t)
+define_find_last(le, uint32_t)
+define_find_last(le, uint64_t)
 
 #define define_find_last_sub(O, T) \
 uint64_t find_last_sub_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint8_t bitstart, uint8_t bitend, uint64_t *first, uint64_t *last, T search) \
@@ -215,7 +202,7 @@ define_find_last_sub(le, uint64_t)
     return (x == search);
 
 #define HAS_SUB_END_BLOCK(O, T) \
-    T x = ((bytes_##O##_to_##T(src, get_address(blklen, blkpos, *pos)) & bitmask) >> rshift); \
+    T x = ((bytes_##O##_to_##T(src, get_address(blklen, blkpos, *pos)) >> rshift) & bitmask); \
     return (x == search);
 
 #define define_has_next(O, T) \
