@@ -417,7 +417,7 @@ int test_col_find_first_##T(mmfile_t mf) \
 { \
     int errors = 0; \
     int i; \
-    const T *src = (const T *)(mf.src + (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
     uint8_t nbytes = (uint8_t)sizeof(T); \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
@@ -504,7 +504,7 @@ int test_col_find_last_##T(mmfile_t mf) \
 { \
     int errors = 0; \
     int i; \
-    const T *src = (const T *)(mf.src + (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
     uint8_t nbytes = (uint8_t)sizeof(T); \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
@@ -602,7 +602,7 @@ void benchmark_col_find_first_##T(mmfile_t mf) \
     uint64_t last = (TEST_DATA_ITEMS - 1); \
     uint64_t found; \
     int i; \
-    const T *src = (const T *)(mf.src + (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \
@@ -628,7 +628,7 @@ void benchmark_col_find_last_##T(mmfile_t mf) \
     uint64_t last = (TEST_DATA_ITEMS - 1); \
     uint64_t found; \
     int i; \
-    const T *src = (const T *)(mf.src + (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \
@@ -657,7 +657,7 @@ void benchmark_col_find_first_sub_##T(mmfile_t mf) \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
     int i; \
-    const T *src = (const T *)(mf.src + (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \
@@ -686,7 +686,7 @@ void benchmark_col_find_last_sub_##T(mmfile_t mf) \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
     int i; \
-    const T *src = (const T *)(mf.src + (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \

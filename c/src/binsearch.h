@@ -211,6 +211,17 @@ extern "C" {
 #define get_middle_point(first, last) ((first) + (((last) - (first)) >> 1))
 
 /**
+ * Returns the pointer at the specified byte offset.
+ *
+ * @param T        Unsigned integer type, one of: uint8_t, uint16_t, uint32_t, uint64_t.
+ * @param src      Memory mapped file address.
+ * @param offset   Byte offset.
+ *
+ * @return Pointer.
+ */
+#define get_src_offset(T, src, offset) ((const T *)((src) + (offset)))
+
+/**
  * Struct containing the memory mapped file info.
  */
 typedef struct mmfile_t
@@ -244,6 +255,24 @@ define_declare_bytes_to(le, uint8_t)
 define_declare_bytes_to(le, uint16_t)
 define_declare_bytes_to(le, uint32_t)
 define_declare_bytes_to(le, uint64_t)
+
+/**
+ * Define functions to return a pointer to the offset position.
+ *
+ * @param T Unsigned integer type, one of: uint8_t, uint16_t, uint32_t, uint64_t.
+ */
+#define define_declare_get_src_offset(T) \
+/** Return a pointer to the offset position.
+@param src      Memory mapped file address.
+@param offset   Start position.
+@return Pointer
+*/ \
+const T *get_src_offset_##T(const unsigned char *src, uint64_t offset);
+
+define_declare_get_src_offset(uint8_t)
+define_declare_get_src_offset(uint16_t)
+define_declare_get_src_offset(uint32_t)
+define_declare_get_src_offset(uint64_t)
 
 /**
  * Generic function to search for the first occurrence of an unsigned integer

@@ -11,7 +11,7 @@
 #include "../../c/src/binsearch.h"
 #include "pybinsearch.h"
 
-#ifndef Py_UNUSED /* This is already defined for Python 3.4 onwards */
+#ifndef Py_UNUSED // This is already defined for Python 3.4 onwards
 #ifdef __GNUC__
 #define Py_UNUSED(name) _unused_ ## name __attribute__((unused))
 #else
@@ -69,11 +69,12 @@ static PyObject* py_find_first_be_uint8(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_be_uint8_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -87,11 +88,12 @@ static PyObject* py_find_first_be_uint16(PyObject *Py_UNUSED(ignored), PyObject 
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_be_uint16_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -105,11 +107,12 @@ static PyObject* py_find_first_be_uint32(PyObject *Py_UNUSED(ignored), PyObject 
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_be_uint32_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -123,11 +126,12 @@ static PyObject* py_find_first_be_uint64(PyObject *Py_UNUSED(ignored), PyObject 
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_be_uint64_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -143,11 +147,12 @@ static PyObject* py_find_last_be_uint8(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_be_uint8_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -161,11 +166,12 @@ static PyObject* py_find_last_be_uint16(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_be_uint16_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -179,11 +185,12 @@ static PyObject* py_find_last_be_uint32(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_be_uint32_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -197,11 +204,12 @@ static PyObject* py_find_last_be_uint64(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_be_uint64_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -218,11 +226,12 @@ static PyObject* py_find_first_sub_be_uint8(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_be_uint8_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -237,11 +246,12 @@ static PyObject* py_find_first_sub_be_uint16(PyObject *Py_UNUSED(ignored), PyObj
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_be_uint16_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -256,11 +266,12 @@ static PyObject* py_find_first_sub_be_uint32(PyObject *Py_UNUSED(ignored), PyObj
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_be_uint32_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -275,11 +286,12 @@ static PyObject* py_find_first_sub_be_uint64(PyObject *Py_UNUSED(ignored), PyObj
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_be_uint64_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -296,11 +308,12 @@ static PyObject* py_find_last_sub_be_uint8(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_be_uint8_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -315,11 +328,12 @@ static PyObject* py_find_last_sub_be_uint16(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_be_uint16_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -334,11 +348,12 @@ static PyObject* py_find_last_sub_be_uint32(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_be_uint32_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -353,11 +368,12 @@ static PyObject* py_find_last_sub_be_uint64(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_be_uint64_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -373,11 +389,12 @@ static PyObject* py_has_next_be_uint8(PyObject *Py_UNUSED(ignored), PyObject *ar
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_be_uint8_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -390,11 +407,12 @@ static PyObject* py_has_next_be_uint16(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_be_uint16_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -407,11 +425,12 @@ static PyObject* py_has_next_be_uint32(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_be_uint32_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -424,11 +443,12 @@ static PyObject* py_has_next_be_uint64(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_be_uint64_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -444,11 +464,12 @@ static PyObject* py_has_next_sub_be_uint8(PyObject *Py_UNUSED(ignored), PyObject
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_be_uint8_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -462,11 +483,12 @@ static PyObject* py_has_next_sub_be_uint16(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_be_uint16_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -480,11 +502,12 @@ static PyObject* py_has_next_sub_be_uint32(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_be_uint32_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -498,11 +521,12 @@ static PyObject* py_has_next_sub_be_uint64(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_be_uint64_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -517,11 +541,12 @@ static PyObject* py_has_prev_be_uint8(PyObject *Py_UNUSED(ignored), PyObject *ar
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_be_uint8_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -534,11 +559,12 @@ static PyObject* py_has_prev_be_uint16(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_be_uint16_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -551,11 +577,12 @@ static PyObject* py_has_prev_be_uint32(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_be_uint32_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -568,11 +595,12 @@ static PyObject* py_has_prev_be_uint64(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_be_uint64_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -588,11 +616,12 @@ static PyObject* py_has_prev_sub_be_uint8(PyObject *Py_UNUSED(ignored), PyObject
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_be_uint8_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -606,11 +635,12 @@ static PyObject* py_has_prev_sub_be_uint16(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_be_uint16_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -624,11 +654,12 @@ static PyObject* py_has_prev_sub_be_uint32(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_be_uint32_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -642,11 +673,12 @@ static PyObject* py_has_prev_sub_be_uint64(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_be_uint64_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -663,11 +695,12 @@ static PyObject* py_find_first_le_uint8(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_le_uint8_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -681,11 +714,12 @@ static PyObject* py_find_first_le_uint16(PyObject *Py_UNUSED(ignored), PyObject 
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_le_uint16_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -699,11 +733,12 @@ static PyObject* py_find_first_le_uint32(PyObject *Py_UNUSED(ignored), PyObject 
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_le_uint32_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -717,11 +752,12 @@ static PyObject* py_find_first_le_uint64(PyObject *Py_UNUSED(ignored), PyObject 
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_le_uint64_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -737,11 +773,12 @@ static PyObject* py_find_last_le_uint8(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_le_uint8_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -755,11 +792,12 @@ static PyObject* py_find_last_le_uint16(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_le_uint16_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -773,11 +811,12 @@ static PyObject* py_find_last_le_uint32(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_le_uint32_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -791,11 +830,12 @@ static PyObject* py_find_last_le_uint64(PyObject *Py_UNUSED(ignored), PyObject *
     PyObject *result;
     uint64_t blklen, blkpos, first, last;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_le_uint64_t(src, blklen, blkpos, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -812,11 +852,12 @@ static PyObject* py_find_first_sub_le_uint8(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_le_uint8_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -831,11 +872,12 @@ static PyObject* py_find_first_sub_le_uint16(PyObject *Py_UNUSED(ignored), PyObj
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_le_uint16_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -850,11 +892,12 @@ static PyObject* py_find_first_sub_le_uint32(PyObject *Py_UNUSED(ignored), PyObj
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_le_uint32_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -869,11 +912,12 @@ static PyObject* py_find_first_sub_le_uint64(PyObject *Py_UNUSED(ignored), PyObj
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_first_sub_le_uint64_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -890,11 +934,12 @@ static PyObject* py_find_last_sub_le_uint8(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_le_uint8_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -909,11 +954,12 @@ static PyObject* py_find_last_sub_le_uint16(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_le_uint16_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -928,11 +974,12 @@ static PyObject* py_find_last_sub_le_uint32(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_le_uint32_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -947,11 +994,12 @@ static PyObject* py_find_last_sub_le_uint64(PyObject *Py_UNUSED(ignored), PyObje
     uint64_t blklen, blkpos, first, last;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     uint64_t h = find_last_sub_le_uint64_t(src, blklen, blkpos, bitstart, bitend, &first, &last, search);
     result = PyTuple_New(3);
     PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
@@ -967,11 +1015,12 @@ static PyObject* py_has_next_le_uint8(PyObject *Py_UNUSED(ignored), PyObject *ar
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_le_uint8_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -984,11 +1033,12 @@ static PyObject* py_has_next_le_uint16(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_le_uint16_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1001,11 +1051,12 @@ static PyObject* py_has_next_le_uint32(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_le_uint32_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1018,11 +1069,12 @@ static PyObject* py_has_next_le_uint64(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, pos, last;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_le_uint64_t(src, blklen, blkpos, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1038,11 +1090,12 @@ static PyObject* py_has_next_sub_le_uint8(PyObject *Py_UNUSED(ignored), PyObject
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_le_uint8_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1056,11 +1109,12 @@ static PyObject* py_has_next_sub_le_uint16(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_le_uint16_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1074,11 +1128,12 @@ static PyObject* py_has_next_sub_le_uint32(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_le_uint32_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1092,11 +1147,12 @@ static PyObject* py_has_next_sub_le_uint64(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, pos, last;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &pos, &last, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_next_sub_le_uint64_t(src, blklen, blkpos, bitstart, bitend, &pos, last, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1111,11 +1167,12 @@ static PyObject* py_has_prev_le_uint8(PyObject *Py_UNUSED(ignored), PyObject *ar
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKB", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_le_uint8_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1128,11 +1185,12 @@ static PyObject* py_has_prev_le_uint16(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKH", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_le_uint16_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1145,11 +1203,12 @@ static PyObject* py_has_prev_le_uint32(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKI", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_le_uint32_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1162,11 +1221,12 @@ static PyObject* py_has_prev_le_uint64(PyObject *Py_UNUSED(ignored), PyObject *a
     PyObject *result;
     uint64_t blklen, blkpos, first, pos;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKK", kwlist, &mfsrc, &blklen, &blkpos, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_le_uint64_t(src, blklen, blkpos, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1182,11 +1242,12 @@ static PyObject* py_has_prev_sub_le_uint8(PyObject *Py_UNUSED(ignored), PyObject
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint8_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKB", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKB", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_le_uint8_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1200,11 +1261,12 @@ static PyObject* py_has_prev_sub_le_uint16(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint16_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKH", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKH", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_le_uint16_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1218,11 +1280,12 @@ static PyObject* py_has_prev_sub_le_uint32(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint32_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKI", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKI", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_le_uint32_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
@@ -1236,12 +1299,639 @@ static PyObject* py_has_prev_sub_le_uint64(PyObject *Py_UNUSED(ignored), PyObjec
     uint64_t blklen, blkpos, first, pos;
     uint8_t bitstart, bitend;
     uint64_t search;
+    uint64_t offset;
     PyObject* mfsrc = NULL;
-    static char *kwlist[] = {"mfsrc", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKBBKKK", kwlist, &mfsrc, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
+    static char *kwlist[] = {"mfsrc", "offset", "blklen", "blkpos", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKBBKKK", kwlist, &mfsrc, &offset, &blklen, &blkpos, &bitstart, &bitend, &first, &pos, &search))
         return NULL;
-    const unsigned char *src = (const unsigned char *)PyCapsule_GetPointer(mfsrc, "src");
+    const unsigned char *src = (const unsigned char *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
     bool h = has_prev_sub_le_uint64_t(src, blklen, blkpos, bitstart, bitend, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+// ----------
+
+// --- COLUMN ---
+
+static PyObject* py_col_find_first_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKB", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_uint8_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_first_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKH", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_uint16_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_first_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKI", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_uint32_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_first_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKK", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_uint64_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+// ----------
+
+static PyObject* py_col_find_last_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKB", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_uint8_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_last_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKH", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_uint16_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_last_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKI", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_uint32_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_last_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKK", kwlist, &mfsrc, &offset, &first, &last, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_uint64_t(src, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+// ----------
+
+static PyObject* py_col_find_first_sub_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKB", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_sub_uint8_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_first_sub_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKH", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_sub_uint16_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_first_sub_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKI", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_sub_uint32_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_first_sub_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKK", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_first_sub_uint64_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+// ----------
+
+static PyObject* py_col_find_last_sub_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKB", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_sub_uint8_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_last_sub_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKH", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_sub_uint16_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_last_sub_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKI", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_sub_uint32_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+static PyObject* py_col_find_last_sub_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, last;
+    uint8_t bitstart, bitend;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKK", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &last, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    uint64_t h = col_find_last_sub_uint64_t(src, bitstart, bitend, &first, &last, search);
+    result = PyTuple_New(3);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", first));
+    PyTuple_SetItem(result, 2, Py_BuildValue("K", last));
+    return result;
+}
+
+// ----------
+
+static PyObject* py_col_has_next_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKB", kwlist, &mfsrc, &offset, &pos, &last, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_uint8_t(src, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_next_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKH", kwlist, &mfsrc, &offset, &pos, &last, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_uint16_t(src, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_next_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKI", kwlist, &mfsrc, &offset, &pos, &last, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_uint32_t(src, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_next_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKK", kwlist, &mfsrc, &offset, &pos, &last, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_uint64_t(src, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+// ----------
+
+static PyObject* py_col_has_next_sub_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint8_t bitstart, bitend;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKB", kwlist, &mfsrc, &offset, &bitstart, &bitend, &pos, &last, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_sub_uint8_t(src, bitstart, bitend, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_next_sub_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint8_t bitstart, bitend;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKH", kwlist, &mfsrc, &offset, &bitstart, &bitend, &pos, &last, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_sub_uint16_t(src, bitstart, bitend, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_next_sub_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint8_t bitstart, bitend;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKI", kwlist, &mfsrc, &offset, &bitstart, &bitend, &pos, &last, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_sub_uint32_t(src, bitstart, bitend, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_next_sub_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t pos, last;
+    uint8_t bitstart, bitend;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "pos", "last", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKK", kwlist, &mfsrc, &offset, &bitstart, &bitend, &pos, &last, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_next_sub_uint64_t(src, bitstart, bitend, &pos, last, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+// ----------
+
+static PyObject* py_col_has_prev_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKB", kwlist, &mfsrc, &offset, &first, &pos, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_uint8_t(src, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_prev_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKH", kwlist, &mfsrc, &offset, &first, &pos, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_uint16_t(src, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_prev_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKI", kwlist, &mfsrc, &offset, &first, &pos, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_uint32_t(src, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_prev_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKKKK", kwlist, &mfsrc, &offset, &first, &pos, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_uint64_t(src, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+// ----------
+
+static PyObject* py_col_has_prev_sub_uint8(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint8_t bitstart, bitend;
+    uint8_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKB", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &pos, &search))
+        return NULL;
+    const uint8_t *src = (const uint8_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_sub_uint8_t(src, bitstart, bitend, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_prev_sub_uint16(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint8_t bitstart, bitend;
+    uint16_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKH", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &pos, &search))
+        return NULL;
+    const uint16_t *src = (const uint16_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_sub_uint16_t(src, bitstart, bitend, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_prev_sub_uint32(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint8_t bitstart, bitend;
+    uint32_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKI", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &pos, &search))
+        return NULL;
+    const uint32_t *src = (const uint32_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_sub_uint32_t(src, bitstart, bitend, first, &pos, search);
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
+    PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
+    return result;
+}
+
+static PyObject* py_col_has_prev_sub_uint64(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t first, pos;
+    uint8_t bitstart, bitend;
+    uint64_t search;
+    uint64_t offset;
+    PyObject* mfsrc = NULL;
+    static char *kwlist[] = {"mfsrc", "offset", "bitstart", "bitend", "first", "pos", "search", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "OKBBKKK", kwlist, &mfsrc, &offset, &bitstart, &bitend, &first, &pos, &search))
+        return NULL;
+    const uint64_t *src = (const uint64_t *)((const unsigned char *)PyCapsule_GetPointer(mfsrc, "src") + offset);
+    bool h = col_has_prev_sub_uint64_t(src, bitstart, bitend, first, &pos, search);
     result = PyTuple_New(2);
     PyTuple_SetItem(result, 0, Py_BuildValue("i", h));
     PyTuple_SetItem(result, 1, Py_BuildValue("K", pos));
@@ -1319,6 +2009,38 @@ static PyMethodDef PyBinsearchMethods[] =
     {"has_prev_sub_le_uint16", (PyCFunction)py_has_prev_sub_le_uint16, METH_VARARGS|METH_KEYWORDS, PYHASPREVSUBUINT16_DOCSTRING},
     {"has_prev_sub_le_uint32", (PyCFunction)py_has_prev_sub_le_uint32, METH_VARARGS|METH_KEYWORDS, PYHASPREVSUBUINT32_DOCSTRING},
     {"has_prev_sub_le_uint64", (PyCFunction)py_has_prev_sub_le_uint64, METH_VARARGS|METH_KEYWORDS, PYHASPREVSUBUINT64_DOCSTRING},
+    {"col_find_first_uint8", (PyCFunction)py_col_find_first_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTUINT8_DOCSTRING},
+    {"col_find_first_uint16", (PyCFunction)py_col_find_first_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTUINT16_DOCSTRING},
+    {"col_find_first_uint32", (PyCFunction)py_col_find_first_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTUINT32_DOCSTRING},
+    {"col_find_first_uint64", (PyCFunction)py_col_find_first_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTUINT64_DOCSTRING},
+    {"col_find_last_uint8", (PyCFunction)py_col_find_last_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTUINT8_DOCSTRING},
+    {"col_find_last_uint16", (PyCFunction)py_col_find_last_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTUINT16_DOCSTRING},
+    {"col_find_last_uint32", (PyCFunction)py_col_find_last_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTUINT32_DOCSTRING},
+    {"col_find_last_uint64", (PyCFunction)py_col_find_last_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTUINT64_DOCSTRING},
+    {"col_find_first_sub_uint8", (PyCFunction)py_col_find_first_sub_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTSUBUINT8_DOCSTRING},
+    {"col_find_first_sub_uint16", (PyCFunction)py_col_find_first_sub_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTSUBUINT16_DOCSTRING},
+    {"col_find_first_sub_uint32", (PyCFunction)py_col_find_first_sub_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTSUBUINT32_DOCSTRING},
+    {"col_find_first_sub_uint64", (PyCFunction)py_col_find_first_sub_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLFINDFIRSTSUBUINT64_DOCSTRING},
+    {"col_find_last_sub_uint8", (PyCFunction)py_col_find_last_sub_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTSUBUINT8_DOCSTRING},
+    {"col_find_last_sub_uint16", (PyCFunction)py_col_find_last_sub_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTSUBUINT16_DOCSTRING},
+    {"col_find_last_sub_uint32", (PyCFunction)py_col_find_last_sub_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTSUBUINT32_DOCSTRING},
+    {"col_find_last_sub_uint64", (PyCFunction)py_col_find_last_sub_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLFINDLASTSUBUINT64_DOCSTRING},
+    {"col_has_next_uint8", (PyCFunction)py_col_has_next_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTUINT8_DOCSTRING},
+    {"col_has_next_uint16", (PyCFunction)py_col_has_next_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTUINT16_DOCSTRING},
+    {"col_has_next_uint32", (PyCFunction)py_col_has_next_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTUINT32_DOCSTRING},
+    {"col_has_next_uint64", (PyCFunction)py_col_has_next_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTUINT64_DOCSTRING},
+    {"col_has_next_sub_uint8", (PyCFunction)py_col_has_next_sub_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTSUBUINT8_DOCSTRING},
+    {"col_has_next_sub_uint16", (PyCFunction)py_col_has_next_sub_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTSUBUINT16_DOCSTRING},
+    {"col_has_next_sub_uint32", (PyCFunction)py_col_has_next_sub_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTSUBUINT32_DOCSTRING},
+    {"col_has_next_sub_uint64", (PyCFunction)py_col_has_next_sub_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLHASNEXTSUBUINT64_DOCSTRING},
+    {"col_has_prev_uint8", (PyCFunction)py_col_has_prev_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVUINT8_DOCSTRING},
+    {"col_has_prev_uint16", (PyCFunction)py_col_has_prev_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVUINT16_DOCSTRING},
+    {"col_has_prev_uint32", (PyCFunction)py_col_has_prev_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVUINT32_DOCSTRING},
+    {"col_has_prev_uint64", (PyCFunction)py_col_has_prev_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVUINT64_DOCSTRING},
+    {"col_has_prev_sub_uint8", (PyCFunction)py_col_has_prev_sub_uint8, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVSUBUINT8_DOCSTRING},
+    {"col_has_prev_sub_uint16", (PyCFunction)py_col_has_prev_sub_uint16, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVSUBUINT16_DOCSTRING},
+    {"col_has_prev_sub_uint32", (PyCFunction)py_col_has_prev_sub_uint32, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVSUBUINT32_DOCSTRING},
+    {"col_has_prev_sub_uint64", (PyCFunction)py_col_has_prev_sub_uint64, METH_VARARGS|METH_KEYWORDS, PYCOLHASPREVSUBUINT64_DOCSTRING},
     {NULL, NULL, 0, NULL}
 };
 

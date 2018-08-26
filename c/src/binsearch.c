@@ -39,7 +39,18 @@ define_bytes_to(le, uint16_t)
 define_bytes_to(le, uint32_t)
 define_bytes_to(le, uint64_t)
 
-#define GET_MIDDLE_BLOCK(O, T) order_##O##_##T(*((const T *)(src + ((blklen * middle) + blkpos))))
+#define define_get_src_offset(T) \
+const T *get_src_offset_##T(const unsigned char *src, uint64_t offset) \
+{ \
+    return get_src_offset(T, src, offset); \
+}
+
+define_get_src_offset(uint8_t)
+define_get_src_offset(uint16_t)
+define_get_src_offset(uint32_t)
+define_get_src_offset(uint64_t)
+
+#define GET_MIDDLE_BLOCK(O, T) order_##O##_##T(*(get_src_offset(T, src, get_address(blklen, blkpos, middle))))
 
 #define FIND_START_LOOP_BLOCK(T) \
     uint64_t middle, found = (*last + 1); \
@@ -130,7 +141,7 @@ define_bytes_to(le, uint64_t)
     } \
     (*pos)--;
 
-#define GET_POS_BLOCK(O, T) order_##O##_##T(*((const T *)(src + ((blklen * (*pos)) + blkpos))))
+#define GET_POS_BLOCK(O, T) order_##O##_##T(*(get_src_offset(T, src, get_address(blklen, blkpos, *pos))))
 
 #define HAS_END_BLOCK(O, T) \
     return (GET_POS_BLOCK(O, T) == search);
