@@ -27,8 +27,7 @@
 #define define_bytes_to(O, T) \
 T bytes_##O##_to_##T(const unsigned char *src, uint64_t i) \
 { \
-    const T *pos = (const T *)(src + i); \
-    return order_##O##_##T(*pos); \
+    return order_##O##_##T(*((const T *)(src + i))); \
 }
 
 define_bytes_to(be, uint8_t)
@@ -39,6 +38,8 @@ define_bytes_to(le, uint8_t)
 define_bytes_to(le, uint16_t)
 define_bytes_to(le, uint32_t)
 define_bytes_to(le, uint64_t)
+
+#define GET_MIDDLE_BLOCK(O, T) order_##O##_##T(*((const T *)(src + ((blklen * middle) + blkpos))))
 
 #define FIND_START_LOOP_BLOCK(T) \
     uint64_t middle, found = (*last + 1); \
@@ -57,10 +58,16 @@ define_bytes_to(le, uint64_t)
     const uint8_t rshift = (((uint8_t)(sizeof(T) * 8) - 1) - bitend);
 
 #define GET_ITEM_TASK(O, T) \
-        x = bytes_##O##_to_##T(src, get_address(blklen, blkpos, middle));
+        x = GET_MIDDLE_BLOCK(O, T);
+
+#define COL_GET_ITEM_TASK \
+        x = *(src + middle);
 
 #define GET_SUB_ITEM_TASK(O, T) \
-        x = ((bytes_##O##_to_##T(src, get_address(blklen, blkpos, middle)) >> rshift) & bitmask);
+        x = ((GET_MIDDLE_BLOCK(O, T) >> rshift) & bitmask);
+
+#define COL_GET_SUB_ITEM_TASK \
+        x = ((*(src + middle) >> rshift) & bitmask);
 
 #define FIND_FIRST_INNER_CHECK \
         if (x == search) \
@@ -109,6 +116,33 @@ define_bytes_to(le, uint64_t)
                 } \
             } \
         }
+
+#define HAS_NEXT_START_BLOCK \
+    if (*pos >= last) \
+    { \
+        return 0; \
+    } \
+    (*pos)++;
+
+#define HAS_PREV_START_BLOCK \
+    if (*pos <= first) { \
+        return 0; \
+    } \
+    (*pos)--;
+
+#define GET_POS_BLOCK(O, T) order_##O##_##T(*((const T *)(src + ((blklen * (*pos)) + blkpos))))
+
+#define HAS_END_BLOCK(O, T) \
+    return (GET_POS_BLOCK(O, T) == search);
+
+#define COL_HAS_END_BLOCK(T) \
+    return (*(src + *pos) == search);
+
+#define HAS_SUB_END_BLOCK(O, T) \
+    return (((GET_POS_BLOCK(O, T) >> rshift) & bitmask) == search);
+
+#define COL_HAS_SUB_END_BLOCK(T) \
+    return (((*(src + *pos) >> rshift) & bitmask) == search);
 
 #define define_find_first(O, T) \
 uint64_t find_first_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *first, uint64_t *last, T search) \
@@ -184,27 +218,6 @@ define_find_last_sub(le, uint16_t)
 define_find_last_sub(le, uint32_t)
 define_find_last_sub(le, uint64_t)
 
-#define HAS_NEXT_START_BLOCK \
-    if (*pos >= last) \
-    { \
-        return 0; \
-    } \
-    (*pos)++;
-
-#define HAS_PREV_START_BLOCK \
-    if (*pos <= first) { \
-        return 0; \
-    } \
-    (*pos)--;
-
-#define HAS_END_BLOCK(O, T) \
-    T x = bytes_##O##_to_##T(src, get_address(blklen, blkpos, *pos)); \
-    return (x == search);
-
-#define HAS_SUB_END_BLOCK(O, T) \
-    T x = ((bytes_##O##_to_##T(src, get_address(blklen, blkpos, *pos)) >> rshift) & bitmask); \
-    return (x == search);
-
 #define define_has_next(O, T) \
 bool has_next_##O##_##T(const unsigned char *src, uint64_t blklen, uint64_t blkpos, uint64_t *pos, uint64_t last, T search) \
 { \
@@ -270,6 +283,8 @@ define_has_prev_sub(le, uint8_t)
 define_has_prev_sub(le, uint16_t)
 define_has_prev_sub(le, uint32_t)
 define_has_prev_sub(le, uint64_t)
+
+// --- FILE ---
 
 void mmap_binfile(const char *file, mmfile_t *mf)
 {

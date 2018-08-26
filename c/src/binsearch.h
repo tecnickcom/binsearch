@@ -497,6 +497,8 @@ define_declare_has_prev_sub(le, uint16_t)
 define_declare_has_prev_sub(le, uint32_t)
 define_declare_has_prev_sub(le, uint64_t)
 
+// --- FILE ---
+
 /**
  * Memory map the specified file.
  *
