@@ -813,7 +813,7 @@ int test_find_first_##O##_##T(mmfile_t mf, uint64_t blklen) \
             ++errors; \
         } \
         numitems = (test_data_##O##_##T[i].foundLast - test_data_##O##_##T[i].foundFirst); \
-        if (ffound <= test_data_##O##_##T[i].last) \
+        if (ffound < test_data_##O##_##T[i].last) \
         { \
             pos = ffound; \
             counter = 0; \
@@ -846,7 +846,7 @@ int test_find_first_##O##_##T(mmfile_t mf, uint64_t blklen) \
             ++errors; \
         } \
         numitems = (test_data_sub_##O##_##T[i].foundLast - test_data_sub_##O##_##T[i].foundFirst); \
-        if (lfound <= test_data_sub_##O##_##T[i].last) \
+        if (lfound < test_data_sub_##O##_##T[i].last) \
         { \
             pos = lfound; \
             counter = 0; \
@@ -903,7 +903,7 @@ int test_find_last_##O##_##T(mmfile_t mf, uint64_t blklen) \
             ++errors; \
         } \
         numitems = (test_data_##O##_##T[i].foundLast - test_data_##O##_##T[i].foundFirst); \
-        if (ffound <= test_data_##O##_##T[i].last) \
+        if (ffound < test_data_##O##_##T[i].last) \
         { \
             pos = ffound; \
             counter = 0; \
@@ -936,7 +936,7 @@ int test_find_last_##O##_##T(mmfile_t mf, uint64_t blklen) \
             ++errors; \
         } \
         numitems = (test_data_sub_##O##_##T[i].foundLast - test_data_sub_##O##_##T[i].foundFirst); \
-        if (lfound <= test_data_sub_##O##_##T[i].last) \
+        if (lfound < test_data_sub_##O##_##T[i].last) \
         { \
             pos = lfound; \
             counter = 0; \

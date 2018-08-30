@@ -438,7 +438,6 @@ void mmap_binfile(const char *file, mmfile_t *mf)
             mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10;
         }
     }
-    mf->index[0] = mf->doffset;
 }
 
 int munmap_binfile(mmfile_t mf)
@@ -464,6 +463,7 @@ void set_col_offset(mmfile_t *mf, uint8_t ncols, const uint8_t *colbyte)
         return;
     }
     mf->nitems = (mf->dlength / b);
+    mf->index[0] = mf->doffset;
     for (i = 1; i < ncols; i++)
     {
         b = (mf->nitems * colbyte[(i - 1)]);
