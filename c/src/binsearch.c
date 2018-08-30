@@ -53,9 +53,9 @@ define_get_src_offset(uint64_t)
 #define GET_MIDDLE_BLOCK(O, T) order_##O##_##T(*(get_src_offset(T, src, get_address(blklen, blkpos, middle))))
 
 #define FIND_START_LOOP_BLOCK(T) \
-    uint64_t middle, found = (*last + 1); \
+    uint64_t middle, found = *last; \
     T x; \
-    while (*first <= *last) \
+    while (*first < *last) \
     { \
         middle = get_middle_point(*first, *last); \
 
@@ -87,7 +87,7 @@ define_get_src_offset(uint64_t)
                 return middle; \
             } \
             found = middle; \
-            *last = (middle - 1); \
+            *last = middle; \
         } \
         else { \
             if (x < search) { \
@@ -96,7 +96,7 @@ define_get_src_offset(uint64_t)
             else \
             { \
                 if (middle > 0) { \
-                    *last = (middle - 1); \
+                    *last = middle; \
                 } \
                 else \
                 { \
@@ -119,7 +119,7 @@ define_get_src_offset(uint64_t)
             else \
             { \
                 if (middle > 0) { \
-                    *last = (middle - 1); \
+                    *last = middle; \
                 } \
                 else \
                 { \
@@ -129,7 +129,7 @@ define_get_src_offset(uint64_t)
         }
 
 #define HAS_NEXT_START_BLOCK \
-    if (*pos >= last) \
+    if (*pos >= (last - 1)) \
     { \
         return 0; \
     } \

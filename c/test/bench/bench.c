@@ -79,7 +79,7 @@ int benchmark_find_first_be_uint64()
     uint64_t tstart, tend, offset;
     volatile uint64_t sum = 0;
     uint64_t first, last;
-    uint64_t lastitem = (nitems - 1);
+    uint64_t lastitem = nitems;
 
     tstart = get_time();
     for (i=0 ; i < TEST_DATA_SIZE; i++)
@@ -144,7 +144,7 @@ int benchmark_find_first_le_uint64()
     uint64_t tstart, tend, offset;
     volatile uint64_t sum = 0;
     uint64_t first, last;
-    uint64_t lastitem = (nitems - 1);
+    uint64_t lastitem = nitems;
 
     tstart = get_time();
     for (i=0 ; i < TEST_DATA_SIZE; i++)

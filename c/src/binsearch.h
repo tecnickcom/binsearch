@@ -226,7 +226,7 @@ extern "C" {
  */
 typedef struct mmfile_t
 {
-    uint8_t *src; //!< Pointer to the memory map.
+    uint8_t *src;       //!< Pointer to the memory map.
     int fd;             //!< File descriptor.
     uint64_t size;      //!< File size in bytes.
     uint64_t last;      //!< Index of the last element (if set as last 4 bytes) or it can be used as index size.
@@ -288,8 +288,8 @@ The values in the file must be encoded in "O" format and sorted in ascending ord
 @param src       Memory mapped file address.
 @param blklen    Length of the binary block in bytes.
 @param blkpos    Indicates the position of the number to search inside a binary block.
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return item number if found or (last + 1) if not found.
  */ \
@@ -320,8 +320,8 @@ The values in the file must be encoded in "O" format and sorted in ascending ord
 @param blkpos    Indicates the position of the number to search inside a binary block.
 @param bitstart  First bit position to consider (usually 0).
 @param bitend    Last bit position to consider (usually the last bit, e.g. 7 for uint8_t, 15 for uint16_t, etc).
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return item number if found or (last + 1) if not found.
  */ \
@@ -350,8 +350,8 @@ The values in the file must be encoded in "O" format and sorted in ascending ord
 @param src       Memory mapped file address.
 @param blklen    Length of the binary block in bytes.
 @param blkpos    Indicates the position of the number to search inside a binary block.
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return Item number if found or (last + 1) if not found.
 */ \
@@ -382,8 +382,8 @@ The values in the file must be encoded in "O" format and sorted in ascending ord
 @param blkpos    Indicates the position of the number to search inside a binary block.
 @param bitstart  First bit position to consider (usually 0).
 @param bitend    Last bit position to consider (usually the last bit, e.g. 7 for uint8_t, 15 for uint16_t, etc).
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return Item number if found or (last + 1) if not found.
 */ \
@@ -414,7 +414,7 @@ The item returned by find_first_##T should be set as the "pos" parameter in this
 @param blklen    Length of the binary block in bytes.
 @param blkpos    Indicates the position of the number to search inside a binary block.
 @param pos       Pointer to the current item position. This will be updated to point to the next position.
-@param last      Last element of the range to search (max value = nitems - 1).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return 1 if the next item is valid, 0 otherwise.
  */ \
@@ -447,7 +447,7 @@ The item returned by find_first_sub_##T should be set as the "pos" parameter in 
 @param bitstart  First bit position to consider (usually 0).
 @param bitend    Last bit position to consider (usually the last bit, e.g. 7 for uint8_t, 15 for uint16_t, etc).
 @param pos       Pointer to the current item position. This will be updated to point to the next position.
-@param last      Last element of the range to search (max value = nitems - 1).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return 1 if the next item is valid, 0 otherwise.
  */ \
@@ -539,8 +539,8 @@ define_declare_has_prev_sub(le, uint64_t)
 containing contiguos blocks of unsigned integers of the same type.
 The values must be encoded in Little-Endian format and sorted in ascending order.
 @param src       Memory mapped file address.
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return item number if found or (last + 1) if not found.
  */ \
@@ -564,8 +564,8 @@ The values must be encoded in Little-Endian format and sorted in ascending order
 @param src       Memory mapped file address.
 @param bitstart  First bit position to consider (usually 0).
 @param bitend    Last bit position to consider (usually the last bit, e.g. 7 for uint8_t, 15 for uint16_t, etc).
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return item number if found or (last + 1) if not found.
  */ \
@@ -587,8 +587,8 @@ define_declare_col_find_first_sub(uint64_t)
 containing contiguos blocks of unsigned integers of the same type.
 The values must be encoded in Little-Endian format and sorted in ascending order.
 @param src       Memory mapped file address.
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return Item number if found or (last + 1) if not found.
 */ \
@@ -612,8 +612,8 @@ The values must be encoded in Little-Endian format and sorted in ascending order
 @param src       Memory mapped file address.
 @param bitstart  First bit position to consider (usually 0).
 @param bitend    Last bit position to consider (usually the last bit, e.g. 7 for uint8_t, 15 for uint16_t, etc).
-@param first     Pointer to the first element of the range to search (min value = 0).
-@param last      Pointer to the last element of the range to search (max value = nitems - 1).
+@param first     Pointer to the element from where to start the search (min value = 0).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return Item number if found or (last + 1) if not found.
 */ \
@@ -637,7 +637,7 @@ This function can be used after find_first_##T to get the next elements that sti
 The item returned by col_find_first_##T should be set as the "pos" parameter in this function.
 @param src       Memory mapped file address.
 @param pos       Pointer to the current item position. This will be updated to point to the next position.
-@param last      Last element of the range to search (max value = nitems - 1).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return 1 if the next item is valid, 0 otherwise.
  */ \
@@ -663,7 +663,7 @@ The item returned by col_find_first_sub_##T should be set as the "pos" parameter
 @param bitstart  First bit position to consider (usually 0).
 @param bitend    Last bit position to consider (usually the last bit, e.g. 7 for uint8_t, 15 for uint16_t, etc).
 @param pos       Pointer to the current item position. This will be updated to point to the next position.
-@param last      Last element of the range to search (max value = nitems - 1).
+@param last      Pointer to the element (up to but not including) where to end the search (max value = nitems).
 @param search    Unsigned number to search (type T).
 @return 1 if the next item is valid, 0 otherwise.
  */ \
