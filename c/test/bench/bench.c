@@ -56,7 +56,7 @@ int benchmark_find_first_be_uint64()
         fprintf(stderr, " * %s Unable to open %s file in writing mode.\n", __func__, filename);
         return 1;
     }
-    unsigned char b0, b1, b2, b3, z = 0;
+    uint8_t b0, b1, b2, b3, z = 0;
     for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         b0 = i & 0xFF;
@@ -79,7 +79,7 @@ int benchmark_find_first_be_uint64()
     uint64_t tstart, tend, offset;
     volatile uint64_t sum = 0;
     uint64_t first, last;
-    uint64_t lastitem = (nitems - 1);
+    uint64_t lastitem = nitems;
 
     tstart = get_time();
     for (i=0 ; i < TEST_DATA_SIZE; i++)
@@ -121,7 +121,7 @@ int benchmark_find_first_le_uint64()
         fprintf(stderr, " * %s Unable to open %s file in writing mode.\n", __func__, filename);
         return 1;
     }
-    unsigned char b0, b1, b2, b3, z = 0;
+    uint8_t b0, b1, b2, b3, z = 0;
     for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         b0 = i & 0xFF;
@@ -144,7 +144,7 @@ int benchmark_find_first_le_uint64()
     uint64_t tstart, tend, offset;
     volatile uint64_t sum = 0;
     uint64_t first, last;
-    uint64_t lastitem = (nitems - 1);
+    uint64_t lastitem = nitems;
 
     tstart = get_time();
     for (i=0 ; i < TEST_DATA_SIZE; i++)
@@ -186,7 +186,7 @@ int benchmark_col_find_first_uint64()
         fprintf(stderr, " * %s Unable to open %s file in writing mode.\n", __func__, filename);
         return 1;
     }
-    unsigned char b0, b1, b2, b3, z = 0;
+    uint8_t b0, b1, b2, b3, z = 0;
     for (i=0 ; i < TEST_DATA_SIZE; i++)
     {
         b0 = i & 0xFF;

@@ -11,11 +11,13 @@ import "fmt"
 
 // TMMFile contains the memory mapped file info
 type TMMFile struct {
-	Src   unsafe.Pointer
-	Fd    int
-	Size  uint64
-	Last  uint64
-	Index []uint64
+	Src     unsafe.Pointer
+	Fd      int
+	Size    uint64
+	DOffset uint64
+	DLength uint64
+	NItems  uint64
+	Index   []uint64
 }
 
 // StringToNTBytes safely convert a string to byte array with an extra null terminator
@@ -39,7 +41,29 @@ func MmapBinFile(file string) (TMMFile, error) {
 	if mf.fd < 0 || mf.size == 0 || mf.src == nil {
 		return TMMFile{}, fmt.Errorf("unable to map the file: %s", file)
 	}
-	return TMMFile{unsafe.Pointer(mf.src), int(mf.fd), uint64(mf.size), uint64(mf.last), []uint64{}}, nil // #nosec
+	return TMMFile{unsafe.Pointer(mf.src), int(mf.fd), uint64(mf.size), uint64(mf.doffset), uint64(mf.dlength), uint64(mf.nitems), []uint64{}}, nil // #nosec
+}
+
+// SetColOffset set the columns offsets and number of items.
+func (mf *TMMFile) SetColOffset(colbyte []uint8) error {
+	var tmf C.mmfile_t
+	tmf.src = (*C.uchar)(mf.Src)
+	tmf.fd = C.int(mf.Fd)
+	tmf.size = C.uint64_t(mf.Size)
+	tmf.doffset = C.uint64_t(mf.DOffset)
+	tmf.dlength = C.uint64_t(mf.DLength)
+	ncols := len(colbyte)
+	if ncols == 0 {
+		return fmt.Errorf("colbyte is empty")
+	}
+	C.set_col_offset(&tmf, C.uint8_t(ncols), (*C.uint8_t)(unsafe.Pointer(&colbyte[0])))
+	mf.NItems = uint64(tmf.nitems)
+	arr := (*[256]C.uint64_t)(unsafe.Pointer(&tmf.index[0]))[0:ncols]
+	mf.Index = make([]uint64, ncols)
+	for k, v := range arr {
+		mf.Index[k] = uint64(v)
+	}
+	return nil
 }
 
 // Close Unmap and close the memory-mapped file.
