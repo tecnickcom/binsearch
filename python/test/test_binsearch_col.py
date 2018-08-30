@@ -1,4 +1,4 @@
-"""Tests for binsearch module."""
+"""Tests for binsearch module - column mode."""
 
 
 import binsearch as bs

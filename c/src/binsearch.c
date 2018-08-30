@@ -423,18 +423,32 @@ void mmap_binfile(const char *file, mmfile_t *mf)
     mf->dlength = mf->size;
     if (mf->size > 27)
     {
-        // Basic support for Apache Arrow File format with a single RecordBatch.
         uint64_t type = (*((const uint64_t *)(mf->src)));
-        if (type == 0x000031574f525241) // magic number "ARROW1\0\0" in LE
+        // Basic support for Apache Arrow File format with a single RecordBatch.
+        if (type == 0x000031574f525241) // magic number "ARROW1" in LE
         {
             mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13; // skip metadata
             mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4); // skip dictionary
             mf->dlength -= mf->doffset;
+            type = (*((const uint64_t *)(mf->src + mf->size - 8)));
+            if ((type & 0xffffffffffff0000) == 0x31574f5252410000) // magic number "ARROW1" in LE
+            {
+                mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10; // remove footer
+            }
         }
-        type = (*((const uint64_t *)(mf->src + mf->size - 8)));
-        if ((type & 0xffffffffffff0000) == 0x31574f5252410000) // magic number "\0\0ARROW1" in LE
+        else
         {
-            mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10; // remove footer
+            // Basic support for Feather File format.
+            if (type == 0x0000000031414546) // magic number "FEA1" in LE
+            {
+                mf->doffset = 8;
+                mf->dlength -= mf->doffset;
+                type = (*((const uint64_t *)(mf->src + mf->size - 8)));
+                if ((type & 0xffffffff00000000) == 0x3141454600000000) // magic number "FEA1" in LE
+                {
+                    mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 8))) + 8; // remove metadata
+                }
+            }
         }
     }
 }
