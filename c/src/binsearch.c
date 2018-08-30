@@ -419,9 +419,24 @@ void mmap_binfile(const char *file, mmfile_t *mf)
     }
     mf->size = (uint64_t)statbuf.st_size;
     mf->src = (uint8_t*)mmap(0, mf->size, PROT_READ, MAP_PRIVATE, mf->fd, 0);
-    if (mf->size > 4)
+    mf->doffset = 0;
+    mf->dlength = mf->size;
+    if (mf->size > 27)
     {
-        mf->last = (uint64_t)bytes_be_to_uint32_t(mf->src, (mf->size - 4)) - 1;
+        // Basic support for Apache Arrow File format with a single RecordBatch where the first column contains the main key sorted.
+        uint64_t type;
+        type = bytes_be_to_uint64_t(mf->src, 0);
+        if (type == 0x4152524f57310000) // "ARROW1\0\0"
+        {
+            mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13; // AB = 171; 171 + 13 = 184
+            mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4); // BC=188 ; 188+4+184=
+            mf->dlength -= mf->doffset;
+        }
+        type = bytes_be_to_uint64_t(mf->src, (mf->size - 8));
+        if ((type & 0x0000ffffffffffff) == 0x00004152524f5731) // "\0\0ARROW1"
+        {
+            mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10;
+        }
     }
 }
 

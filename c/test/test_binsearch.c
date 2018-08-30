@@ -1093,37 +1093,9 @@ define_benchmark_find_last_sub(le, uint16_t)
 define_benchmark_find_last_sub(le, uint32_t)
 define_benchmark_find_last_sub(le, uint64_t)
 
-int test_mmap_binfile_error(const char* file)
-{
-    mmfile_t mf = {0};
-    mmap_binfile(file, &mf);
-    if (mf.src != MAP_FAILED)
-    {
-        fprintf(stderr, "An mmap error was expected\n");
-        return 1;
-    }
-    return 0;
-}
-
-int test_munmap_binfile_error()
-{
-    mmfile_t mf = {0};
-    int e = munmap_binfile(mf);
-    if (e == 0)
-    {
-        fprintf(stderr, "An mummap error was expected\n");
-        return 1;
-    }
-    return 0;
-}
-
 int main()
 {
     int errors = 0;
-
-    errors += test_mmap_binfile_error("ERROR");
-    errors += test_mmap_binfile_error("/dev/null");
-    errors += test_munmap_binfile_error();
 
     char *file = "test_data.bin"; // file containing test data
     uint64_t blklen = 16; // length of each binary block

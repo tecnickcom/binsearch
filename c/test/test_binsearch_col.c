@@ -706,37 +706,9 @@ define_benchmark_col_find_last_sub(uint16_t)
 define_benchmark_col_find_last_sub(uint32_t)
 define_benchmark_col_find_last_sub(uint64_t)
 
-int test_col_mmap_binfile_error(const char* file)
-{
-    mmfile_t mf = {0};
-    mmap_binfile(file, &mf);
-    if (mf.src != MAP_FAILED)
-    {
-        fprintf(stderr, "An mmap error was expected\n");
-        return 1;
-    }
-    return 0;
-}
-
-int test_col_munmap_binfile_error()
-{
-    mmfile_t mf = {0};
-    int e = munmap_binfile(mf);
-    if (e == 0)
-    {
-        fprintf(stderr, "An mummap error was expected\n");
-        return 1;
-    }
-    return 0;
-}
-
 int main()
 {
     int errors = 0;
-
-    errors += test_col_mmap_binfile_error("ERROR");
-    errors += test_col_mmap_binfile_error("/dev/null");
-    errors += test_col_munmap_binfile_error();
 
     char *file = "test_data_col.bin"; // file containing test data
 

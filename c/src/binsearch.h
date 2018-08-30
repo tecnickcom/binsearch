@@ -226,11 +226,13 @@ extern "C" {
  */
 typedef struct mmfile_t
 {
-    uint8_t *src;       //!< Pointer to the memory map.
-    int fd;             //!< File descriptor.
-    uint64_t size;      //!< File size in bytes.
-    uint64_t last;      //!< Index of the last element (if set as last 4 bytes) or it can be used as index size.
-    uint64_t *index;    //!< Index of elements (if required)
+    uint8_t *src;      //!< Pointer to the memory map.
+    int fd;            //!< File descriptor.
+    uint64_t size;     //!< File size in bytes.
+    uint64_t doffset;  //!< Offset to the beginning of the data block (address of the first byte of the first item in the first column).
+    uint64_t dlength;  //!< Length in bytes of the data block.
+    uint64_t nitems;   //!< Number of items (rows).
+    uint64_t *index;   //!< Index of the offsets to the beginning of each column.
 } mmfile_t;
 
 /**
