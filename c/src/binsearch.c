@@ -428,8 +428,8 @@ void mmap_binfile(const char *file, mmfile_t *mf)
         type = bytes_be_to_uint64_t(mf->src, 0);
         if (type == 0x4152524f57310000) // "ARROW1\0\0"
         {
-            mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13; // AB = 171; 171 + 13 = 184
-            mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4); // BC=188 ; 188+4+184=
+            mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13;
+            mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4);
             mf->dlength -= mf->doffset;
         }
         type = bytes_be_to_uint64_t(mf->src, (mf->size - 8));
@@ -438,6 +438,7 @@ void mmap_binfile(const char *file, mmfile_t *mf)
             mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10;
         }
     }
+    mf->index[0] = mf->doffset;
 }
 
 int munmap_binfile(mmfile_t mf)
@@ -448,4 +449,24 @@ int munmap_binfile(mmfile_t mf)
         return err;
     }
     return close(mf.fd);
+}
+
+void set_col_offset(mmfile_t *mf, uint8_t ncols, const uint8_t *colbyte)
+{
+    uint8_t i;
+    uint64_t b = 0;
+    for (i = 0; i < ncols; i++)
+    {
+        b += colbyte[i];
+    }
+    if (b == 0)
+    {
+        return;
+    }
+    mf->nitems = (mf->dlength / b);
+    for (i = 1; i < ncols; i++)
+    {
+        b = (mf->nitems * colbyte[(i - 1)]);
+        mf->index[i] = mf->index[(i - 1)] + b + ((8 - (b & 7)) & 7);
+    }
 }

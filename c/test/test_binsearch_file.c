@@ -82,6 +82,33 @@ int main()
         errors++;
     }
 
+    set_col_offset(&mf, 0, NULL);
+    if (mf.nitems != 0)
+    {
+        fprintf(stderr, "mf.nitems (0): Expecting 0 items, got instead: %" PRIu64 "\n", mf.nitems);
+        errors++;
+    }
+
+    uint8_t ncols = 2;
+    uint8_t colbyte[] = {4, 8};
+    set_col_offset(&mf, ncols, colbyte);
+
+    if (mf.nitems != 11)
+    {
+        fprintf(stderr, "mf.nitems : Expecting 11 items, got instead: %" PRIu64 "\n", mf.nitems);
+        errors++;
+    }
+    if (mf.index[0] != 376)
+    {
+        fprintf(stderr, "mf.index[0] : Expecting 376 bytes, got instead: %" PRIu64 "\n", mf.index[0]);
+        errors++;
+    }
+    if (mf.index[1] != 424)
+    {
+        fprintf(stderr, "mf.index[1] : Expecting 424 bytes, got instead: %" PRIu64 "\n", mf.index[1]);
+        errors++;
+    }
+
     int e = munmap_binfile(mf);
     if (e != 0)
     {

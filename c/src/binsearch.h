@@ -189,6 +189,8 @@ extern "C" {
 #define order_le_uint64_t(x) (x) //!< Return LE uint64_t in the correct endianness order
 #endif
 
+#define MAXCOLS 256 //!< Maximum number of columns indexable
+
 /**
  * Returns the absolute file address position of the specified item (binary block).
  *
@@ -226,13 +228,13 @@ extern "C" {
  */
 typedef struct mmfile_t
 {
-    uint8_t *src;      //!< Pointer to the memory map.
-    int fd;            //!< File descriptor.
-    uint64_t size;     //!< File size in bytes.
-    uint64_t doffset;  //!< Offset to the beginning of the data block (address of the first byte of the first item in the first column).
-    uint64_t dlength;  //!< Length in bytes of the data block.
-    uint64_t nitems;   //!< Number of items (rows).
-    uint64_t *index;   //!< Index of the offsets to the beginning of each column.
+    uint8_t *src;             //!< Pointer to the memory map.
+    int fd;                   //!< File descriptor.
+    uint64_t size;            //!< File size in bytes.
+    uint64_t doffset;         //!< Offset to the beginning of the data block (address of the first byte of the first item in the first column).
+    uint64_t dlength;         //!< Length in bytes of the data block.
+    uint64_t nitems;          //!< Number of items (rows).
+    uint64_t index[MAXCOLS];  //!< Index of the offsets to the beginning of each column.
 } mmfile_t;
 
 /**
@@ -747,6 +749,15 @@ void mmap_binfile(const char *file, mmfile_t *mf);
  *         on failure -1, and errno is set (probably to EINVAL).
  */
 int munmap_binfile(mmfile_t mf);
+
+/**
+ * Find the total number of items and the offset of each column.
+ *
+ * @param mf       Structure containing the memory mapped file.
+ * @param ncols    Number of columns.
+ * @param colbyte  Array containing the number of bytes for each column type (i.e. 1 for uint8_t, 2 for uint16_t, 4 for uint32_t, 8 for uint64_t).
+ */
+void set_col_offset(mmfile_t *mf, uint8_t ncols, const uint8_t *colbyte);
 
 #ifdef __cplusplus
 }
