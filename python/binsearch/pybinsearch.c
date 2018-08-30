@@ -28,11 +28,12 @@ static PyObject* py_mmap_binfile(PyObject *Py_UNUSED(ignored), PyObject *args, P
         return NULL;
     mmfile_t h;
     mmap_binfile(file, &h);
-    result = PyTuple_New(4);
+    result = PyTuple_New(5);
     PyTuple_SetItem(result, 0, PyCapsule_New((void*)h.src, "src", NULL));
     PyTuple_SetItem(result, 1, Py_BuildValue("i", h.fd));
     PyTuple_SetItem(result, 2, Py_BuildValue("K", h.size));
-    PyTuple_SetItem(result, 3, Py_BuildValue("K", h.last));
+    PyTuple_SetItem(result, 3, Py_BuildValue("K", h.doffset));
+    PyTuple_SetItem(result, 4, Py_BuildValue("K", h.dlength));
     return result;
 }
 
@@ -47,6 +48,56 @@ static PyObject* py_munmap_binfile(PyObject *Py_UNUSED(ignored), PyObject *args,
     mf.src = (uint8_t *)PyCapsule_GetPointer(mfsrc, "src");
     int h = munmap_binfile(mf);
     result = Py_BuildValue("i", h);
+    return result;
+}
+
+static PyObject* py_set_col_offset(PyObject *Py_UNUSED(ignored), PyObject *args, PyObject *keywds)
+{
+    PyObject *result;
+    uint64_t doffset, dlength;
+    PyObject* colbyte = NULL;
+    static char *kwlist[] = {"doffset", "dlength", "colbyte", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, keywds, "KKO", kwlist, &doffset, &dlength, &colbyte))
+        return NULL;
+    colbyte = PySequence_Fast(colbyte, "argument must be iterable");
+    if (!colbyte)
+    {
+        return 0;
+    }
+    uint8_t ncols = (uint8_t)PySequence_Fast_GET_SIZE(colbyte);
+    uint8_t c_colbyte[MAXCOLS] = {0};
+    int i;
+    for(i = 0; i < ncols; i++)
+    {
+        PyObject *fitem;
+        PyObject *item = PySequence_Fast_GET_ITEM(colbyte, i);
+        if (!item)
+        {
+            Py_DECREF(colbyte);
+            return 0;
+        }
+        fitem = PyNumber_Long(item);
+        if (!fitem)
+        {
+            Py_DECREF(colbyte);
+            return 0;
+        }
+        c_colbyte[i] = (uint8_t)PyLong_AsUnsignedLong(item);
+        Py_DECREF(fitem);
+    }
+    Py_DECREF(colbyte);
+    mmfile_t mf = {0};
+    mf.doffset = doffset;
+    mf.dlength = dlength;
+    set_col_offset(&mf, ncols, c_colbyte);
+    PyObject* index = PyList_New(0);
+    for (i = 0; i < ncols; i++)
+    {
+        PyList_Append(index, Py_BuildValue("K", mf.index[i]));
+    }
+    result = PyTuple_New(2);
+    PyTuple_SetItem(result, 0, Py_BuildValue("K", mf.nitems));
+    PyTuple_SetItem(result, 1, index);
     return result;
 }
 
@@ -1944,6 +1995,7 @@ static PyMethodDef PyBinsearchMethods[] =
 {
     {"mmap_binfile", (PyCFunction)py_mmap_binfile, METH_VARARGS|METH_KEYWORDS, PYMMAPBINFILE_DOCSTRING},
     {"munmap_binfile", (PyCFunction)py_munmap_binfile, METH_VARARGS|METH_KEYWORDS, PYMUNMAPBINFILE_DOCSTRING},
+    {"set_col_offset", (PyCFunction)py_set_col_offset, METH_VARARGS|METH_KEYWORDS, PYSETCOLOFFSET_DOCSTRING},
     {"get_address", (PyCFunction)py_get_address, METH_VARARGS|METH_KEYWORDS, PYGETADDRESS_DOCSTRING},
     {"find_first_be_uint8", (PyCFunction)py_find_first_be_uint8, METH_VARARGS|METH_KEYWORDS, PYFINDFIRSTUINT8_DOCSTRING},
     {"find_first_be_uint16", (PyCFunction)py_find_first_be_uint16, METH_VARARGS|METH_KEYWORDS, PYFINDFIRSTUINT16_DOCSTRING},

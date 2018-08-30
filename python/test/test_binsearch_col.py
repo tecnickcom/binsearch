@@ -340,12 +340,12 @@ class TestFunctions(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        global src, fd, size, last
+        global src, fd, size, doffset, dlength
         inputfile = os.path.realpath(
             os.path.dirname(
                 os.path.realpath(__file__)) +
             "/../../c/test/data/test_data_col.bin")
-        src, fd, size, last = bs.mmap_binfile(inputfile)
+        src, fd, size, doffset, dlength = bs.mmap_binfile(inputfile)
         if fd < 0 or size != 3765:
             assert False, "Unable to open the file"
 
@@ -358,17 +358,17 @@ class TestFunctions(TestCase):
 
     def test_col_find_first_uint8(self):
         for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol8:
-            rp, rf, rl = bs.col_find_first_uint8(src, 0, first, last, search)
+            rp, rf, rl = bs.col_find_first_uint8(src, doffset, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
                 while ret:
-                    ret, pos = bs.col_has_next_uint8(src, 0, pos, last, search)
+                    ret, pos = bs.col_has_next_uint8(src, doffset, pos, last, search)
                     counter = counter + 1
                 self.assertEqual(counter, numitems)
 
@@ -379,7 +379,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -395,7 +395,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -411,7 +411,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -422,17 +422,17 @@ class TestFunctions(TestCase):
 
     def test_col_find_last_uint8(self):
         for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol8:
-            rp, rf, rl = bs.col_find_last_uint8(src, 0, first, last, search)
+            rp, rf, rl = bs.col_find_last_uint8(src, doffset, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
                 while ret:
-                    ret, pos = bs.col_has_prev_uint8(src, 0, first, pos, search)
+                    ret, pos = bs.col_has_prev_uint8(src, doffset, first, pos, search)
                     counter = counter + 1
                 self.assertEqual(counter, numitems)
 
@@ -443,7 +443,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -459,7 +459,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -475,7 +475,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -486,17 +486,17 @@ class TestFunctions(TestCase):
 
     def test_col_find_first_sub_uint8(self):
         for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub8:
-            rp, rf, rl = bs.col_find_first_sub_uint8(src, 0, 0, 7, first, last, search)
+            rp, rf, rl = bs.col_find_first_sub_uint8(src, doffset, 0, 7, first, last, search)
             self.assertEqual(rp, fF)
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
                 while ret:
-                    ret, pos = bs.col_has_next_sub_uint8(src, 0, 0, 7, pos, last, search)
+                    ret, pos = bs.col_has_next_sub_uint8(src, doffset, 0, 7, pos, last, search)
                     counter = counter + 1
                 self.assertEqual(counter, numitems)
 
@@ -507,7 +507,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -523,7 +523,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -539,7 +539,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fFF)
             self.assertEqual(rl, fFL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -550,17 +550,17 @@ class TestFunctions(TestCase):
 
     def test_col_find_last_sub_uint8(self):
         for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub8:
-            rp, rf, rl = bs.col_find_last_sub_uint8(src, 0, 0, 7, first, last, search)
+            rp, rf, rl = bs.col_find_last_sub_uint8(src, doffset, 0, 7, first, last, search)
             self.assertEqual(rp, fL)
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
                 while ret:
-                    ret, pos = bs.col_has_prev_sub_uint8(src, 0, 0, 7, first, pos, search)
+                    ret, pos = bs.col_has_prev_sub_uint8(src, doffset, 0, 7, first, pos, search)
                     counter = counter + 1
                 self.assertEqual(counter, numitems)
 
@@ -571,7 +571,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -587,7 +587,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -603,7 +603,7 @@ class TestFunctions(TestCase):
             self.assertEqual(rf, fLF)
             self.assertEqual(rl, fLL)
             numitems = fL - fF + 1
-            if (rp < last) and (numitems > 1):
+            if (rp < last) and (numitems > 0):
                 pos = rp
                 ret = True
                 counter = 0
@@ -618,7 +618,7 @@ class TestBenchmark(object):
     global setup
 
     def setup():
-        global src, fd, size, last
+        global src, fd, size, doffset, dlength
         if fd >= 0:
             pass
         bs.munmap_binfile(src, fd, size)
@@ -626,14 +626,14 @@ class TestBenchmark(object):
             os.path.dirname(
                 os.path.realpath(__file__)) +
             "/../../c/test/data/test_data_col.bin")
-        src, fd, size, last = bs.mmap_binfile(inputfile)
+        src, fd, size, doffset, dlength = bs.mmap_binfile(inputfile)
         if fd < 0 or size != 3765:
             assert False, "Unable to open the file"
 
     def test_col_find_first_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.col_find_first_uint8,
-            args=[src, 0, 0, 250, 0x2f],
+            args=[src, doffset, 0, 250, 0x2f],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -665,7 +665,7 @@ class TestBenchmark(object):
     def test_col_find_last_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.col_find_last_uint8,
-            args=[src, 0, 0, 250, 0x2f],
+            args=[src, doffset, 0, 250, 0x2f],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -697,7 +697,7 @@ class TestBenchmark(object):
     def test_col_find_first_sub_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.col_find_first_sub_uint8,
-            args=[src, 0, 0, 7, 0, 250, 0x2f],
+            args=[src, doffset, 0, 7, 0, 250, 0x2f],
             setup=setup,
             iterations=1,
             rounds=10000)
@@ -729,7 +729,7 @@ class TestBenchmark(object):
     def test_col_find_last_sub_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.col_find_last_sub_uint8,
-            args=[src, 0, 0, 7, 0, 250, 0x2f],
+            args=[src, doffset, 0, 7, 0, 250, 0x2f],
             setup=setup,
             iterations=1,
             rounds=10000)

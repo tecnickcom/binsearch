@@ -10,6 +10,7 @@
 
 static PyObject *py_mmap_binfile(PyObject *self, PyObject *args, PyObject *keywds);
 static PyObject *py_munmap_binfile(PyObject *self, PyObject *args, PyObject *keywds);
+static PyObject *py_set_col_offset(PyObject *self, PyObject *args, PyObject *keywds);
 static PyObject *py_get_address(PyObject *self, PyObject *args, PyObject *keywds);
 
 static PyObject *py_find_first_be_uint8(PyObject *self, PyObject *args, PyObject *keywds);
@@ -149,7 +150,8 @@ PyMODINIT_FUNC initbinsearch(void);
 "    - Pointer to the memory map.\n"\
 "    - File descriptor.\n"\
 "    - File size in bytes.\n"\
-"    - Index of the last element (if set as last 4 bytes) or it can be used as index size."
+"    - Offset to the beginning of the data block (address of the first byte of the first item in the first column).\n"\
+"    - Length in bytes of the data block."
 
 #define PYMUNMAPBINFILE_DOCSTRING "Unmap and close the memory-mapped file.\n"\
 "\n"\
@@ -166,6 +168,24 @@ PyMODINIT_FUNC initbinsearch(void);
 "-------\n"\
 "int:\n"\
 "    On success returns 0, on failure -1."
+
+#define PYSETCOLOFFSET_DOCSTRING "Find the total number of items and the offset of each column..\n"\
+"\n"\
+"Parameters\n"\
+"----------\n"\
+"doffset : int\n"\
+"    Data offset.\n"\
+"dlength : int\n"\
+"    Length of the data block.\n"\
+"colbyte : int array\n"\
+"    Array containing the number of bytes for each column type (i.e. 1 for uint8, 2 for uint16, 4 for uint32, 8 for uint64).\n"\
+"\n"\
+"Returns\n"\
+"-------\n"\
+"tuple :\n"\
+"    - Number of items (number of rows).\n"\
+"    - List of offset positions for each column."
+
 
 #define PYGETADDRESS_DOCSTRING "Returns the absolute file address position of the specified item (binary block).\n"\
 "\n"\
@@ -207,7 +227,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -233,7 +253,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -259,7 +279,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -285,7 +305,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -313,7 +333,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -339,7 +359,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -365,7 +385,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -391,7 +411,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -423,7 +443,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -453,7 +473,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -483,7 +503,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -513,7 +533,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -545,7 +565,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -575,7 +595,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -605,7 +625,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -635,7 +655,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1101,7 +1121,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1123,7 +1143,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1145,7 +1165,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1167,7 +1187,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1191,7 +1211,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1213,7 +1233,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1235,7 +1255,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1257,7 +1277,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1285,7 +1305,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1311,7 +1331,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1337,7 +1357,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1363,7 +1383,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1391,7 +1411,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1417,7 +1437,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1443,7 +1463,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 
@@ -1469,7 +1489,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "Returns\n"\
 "-------\n"\
 "tuple :\n"\
-"    - Item number if found or (last + 1) if not found.\n"\
+"    - Item number if found or (last) if not found.\n"\
 "    - Position of the 'first' iterator.\n"\
 "    - Position of the 'last' iterator."
 

@@ -423,19 +423,18 @@ void mmap_binfile(const char *file, mmfile_t *mf)
     mf->dlength = mf->size;
     if (mf->size > 27)
     {
-        // Basic support for Apache Arrow File format with a single RecordBatch where the first column contains the main key sorted.
-        uint64_t type;
-        type = bytes_be_to_uint64_t(mf->src, 0);
-        if (type == 0x4152524f57310000) // "ARROW1\0\0"
+        // Basic support for Apache Arrow File format with a single RecordBatch.
+        uint64_t type = (*((const uint64_t *)(mf->src)));
+        if (type == 0x000031574f525241) // magic number "ARROW1\0\0" in LE
         {
-            mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13;
-            mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4);
+            mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13; // skip metadata
+            mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4); // skip dictionary
             mf->dlength -= mf->doffset;
         }
-        type = bytes_be_to_uint64_t(mf->src, (mf->size - 8));
-        if ((type & 0x0000ffffffffffff) == 0x00004152524f5731) // "\0\0ARROW1"
+        type = (*((const uint64_t *)(mf->src + mf->size - 8)));
+        if ((type & 0xffffffffffff0000) == 0x31574f5252410000) // magic number "\0\0ARROW1" in LE
         {
-            mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10;
+            mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10; // remove footer
         }
     }
 }
