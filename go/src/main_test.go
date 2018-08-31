@@ -6,7 +6,7 @@ import "os"
 var mf, cmf TMMFile
 var retCode int
 
-var nitems uint64 = 251
+var nrows uint64 = 251
 
 func closeTMMFile(mmf TMMFile) {
 	err := mmf.Close()
@@ -20,13 +20,13 @@ func TestMain(m *testing.M) {
 
 	// memory map the input files
 
-	mf, err = MmapBinFile("../../c/test/data/test_data.bin")
+	mf, err = MmapBinFile("../../c/test/data/test_data.bin", []uint8{12})
 	if err != nil {
 		os.Exit(1)
 	}
 	defer closeTMMFile(mf)
 
-	cmf, err = MmapBinFile("../../c/test/data/test_data_col.bin")
+	cmf, err = MmapBinFile("../../c/test/data/test_data_col.bin", []uint8{1, 2, 4, 8})
 	if err != nil {
 		os.Exit(1)
 	}
@@ -38,7 +38,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestClose(t *testing.T) {
-	lmf, err := MmapBinFile("../../c/test/data/test_data.bin")
+	lmf, err := MmapBinFile("../../c/test/data/test_data.bin", []uint8{12})
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -57,7 +57,7 @@ func TestCloseError(t *testing.T) {
 }
 
 func TestMmapBinFileError(t *testing.T) {
-	_, err := MmapBinFile("error")
+	_, err := MmapBinFile("error", []uint8{})
 	if err == nil {
 		t.Errorf("An error was expected")
 	}
@@ -71,7 +71,8 @@ func TestGetAddress(t *testing.T) {
 }
 
 func TestLoadArrow(t *testing.T) {
-	amf, err := MmapBinFile("../../c/test/data/test_data.arrow")
+	ctbytes := []uint8{4, 8}
+	amf, err := MmapBinFile("../../c/test/data/test_data.arrow", ctbytes)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -79,7 +80,7 @@ func TestLoadArrow(t *testing.T) {
 		t.Errorf("can't open test_data.arrow for reading")
 	}
 	if amf.Size != 730 {
-		t.Errorf("Size : Expecting 730 bytes, got instead: %d", mf.Size)
+		t.Errorf("Size : Expecting 730 bytes, got instead: %d", amf.Size)
 	}
 	if amf.DOffset != 376 {
 		t.Errorf("DOffset : Expecting 376 bytes, got instead: %d", amf.DOffset)
@@ -87,20 +88,11 @@ func TestLoadArrow(t *testing.T) {
 	if amf.DLength != 136 {
 		t.Errorf("DLength : Expecting 136 bytes, got instead: %d", amf.DLength)
 	}
-
-	err = (&amf).SetColOffset([]uint8{})
-	if err == nil {
-		t.Errorf("SetColOffset (0): Expecting error")
+	if amf.NRows != 11 {
+		t.Errorf("mf.NRows : Expecting 11 items, got instead: %d", amf.NRows)
 	}
-
-	colbyte := []uint8{4, 8}
-	err = (&amf).SetColOffset(colbyte)
-	if err != nil {
-		t.Errorf("SetColOffset unexpected error: %v", err)
-	}
-
-	if amf.NItems != 11 {
-		t.Errorf("mf.NItems : Expecting 11 items, got instead: %d", amf.NItems)
+	if amf.NCols != 2 {
+		t.Errorf("mf.NCols : Expecting 2 items, got instead: %d", amf.NCols)
 	}
 	if amf.Index[0] != 376 {
 		t.Errorf("mf.Index[0] : Expecting 376 bytes, got instead: %d", amf.Index[0])
@@ -108,7 +100,6 @@ func TestLoadArrow(t *testing.T) {
 	if amf.Index[1] != 424 {
 		t.Errorf("mf.Index[1] : Expecting 424 bytes, got instead: %d", amf.Index[1])
 	}
-
 	err = amf.Close()
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -116,7 +107,8 @@ func TestLoadArrow(t *testing.T) {
 }
 
 func TestLoadFeather(t *testing.T) {
-	amf, err := MmapBinFile("../../c/test/data/test_data.feather")
+	ctbytes := []uint8{4, 8}
+	amf, err := MmapBinFile("../../c/test/data/test_data.feather", ctbytes)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -124,7 +116,7 @@ func TestLoadFeather(t *testing.T) {
 		t.Errorf("can't open test_data.arrow for reading")
 	}
 	if amf.Size != 384 {
-		t.Errorf("Size : Expecting 384 bytes, got instead: %d", mf.Size)
+		t.Errorf("Size : Expecting 384 bytes, got instead: %d", amf.Size)
 	}
 	if amf.DOffset != 8 {
 		t.Errorf("DOffset : Expecting 8 bytes, got instead: %d", amf.DOffset)
@@ -132,20 +124,11 @@ func TestLoadFeather(t *testing.T) {
 	if amf.DLength != 136 {
 		t.Errorf("DLength : Expecting 136 bytes, got instead: %d", amf.DLength)
 	}
-
-	err = (&amf).SetColOffset([]uint8{})
-	if err == nil {
-		t.Errorf("SetColOffset (0): Expecting error")
+	if amf.NRows != 11 {
+		t.Errorf("mf.NRows : Expecting 11 items, got instead: %d", amf.NRows)
 	}
-
-	colbyte := []uint8{4, 8}
-	err = (&amf).SetColOffset(colbyte)
-	if err != nil {
-		t.Errorf("SetColOffset unexpected error: %v", err)
-	}
-
-	if amf.NItems != 11 {
-		t.Errorf("mf.NItems : Expecting 11 items, got instead: %d", amf.NItems)
+	if amf.NCols != 2 {
+		t.Errorf("mf.NCols : Expecting 2 items, got instead: %d", amf.NCols)
 	}
 	if amf.Index[0] != 8 {
 		t.Errorf("mf.Index[0] : Expecting 8 bytes, got instead: %d", amf.Index[0])
@@ -153,7 +136,42 @@ func TestLoadFeather(t *testing.T) {
 	if amf.Index[1] != 56 {
 		t.Errorf("mf.Index[1] : Expecting 56 bytes, got instead: %d", amf.Index[1])
 	}
+	err = amf.Close()
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
 
+func TestLoadBinsrc(t *testing.T) {
+	ctbytes := []uint8{4, 8}
+	amf, err := MmapBinFile("../../c/test/data/test_data.binsrc", ctbytes)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	if amf.Fd < 0 {
+		t.Errorf("can't open test_data.arrow for reading")
+	}
+	if amf.Size != 152 {
+		t.Errorf("Size : Expecting 152 bytes, got instead: %d", amf.Size)
+	}
+	if amf.DOffset != 16 {
+		t.Errorf("DOffset : Expecting 16 bytes, got instead: %d", amf.DOffset)
+	}
+	if amf.DLength != 136 {
+		t.Errorf("DLength : Expecting 136 bytes, got instead: %d", amf.DLength)
+	}
+	if amf.NRows != 11 {
+		t.Errorf("mf.NRows : Expecting 11 items, got instead: %d", amf.NRows)
+	}
+	if amf.NCols != 2 {
+		t.Errorf("mf.NCols : Expecting 2 items, got instead: %d", amf.NCols)
+	}
+	if amf.Index[0] != 16 {
+		t.Errorf("mf.Index[0] : Expecting 16 bytes, got instead: %d", amf.Index[0])
+	}
+	if amf.Index[1] != 64 {
+		t.Errorf("mf.Index[1] : Expecting 64 bytes, got instead: %d", amf.Index[1])
+	}
 	err = amf.Close()
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)

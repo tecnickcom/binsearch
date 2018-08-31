@@ -972,11 +972,11 @@ uint64_t get_time()
 }
 
 #define define_benchmark_find_first(O, T) \
-void benchmark_find_first_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nitems) \
+void benchmark_find_first_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nrows) \
 { \
     uint64_t tstart, tend; \
     uint64_t first = 0; \
-    uint64_t last = nitems; \
+    uint64_t last = nrows; \
     uint64_t found; \
     int i; \
     int size = 10000; \
@@ -984,7 +984,7 @@ void benchmark_find_first_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nitem
     for (i=0 ; i < size; i++) \
     { \
         first = 0; \
-        last = nitems; \
+        last = nrows; \
         found = find_first_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
@@ -1001,11 +1001,11 @@ define_benchmark_find_first(le, uint32_t)
 define_benchmark_find_first(le, uint64_t)
 
 #define define_benchmark_find_last(O, T) \
-void benchmark_find_last_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nitems) \
+void benchmark_find_last_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nrows) \
 { \
     uint64_t tstart, tend; \
     uint64_t first = 0; \
-    uint64_t last = nitems; \
+    uint64_t last = nrows; \
     uint64_t found; \
     int i; \
     int size = 10000; \
@@ -1013,7 +1013,7 @@ void benchmark_find_last_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nitems
     for (i=0 ; i < size; i++) \
     { \
         first = 0; \
-        last = nitems; \
+        last = nrows; \
         found = find_last_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
@@ -1030,11 +1030,11 @@ define_benchmark_find_last(le, uint32_t)
 define_benchmark_find_last(le, uint64_t)
 
 #define define_benchmark_find_first_sub(O, T) \
-void benchmark_find_first_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nitems) \
+void benchmark_find_first_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nrows) \
 { \
     uint64_t tstart, tend; \
     uint64_t first = 0; \
-    uint64_t last = nitems; \
+    uint64_t last = nrows; \
     uint64_t found; \
     uint8_t nbytes = (uint8_t)sizeof(T); \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
@@ -1045,7 +1045,7 @@ void benchmark_find_first_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t n
     for (i=0 ; i < size; i++) \
     { \
         first = 0; \
-        last = nitems; \
+        last = nrows; \
         found = find_first_sub_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, bitstart, bitend, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
@@ -1062,11 +1062,11 @@ define_benchmark_find_first_sub(le, uint32_t)
 define_benchmark_find_first_sub(le, uint64_t)
 
 #define define_benchmark_find_last_sub(O, T) \
-void benchmark_find_last_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nitems) \
+void benchmark_find_last_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nrows) \
 { \
     uint64_t tstart, tend; \
     uint64_t first = 0; \
-    uint64_t last = nitems; \
+    uint64_t last = nrows; \
     uint64_t found; \
     uint8_t nbytes = (uint8_t)sizeof(T); \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
@@ -1077,7 +1077,7 @@ void benchmark_find_last_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t ni
     for (i=0 ; i < size; i++) \
     { \
         first = 0; \
-        last = nitems; \
+        last = nrows; \
         found = find_last_sub_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, bitstart, bitend, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
@@ -1099,9 +1099,11 @@ int main()
 
     char *file = "test_data.bin"; // file containing test data
     uint64_t blklen = 16; // length of each binary block
-    uint64_t nitems; // number of binary blocks in the file
+    uint64_t nrows; // number of binary blocks in the file
 
     mmfile_t mf = {0};
+    mf.ncols = 1;
+    mf.ctbytes[0] = 12;
     mmap_binfile(file, &mf);
 
     if (mf.fd < 0)
@@ -1120,10 +1122,10 @@ int main()
         return 1;
     }
 
-    nitems = (mf.size / blklen);
-    if (nitems != 251)
+    nrows = (mf.size / blklen);
+    if (nrows != 251)
     {
-        fprintf(stderr, "Expecting 251 items, got instead: %" PRIu64 "\n", nitems);
+        fprintf(stderr, "Expecting 251 items, got instead: %" PRIu64 "\n", nrows);
         return 1;
     }
 
@@ -1154,41 +1156,41 @@ int main()
     errors += test_find_first_le_uint64_t(mf, blklen);
     errors += test_find_last_le_uint64_t(mf, blklen);
 
-    benchmark_find_first_be_uint8_t(mf, blklen, nitems);
-    benchmark_find_last_be_uint8_t(mf, blklen, nitems);
-    benchmark_find_first_be_uint16_t(mf, blklen, nitems);
-    benchmark_find_last_be_uint16_t(mf, blklen, nitems);
-    benchmark_find_first_be_uint32_t(mf, blklen, nitems);
-    benchmark_find_last_be_uint32_t(mf, blklen, nitems);
-    benchmark_find_first_be_uint64_t(mf, blklen, nitems);
-    benchmark_find_last_be_uint64_t(mf, blklen, nitems);
+    benchmark_find_first_be_uint8_t(mf, blklen, nrows);
+    benchmark_find_last_be_uint8_t(mf, blklen, nrows);
+    benchmark_find_first_be_uint16_t(mf, blklen, nrows);
+    benchmark_find_last_be_uint16_t(mf, blklen, nrows);
+    benchmark_find_first_be_uint32_t(mf, blklen, nrows);
+    benchmark_find_last_be_uint32_t(mf, blklen, nrows);
+    benchmark_find_first_be_uint64_t(mf, blklen, nrows);
+    benchmark_find_last_be_uint64_t(mf, blklen, nrows);
 
-    benchmark_find_first_sub_be_uint8_t(mf, blklen, nitems);
-    benchmark_find_last_sub_be_uint8_t(mf, blklen, nitems);
-    benchmark_find_first_sub_be_uint16_t(mf, blklen, nitems);
-    benchmark_find_last_sub_be_uint16_t(mf, blklen, nitems);
-    benchmark_find_first_sub_be_uint32_t(mf, blklen, nitems);
-    benchmark_find_last_sub_be_uint32_t(mf, blklen, nitems);
-    benchmark_find_first_sub_be_uint64_t(mf, blklen, nitems);
-    benchmark_find_last_sub_be_uint64_t(mf, blklen, nitems);
+    benchmark_find_first_sub_be_uint8_t(mf, blklen, nrows);
+    benchmark_find_last_sub_be_uint8_t(mf, blklen, nrows);
+    benchmark_find_first_sub_be_uint16_t(mf, blklen, nrows);
+    benchmark_find_last_sub_be_uint16_t(mf, blklen, nrows);
+    benchmark_find_first_sub_be_uint32_t(mf, blklen, nrows);
+    benchmark_find_last_sub_be_uint32_t(mf, blklen, nrows);
+    benchmark_find_first_sub_be_uint64_t(mf, blklen, nrows);
+    benchmark_find_last_sub_be_uint64_t(mf, blklen, nrows);
 
-    benchmark_find_first_le_uint8_t(mf, blklen, nitems);
-    benchmark_find_last_le_uint8_t(mf, blklen, nitems);
-    benchmark_find_first_le_uint16_t(mf, blklen, nitems);
-    benchmark_find_last_le_uint16_t(mf, blklen, nitems);
-    benchmark_find_first_le_uint32_t(mf, blklen, nitems);
-    benchmark_find_last_le_uint32_t(mf, blklen, nitems);
-    benchmark_find_first_le_uint64_t(mf, blklen, nitems);
-    benchmark_find_last_le_uint64_t(mf, blklen, nitems);
+    benchmark_find_first_le_uint8_t(mf, blklen, nrows);
+    benchmark_find_last_le_uint8_t(mf, blklen, nrows);
+    benchmark_find_first_le_uint16_t(mf, blklen, nrows);
+    benchmark_find_last_le_uint16_t(mf, blklen, nrows);
+    benchmark_find_first_le_uint32_t(mf, blklen, nrows);
+    benchmark_find_last_le_uint32_t(mf, blklen, nrows);
+    benchmark_find_first_le_uint64_t(mf, blklen, nrows);
+    benchmark_find_last_le_uint64_t(mf, blklen, nrows);
 
-    benchmark_find_first_sub_le_uint8_t(mf, blklen, nitems);
-    benchmark_find_last_sub_le_uint8_t(mf, blklen, nitems);
-    benchmark_find_first_sub_le_uint16_t(mf, blklen, nitems);
-    benchmark_find_last_sub_le_uint16_t(mf, blklen, nitems);
-    benchmark_find_first_sub_le_uint32_t(mf, blklen, nitems);
-    benchmark_find_last_sub_le_uint32_t(mf, blklen, nitems);
-    benchmark_find_first_sub_le_uint64_t(mf, blklen, nitems);
-    benchmark_find_last_sub_le_uint64_t(mf, blklen, nitems);
+    benchmark_find_first_sub_le_uint8_t(mf, blklen, nrows);
+    benchmark_find_last_sub_le_uint8_t(mf, blklen, nrows);
+    benchmark_find_first_sub_le_uint16_t(mf, blklen, nrows);
+    benchmark_find_last_sub_le_uint16_t(mf, blklen, nrows);
+    benchmark_find_first_sub_le_uint32_t(mf, blklen, nrows);
+    benchmark_find_last_sub_le_uint32_t(mf, blklen, nrows);
+    benchmark_find_first_sub_le_uint64_t(mf, blklen, nrows);
+    benchmark_find_last_sub_le_uint64_t(mf, blklen, nrows);
 
     int e = munmap_binfile(mf);
     if (e != 0)

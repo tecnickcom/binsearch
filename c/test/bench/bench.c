@@ -69,17 +69,17 @@ int benchmark_find_first_be_uint64()
 
     mmfile_t mf = {0};
     mmap_binfile(filename, &mf);
-    uint64_t nitems = (mf.size / 8);
-    if (nitems != TEST_DATA_SIZE)
+    uint64_t nrows = (mf.size / 8);
+    if (nrows != TEST_DATA_SIZE)
     {
-        fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nitems);
+        fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nrows);
         return 1;
     }
 
     uint64_t tstart, tend, offset;
     volatile uint64_t sum = 0;
     uint64_t first, last;
-    uint64_t lastitem = nitems;
+    uint64_t lastitem = nrows;
 
     tstart = get_time();
     for (i=0 ; i < TEST_DATA_SIZE; i++)
@@ -134,17 +134,17 @@ int benchmark_find_first_le_uint64()
 
     mmfile_t mf = {0};
     mmap_binfile(filename, &mf);
-    uint64_t nitems = (mf.size / 8);
-    if (nitems != TEST_DATA_SIZE)
+    uint64_t nrows = (mf.size / 8);
+    if (nrows != TEST_DATA_SIZE)
     {
-        fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nitems);
+        fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nrows);
         return 1;
     }
 
     uint64_t tstart, tend, offset;
     volatile uint64_t sum = 0;
     uint64_t first, last;
-    uint64_t lastitem = nitems;
+    uint64_t lastitem = nrows;
 
     tstart = get_time();
     for (i=0 ; i < TEST_DATA_SIZE; i++)
@@ -199,17 +199,17 @@ int benchmark_col_find_first_uint64()
 
     mmfile_t mf = {0};
     mmap_binfile(filename, &mf);
-    uint64_t nitems = (mf.size / 8);
-    if (nitems != TEST_DATA_SIZE)
+    uint64_t nrows = (mf.size / 8);
+    if (nrows != TEST_DATA_SIZE)
     {
-        fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nitems);
+        fprintf(stderr, " * %s Expecting test.bin %" PRIu64 " items, got instead: %" PRIu64 "\n", __func__, (uint64_t)TEST_DATA_SIZE, nrows);
         return 1;
     }
 
     uint64_t tstart, tend, offset;
     volatile uint64_t sum = 0;
     uint64_t first, last;
-    uint64_t lastitem = (nitems - 1);
+    uint64_t lastitem = (nrows - 1);
 
     tstart = get_time();
     for (i=0 ; i < TEST_DATA_SIZE; i++)

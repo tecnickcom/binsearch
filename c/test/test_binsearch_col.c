@@ -414,12 +414,14 @@ static t_test_col_uint64_t test_col_data_sub_uint64_t[] =
     { 150,  251, 0x0000000072737475,  251,  150,  150,  251,  150,  150},
 };
 
+static const uint8_t typecolmap[] = {0,0,1,0,2,0,0,0,3};
+
 #define define_test_col_find_first(T) \
 int test_col_find_first_##T(mmfile_t mf) \
 { \
     int errors = 0; \
     int i; \
-    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, mf.index[typecolmap[sizeof(T)]]); \
     uint8_t nbytes = (uint8_t)sizeof(T); \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
@@ -506,7 +508,7 @@ int test_col_find_last_##T(mmfile_t mf) \
 { \
     int errors = 0; \
     int i; \
-    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, mf.index[typecolmap[sizeof(T)]]); \
     uint8_t nbytes = (uint8_t)sizeof(T); \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
@@ -604,7 +606,7 @@ void benchmark_col_find_first_##T(mmfile_t mf) \
     uint64_t last = TEST_DATA_ITEMS; \
     uint64_t found; \
     int i; \
-    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, mf.index[typecolmap[sizeof(T)]]); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \
@@ -630,7 +632,7 @@ void benchmark_col_find_last_##T(mmfile_t mf) \
     uint64_t last = TEST_DATA_ITEMS; \
     uint64_t found; \
     int i; \
-    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, mf.index[typecolmap[sizeof(T)]]); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \
@@ -659,7 +661,7 @@ void benchmark_col_find_first_sub_##T(mmfile_t mf) \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
     int i; \
-    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, mf.index[typecolmap[sizeof(T)]]); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \
@@ -688,7 +690,7 @@ void benchmark_col_find_last_sub_##T(mmfile_t mf) \
     uint8_t bitstart = ((nbytes >> 2) * 8); \
     uint8_t bitend = ((8 * nbytes) - 1 - bitstart); \
     int i; \
-    const T *src = get_src_offset_##T(mf.src, (TEST_DATA_ITEMS * (sizeof(T) - 1))); \
+    const T *src = get_src_offset_##T(mf.src, mf.index[typecolmap[sizeof(T)]]); \
     int size = 10000; \
     tstart = get_time(); \
     for (i=0 ; i < size; i++) \
@@ -713,6 +715,11 @@ int main()
     char *file = "test_data_col.bin"; // file containing test data
 
     mmfile_t mf = {0};
+    mf.ncols = 4;
+    mf.ctbytes[0] = 1;
+    mf.ctbytes[1] = 2;
+    mf.ctbytes[2] = 4;
+    mf.ctbytes[3] = 8;
     mmap_binfile(file, &mf);
 
     if (mf.fd < 0)
@@ -731,9 +738,9 @@ int main()
         return 1;
     }
 
-    if (mf.size != 3765)
+    if (mf.size != 3776)
     {
-        fprintf(stderr, "Expecting 3765 bytes, got instead: %" PRIu64 "\n", mf.size);
+        fprintf(stderr, "Expecting 37776 bytes, got instead: %" PRIu64 "\n", mf.size);
         return 1;
     }
 

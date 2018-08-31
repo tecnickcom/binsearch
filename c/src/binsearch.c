@@ -407,6 +407,62 @@ define_col_has_prev_sub(uint64_t)
 
 // --- FILE ---
 
+static void parse_col_offset(mmfile_t *mf)
+{
+    uint8_t i;
+    uint64_t b = 0;
+    mf->index[0] = mf->doffset;
+    for (i = 0; i < mf->ncols; i++)
+    {
+        b += mf->ctbytes[i];
+    }
+    if (b == 0)
+    {
+        return;
+    }
+    mf->nrows = (mf->dlength / b);
+    for (i = 1; i < mf->ncols; i++)
+    {
+        b = (mf->nrows * mf->ctbytes[(i - 1)]);
+        mf->index[i] = mf->index[(i - 1)] + b + ((8 - (b & 7)) & 7); // account for 8-byte padding
+    }
+}
+
+static void parse_info_arrow(mmfile_t *mf)
+{
+    mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13; // skip metadata
+    mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4); // skip dictionary
+    mf->dlength -= mf->doffset;
+    uint64_t type = (*((const uint64_t *)(mf->src + mf->size - 8)));
+    if ((type & 0xffffffffffff0000) == 0x31574f5252410000) // magic number "ARROW1" in LE
+    {
+        mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10; // remove footer
+    }
+}
+
+static void parse_info_feather(mmfile_t *mf)
+{
+    mf->doffset = 8;
+    mf->dlength -= mf->doffset;
+    uint32_t type = (*((const uint32_t *)(mf->src + mf->size - 4)));
+    if (type == 0x31414546) // magic number "FEA1" in LE
+    {
+        mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 8))) + 8; // remove metadata
+    }
+}
+
+static void parse_info_binsrc(mmfile_t *mf)
+{
+    mf->ncols = (*((const uint8_t *)(mf->src + 8)));
+    uint8_t i;
+    for (i = 0; i < mf->ncols; i++)
+    {
+        mf->ctbytes[i] = (*((const uint8_t *)(mf->src + 9 + i)));
+    }
+    mf->doffset = 9 + mf->ncols + ((8 - ((mf->ncols + 1) & 7)) & 7); // account for 8-byte padding
+    mf->dlength -= mf->doffset;
+}
+
 void mmap_binfile(const char *file, mmfile_t *mf)
 {
     mf->src = (uint8_t*)MAP_FAILED; // NOLINT
@@ -421,36 +477,27 @@ void mmap_binfile(const char *file, mmfile_t *mf)
     mf->src = (uint8_t*)mmap(0, mf->size, PROT_READ, MAP_PRIVATE, mf->fd, 0);
     mf->doffset = 0;
     mf->dlength = mf->size;
-    if (mf->size > 27)
+    if (mf->size < 28)
     {
-        uint64_t type = (*((const uint64_t *)(mf->src)));
-        // Basic support for Apache Arrow File format with a single RecordBatch.
-        if (type == 0x000031574f525241) // magic number "ARROW1" in LE
-        {
-            mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13; // skip metadata
-            mf->doffset += (uint64_t)(*((const uint32_t *)(mf->src + mf->doffset)) + 4); // skip dictionary
-            mf->dlength -= mf->doffset;
-            type = (*((const uint64_t *)(mf->src + mf->size - 8)));
-            if ((type & 0xffffffffffff0000) == 0x31574f5252410000) // magic number "ARROW1" in LE
-            {
-                mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 10))) + 10; // remove footer
-            }
-        }
-        else
-        {
-            // Basic support for Feather File format.
-            if (type == 0x0000000031414546) // magic number "FEA1" in LE
-            {
-                mf->doffset = 8;
-                mf->dlength -= mf->doffset;
-                type = (*((const uint64_t *)(mf->src + mf->size - 8)));
-                if ((type & 0xffffffff00000000) == 0x3141454600000000) // magic number "FEA1" in LE
-                {
-                    mf->dlength -= (uint64_t)(*((const uint32_t *)(mf->src + mf->size - 8))) + 8; // remove metadata
-                }
-            }
-        }
+        return;
     }
+    uint64_t type = (*((const uint64_t *)(mf->src)));
+    switch (type)
+    {
+    // Basic support for Apache Arrow File format with a single RecordBatch.
+    case 0x000031574f525241: // magic number "ARROW1" in LE
+        parse_info_arrow(mf);
+        break;
+    // Basic support for Feather File format.
+    case 0x0000000031414546: // magic number "FEA1" in LE
+        parse_info_feather(mf);
+        break;
+    // Custom binsearch format
+    case 0x00314352534e4942: // magic number "BINSRC1" in LE
+        parse_info_binsrc(mf);
+        break;
+    }
+    parse_col_offset(mf);
 }
 
 int munmap_binfile(mmfile_t mf)
@@ -461,25 +508,4 @@ int munmap_binfile(mmfile_t mf)
         return err;
     }
     return close(mf.fd);
-}
-
-void set_col_offset(mmfile_t *mf, uint8_t ncols, const uint8_t *colbyte)
-{
-    uint8_t i;
-    uint64_t b = 0;
-    for (i = 0; i < ncols; i++)
-    {
-        b += colbyte[i];
-    }
-    if (b == 0)
-    {
-        return;
-    }
-    mf->nitems = (mf->dlength / b);
-    mf->index[0] = mf->doffset;
-    for (i = 1; i < ncols; i++)
-    {
-        b = (mf->nitems * colbyte[(i - 1)]);
-        mf->index[i] = mf->index[(i - 1)] + b + ((8 - (b & 7)) & 7);
-    }
 }

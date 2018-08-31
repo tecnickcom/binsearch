@@ -10,7 +10,6 @@
 
 static PyObject *py_mmap_binfile(PyObject *self, PyObject *args, PyObject *keywds);
 static PyObject *py_munmap_binfile(PyObject *self, PyObject *args, PyObject *keywds);
-static PyObject *py_set_col_offset(PyObject *self, PyObject *args, PyObject *keywds);
 static PyObject *py_get_address(PyObject *self, PyObject *args, PyObject *keywds);
 
 static PyObject *py_find_first_be_uint8(PyObject *self, PyObject *args, PyObject *keywds);
@@ -143,6 +142,8 @@ PyMODINIT_FUNC initbinsearch(void);
 "----------\n"\
 "file : str\n"\
 "    Path to the file to map.\n"\
+"ctbytes : int array\n"\
+"    Array containing the number of bytes for each column type (i.e. 1 for uint8, 2 for uint16, 4 for uint32, 8 for uint64).\n"\
 "\n"\
 "Returns\n"\
 "-------\n"\
@@ -151,7 +152,10 @@ PyMODINIT_FUNC initbinsearch(void);
 "    - File descriptor.\n"\
 "    - File size in bytes.\n"\
 "    - Offset to the beginning of the data block (address of the first byte of the first item in the first column).\n"\
-"    - Length in bytes of the data block."
+"    - Length in bytes of the data block.\n"\
+"    - Number of rows.\n"\
+"    - Number of columns.\n"\
+"    - List of offset positions for each column."
 
 #define PYMUNMAPBINFILE_DOCSTRING "Unmap and close the memory-mapped file.\n"\
 "\n"\
@@ -168,24 +172,6 @@ PyMODINIT_FUNC initbinsearch(void);
 "-------\n"\
 "int:\n"\
 "    On success returns 0, on failure -1."
-
-#define PYSETCOLOFFSET_DOCSTRING "Find the total number of items and the offset of each column..\n"\
-"\n"\
-"Parameters\n"\
-"----------\n"\
-"doffset : int\n"\
-"    Data offset.\n"\
-"dlength : int\n"\
-"    Length of the data block.\n"\
-"colbyte : int array\n"\
-"    Array containing the number of bytes for each column type (i.e. 1 for uint8, 2 for uint16, 4 for uint32, 8 for uint64).\n"\
-"\n"\
-"Returns\n"\
-"-------\n"\
-"tuple :\n"\
-"    - Number of items (number of rows).\n"\
-"    - List of offset positions for each column."
-
 
 #define PYGETADDRESS_DOCSTRING "Returns the absolute file address position of the specified item (binary block).\n"\
 "\n"\
@@ -220,7 +206,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -246,7 +232,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -272,7 +258,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -298,7 +284,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -326,7 +312,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -352,7 +338,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -378,7 +364,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -404,7 +390,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -436,7 +422,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -466,7 +452,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -496,7 +482,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -526,7 +512,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -558,7 +544,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -588,7 +574,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -618,7 +604,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -648,7 +634,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -676,7 +662,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -701,7 +687,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -726,7 +712,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -751,7 +737,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -782,7 +768,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -811,7 +797,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -840,7 +826,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -869,7 +855,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -1114,7 +1100,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -1136,7 +1122,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -1158,7 +1144,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -1180,7 +1166,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -1204,7 +1190,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -1226,7 +1212,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -1248,7 +1234,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -1270,7 +1256,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -1298,7 +1284,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -1324,7 +1310,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -1350,7 +1336,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -1376,7 +1362,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -1404,7 +1390,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -1430,7 +1416,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -1456,7 +1442,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -1482,7 +1468,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "first : int\n"\
 "    Element from where to start the search (min value = 0).\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -1506,7 +1492,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -1527,7 +1513,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -1548,7 +1534,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -1569,7 +1555,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\
@@ -1596,7 +1582,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 8 bit number to search.\n"\
 "\n"\
@@ -1621,7 +1607,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 16 bit number to search.\n"\
 "\n"\
@@ -1646,7 +1632,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 32 bit number to search.\n"\
 "\n"\
@@ -1671,7 +1657,7 @@ PyMODINIT_FUNC initbinsearch(void);
 "pos : int\n"\
 "    Current item position.\n"\
 "last : int\n"\
-"    Element (up to but not including) where to end the search (max value = nitems).\n"\
+"    Element (up to but not including) where to end the search (max value = nrows).\n"\
 "search : int\n"\
 "    Unsigned 64 bit number to search.\n"\
 "\n"\

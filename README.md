@@ -35,6 +35,19 @@ xxd -p -c8 binaryfile.bin > hexfile.txt
 xxd -r -p hexfile.txt > binaryfile.bin
 ```
 
+This library also provide functions to read columnar data in Little-Endian format.
+
+The `mmap_binfile` function is able to extract some basic data from files in Apache Arrow, Feather or custom Binsrc format.
+
+The Binsrc format is as follows:
+
+* 8 BYTE  : `BINSRC1\0` magic number
+* 1 BYTE  : Number of columns.
+* One byte for each column type (i.e. 1 for uint8, 2 for uint16, 4 for uint32, 8 for uint64).
+* (PADDING TO ALIGN THE DATA TO 8 BYTE)
+* (DATA BODY AS IN APACHE ARROW)
+
+
 ## Getting Started
 
 The reference code of this application is written in C language and includes wrappers for GO and Python.
