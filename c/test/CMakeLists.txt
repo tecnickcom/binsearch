@@ -23,12 +23,9 @@ function(SMOKE_TEST test_name test_file dependencies)
   do_test (${test_name})
 endfunction(SMOKE_TEST)
 
-file (COPY data/test_data.bin DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(GLOB TEST_BIN_FILES "data/*.bin")
+file (COPY ${TEST_BIN_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 SMOKE_TEST (test_binsearch test_binsearch.c binsearch)
-
-file (COPY data/test_data_col.bin DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 SMOKE_TEST (test_binsearch_col test_binsearch_col.c binsearch)
-
-file (COPY data/test_data.arrow data/test_data.feather data/test_data.binsrc DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 SMOKE_TEST (test_binsearch_file test_binsearch_file.c binsearch)
-

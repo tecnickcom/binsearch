@@ -428,6 +428,23 @@ static void parse_col_offset(mmfile_t *mf)
     }
 }
 
+static void parse_info_binsrc(mmfile_t *mf)
+{
+    const uint8_t *tp = (const uint8_t *)(mf->src + 8);
+    mf->ncols = *tp++;
+    mf->doffset = 9 + mf->ncols + ((8 - ((mf->ncols + 1) & 7)) & 7); // account for 8-byte padding
+    const uint64_t *op = (const uint64_t *)(mf->src + mf->doffset);
+    mf->nrows = *op++;
+    uint8_t i;
+    for (i = 0; i < mf->ncols; i++)
+    {
+        mf->ctbytes[i] = *tp++;
+        mf->index[i] = *op++;
+    }
+    mf->doffset += ((mf->ncols + 1) * 8); // skip column offsets section
+    mf->dlength -= mf->doffset;
+}
+
 static void parse_info_arrow(mmfile_t *mf)
 {
     mf->doffset = (uint64_t)(*((const uint32_t *)(mf->src + 9))) + 13; // skip metadata
@@ -451,18 +468,6 @@ static void parse_info_feather(mmfile_t *mf)
     }
 }
 
-static void parse_info_binsrc(mmfile_t *mf)
-{
-    mf->ncols = (*((const uint8_t *)(mf->src + 8)));
-    uint8_t i;
-    for (i = 0; i < mf->ncols; i++)
-    {
-        mf->ctbytes[i] = (*((const uint8_t *)(mf->src + 9 + i)));
-    }
-    mf->doffset = 9 + mf->ncols + ((8 - ((mf->ncols + 1) & 7)) & 7); // account for 8-byte padding
-    mf->dlength -= mf->doffset;
-}
-
 void mmap_binfile(const char *file, mmfile_t *mf)
 {
     mf->src = (uint8_t*)MAP_FAILED; // NOLINT
@@ -484,6 +489,10 @@ void mmap_binfile(const char *file, mmfile_t *mf)
     uint64_t type = (*((const uint64_t *)(mf->src)));
     switch (type)
     {
+    // Custom binsearch format
+    case 0x00314352534e4942: // magic number "BINSRC1" in LE
+        parse_info_binsrc(mf);
+        return;
     // Basic support for Apache Arrow File format with a single RecordBatch.
     case 0x000031574f525241: // magic number "ARROW1" in LE
         parse_info_arrow(mf);
@@ -491,10 +500,6 @@ void mmap_binfile(const char *file, mmfile_t *mf)
     // Basic support for Feather File format.
     case 0x0000000031414546: // magic number "FEA1" in LE
         parse_info_feather(mf);
-        break;
-    // Custom binsearch format
-    case 0x00314352534e4942: // magic number "BINSRC1" in LE
-        parse_info_binsrc(mf);
         break;
     }
     parse_col_offset(mf);

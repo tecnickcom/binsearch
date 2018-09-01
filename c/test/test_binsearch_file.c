@@ -40,7 +40,7 @@ int test_munmap_binfile_error()
 int test_map_file_arrow()
 {
     int errors = 0;
-    char *file = "test_data.arrow"; // file containing test data
+    char *file = "test_data_arrow.bin"; // file containing test data
     mmfile_t mf = {0};
     mf.ncols = 2;
     mf.ctbytes[0] = 4;
@@ -108,7 +108,7 @@ int test_map_file_arrow()
 int test_map_file_feather()
 {
     int errors = 0;
-    char *file = "test_data.feather"; // file containing test data
+    char *file = "test_data_feather.bin"; // file containing test data
     mmfile_t mf = {0};
     mf.ncols = 2;
     mf.ctbytes[0] = 4;
@@ -176,7 +176,7 @@ int test_map_file_feather()
 int test_map_file_binsrc()
 {
     int errors = 0;
-    char *file = "test_data.binsrc"; // file containing test data
+    char *file = "test_data_binsrc.bin"; // file containing test data
     mmfile_t mf = {0};
     mmap_binfile(file, &mf);
     if (mf.fd < 0)
@@ -194,14 +194,14 @@ int test_map_file_binsrc()
         fprintf(stderr, "%s mmap error! [%s]\n", __func__, strerror(errno));
         return 1;
     }
-    if (mf.size != 152)
+    if (mf.size != 176)
     {
-        fprintf(stderr, "%s mf.size : Expecting 152 bytes, got instead: %" PRIu64 "\n", __func__, mf.size);
+        fprintf(stderr, "%s mf.size : Expecting 176 bytes, got instead: %" PRIu64 "\n", __func__, mf.size);
         errors++;
     }
-    if (mf.doffset != 16)
+    if (mf.doffset != 40)
     {
-        fprintf(stderr, "%s mf.doffset : Expecting 16 bytes, got instead: %" PRIu64 "\n", __func__, mf.doffset);
+        fprintf(stderr, "%s mf.doffset : Expecting 40 bytes, got instead: %" PRIu64 "\n", __func__, mf.doffset);
         errors++;
     }
     if (mf.dlength != 136)
@@ -219,14 +219,14 @@ int test_map_file_binsrc()
         fprintf(stderr, "%s mf.ncols : Expecting 2 items, got instead: %" PRIu8 "\n", __func__, mf.ncols);
         errors++;
     }
-    if (mf.index[0] != 16)
+    if (mf.index[0] != 40)
     {
-        fprintf(stderr, "%s mf.index[0] : Expecting 16 bytes, got instead: %" PRIu64 "\n", __func__, mf.index[0]);
+        fprintf(stderr, "%s mf.index[0] : Expecting 40 bytes, got instead: %" PRIu64 "\n", __func__, mf.index[0]);
         errors++;
     }
-    if (mf.index[1] != 64)
+    if (mf.index[1] != 88)
     {
-        fprintf(stderr, "%s mf.index[1] : Expecting 64 bytes, got instead: %" PRIu64 "\n", __func__, mf.index[1]);
+        fprintf(stderr, "%s mf.index[1] : Expecting 88 bytes, got instead: %" PRIu64 "\n", __func__, mf.index[1]);
         errors++;
     }
     int e = munmap_binfile(mf);

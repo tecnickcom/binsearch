@@ -72,12 +72,12 @@ func TestGetAddress(t *testing.T) {
 
 func TestLoadArrow(t *testing.T) {
 	ctbytes := []uint8{4, 8}
-	amf, err := MmapBinFile("../../c/test/data/test_data.arrow", ctbytes)
+	amf, err := MmapBinFile("../../c/test/data/test_data_arrow.bin", ctbytes)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 	if amf.Fd < 0 {
-		t.Errorf("can't open test_data.arrow for reading")
+		t.Errorf("can't open test_data_arrow.bin for reading")
 	}
 	if amf.Size != 730 {
 		t.Errorf("Size : Expecting 730 bytes, got instead: %d", amf.Size)
@@ -108,12 +108,12 @@ func TestLoadArrow(t *testing.T) {
 
 func TestLoadFeather(t *testing.T) {
 	ctbytes := []uint8{4, 8}
-	amf, err := MmapBinFile("../../c/test/data/test_data.feather", ctbytes)
+	amf, err := MmapBinFile("../../c/test/data/test_data_feather.bin", ctbytes)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 	if amf.Fd < 0 {
-		t.Errorf("can't open test_data.arrow for reading")
+		t.Errorf("can't open test_data_arrow.bin for reading")
 	}
 	if amf.Size != 384 {
 		t.Errorf("Size : Expecting 384 bytes, got instead: %d", amf.Size)
@@ -144,18 +144,18 @@ func TestLoadFeather(t *testing.T) {
 
 func TestLoadBinsrc(t *testing.T) {
 	ctbytes := []uint8{4, 8}
-	amf, err := MmapBinFile("../../c/test/data/test_data.binsrc", ctbytes)
+	amf, err := MmapBinFile("../../c/test/data/test_data_binsrc.bin", ctbytes)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 	if amf.Fd < 0 {
-		t.Errorf("can't open test_data.arrow for reading")
+		t.Errorf("can't open test_data_arrow.bin for reading")
 	}
-	if amf.Size != 152 {
-		t.Errorf("Size : Expecting 152 bytes, got instead: %d", amf.Size)
+	if amf.Size != 176 {
+		t.Errorf("Size : Expecting 176 bytes, got instead: %d", amf.Size)
 	}
-	if amf.DOffset != 16 {
-		t.Errorf("DOffset : Expecting 16 bytes, got instead: %d", amf.DOffset)
+	if amf.DOffset != 40 {
+		t.Errorf("DOffset : Expecting 40 bytes, got instead: %d", amf.DOffset)
 	}
 	if amf.DLength != 136 {
 		t.Errorf("DLength : Expecting 136 bytes, got instead: %d", amf.DLength)
@@ -166,11 +166,11 @@ func TestLoadBinsrc(t *testing.T) {
 	if amf.NCols != 2 {
 		t.Errorf("mf.NCols : Expecting 2 items, got instead: %d", amf.NCols)
 	}
-	if amf.Index[0] != 16 {
-		t.Errorf("mf.Index[0] : Expecting 16 bytes, got instead: %d", amf.Index[0])
+	if amf.Index[0] != 40 {
+		t.Errorf("mf.Index[0] : Expecting 40 bytes, got instead: %d", amf.Index[0])
 	}
-	if amf.Index[1] != 64 {
-		t.Errorf("mf.Index[1] : Expecting 64 bytes, got instead: %d", amf.Index[1])
+	if amf.Index[1] != 88 {
+		t.Errorf("mf.Index[1] : Expecting 88 bytes, got instead: %d", amf.Index[1])
 	}
 	err = amf.Close()
 	if err != nil {

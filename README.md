@@ -37,15 +37,9 @@ xxd -r -p hexfile.txt > binaryfile.bin
 
 This library also provide functions to read columnar data in Little-Endian format.
 
-The `mmap_binfile` function is able to extract some basic data from files in Apache Arrow, Feather or custom Binsrc format.
+The `mmap_binfile` function is able to extract some basic data from files in Apache Arrow, Feather or custom BINSRC format.
 
-The Binsrc format is as follows:
 
-* 8 BYTE  : `BINSRC1\0` magic number
-* 1 BYTE  : Number of columns.
-* One byte for each column type (i.e. 1 for uint8, 2 for uint16, 4 for uint32, 8 for uint64).
-* (PADDING TO ALIGN THE DATA TO 8 BYTE)
-* (DATA BODY AS IN APACHE ARROW)
 
 
 ## Getting Started
@@ -66,3 +60,51 @@ use the command ```make all``` to build and test all the implementations.
 
 * the "_be_" or "BE" functions refer to source files sorted in Big-Endian.
 * the "_le_" or "LE" functions refer to source files sorted in Little-Endian.
+
+
+
+## BINSRC Format:
+
+* 8 BYTE  : `BINSRC1\0` magic number
+* 1 BYTE  : Number of columns.
+* One byte for each column type (i.e. 1 for uint8, 2 for uint16, 4 for uint32, 8 for uint64).
+* (PADDING TO ALIGN THE DATA TO 8 BYTE)
+* 8 BYTE  : number of rows
+* cols * 8 BYTE : offset to the start of each column
+* (DATA BODY AS IN APACHE ARROW)
+
+### Example
+
+```
+42494e5352433100    : BINSRC1 magic number
+02                  : 2 columns
+04                  : first column is uint32_t (4 bytes)
+08                  : second column is uint64_t (8 bytes)
+0000000000          : padding to 8 byte
+0b00000000000000    : 11 rows per columns
+2800000000000000    : byte offset to the start of the first column
+5800000000000000    : byte offset to the start of the second column
+01000000            : first column - first row
+07000000            : ...
+0b000000            : 
+61000000            : 
+65000000            : 
+e5030000            : 
+f1030000            : 
+f5260000            : 
+a3860100            : 
+19990100            : 
+19990100            : 
+00000000            : 
+00803380257a0208    : second column - first row
+18399e43fea10048    : ...
+16eb5575fea10048    : 
+00003a0074020180    : 
+008013008d020180    : 
+00007a0099020180    : 
+00003a00622b01a0    : 
+00807080622b01a0    : 
+926625e3652b01a0    : 
+039843d5672b01a0    : 
+039843d5672b01a0    : 
+```
