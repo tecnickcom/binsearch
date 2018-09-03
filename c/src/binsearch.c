@@ -432,7 +432,7 @@ static void parse_info_binsrc(mmfile_t *mf)
 {
     const uint8_t *tp = (const uint8_t *)(mf->src + 8);
     mf->ncols = *tp++;
-    mf->doffset = 9 + mf->ncols + ((8 - ((mf->ncols + 1) & 7)) & 7); // account for 8-byte padding
+    mf->doffset = (uint64_t)9 + mf->ncols + ((8 - ((mf->ncols + 1) & 7)) & 7); // account for 8-byte padding
     const uint64_t *op = (const uint64_t *)(mf->src + mf->doffset);
     mf->nrows = *op++;
     uint8_t i;
