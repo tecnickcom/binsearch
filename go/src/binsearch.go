@@ -33,15 +33,15 @@ func castCTMMFileToGo(mf C.mmfile_t) TMMFile {
 		index[i] = uint64(mf.index[i])
 	}
 	return TMMFile{
-		unsafe.Pointer(mf.src), // #nosec
-		int(mf.fd),
-		uint64(mf.size),
-		uint64(mf.doffset),
-		uint64(mf.dlength),
-		uint64(mf.nrows),
-		ncols,
-		ctbytes,
-		index,
+		Src:     unsafe.Pointer(mf.src), // #nosec
+		Fd:      int(mf.fd),
+		Size:    uint64(mf.size),
+		DOffset: uint64(mf.doffset),
+		DLength: uint64(mf.dlength),
+		NRows:   uint64(mf.nrows),
+		NCols:   ncols,
+		CTBytes: ctbytes,
+		Index:   index,
 	}
 }
 
