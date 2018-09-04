@@ -60,7 +60,7 @@ static PyObject* py_mmap_binfile(PyObject *Py_UNUSED(ignored), PyObject *args, P
     {
         PyList_Append(index, Py_BuildValue("K", h.index[i]));
     }
-    result = PyTuple_New(8);
+    result = PyTuple_New(9);
     PyTuple_SetItem(result, 0, PyCapsule_New((void*)h.src, "src", NULL));
     PyTuple_SetItem(result, 1, Py_BuildValue("i", h.fd));
     PyTuple_SetItem(result, 2, Py_BuildValue("K", h.size));
@@ -69,6 +69,7 @@ static PyObject* py_mmap_binfile(PyObject *Py_UNUSED(ignored), PyObject *args, P
     PyTuple_SetItem(result, 5, Py_BuildValue("K", h.nrows));
     PyTuple_SetItem(result, 6, Py_BuildValue("B", h.ncols));
     PyTuple_SetItem(result, 7, index);
+    PyTuple_SetItem(result, 8, PyCapsule_New((void*)h.index, "index", NULL));
     return result;
 }
 

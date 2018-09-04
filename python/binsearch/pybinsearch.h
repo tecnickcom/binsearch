@@ -155,7 +155,8 @@ PyMODINIT_FUNC initbinsearch(void);
 "    - Length in bytes of the data block.\n"\
 "    - Number of rows.\n"\
 "    - Number of columns.\n"\
-"    - List of offset positions for each column."
+"    - List of offset positions for each column.\n"\
+"    - Pointer to the list of offset positions for each column."
 
 #define PYMUNMAPBINFILE_DOCSTRING "Unmap and close the memory-mapped file.\n"\
 "\n"\

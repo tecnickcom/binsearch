@@ -13,7 +13,7 @@ class TestFunctions(TestCase):
             os.path.dirname(
                 os.path.realpath(__file__)) +
             "/../../c/test/data/test_data_arrow.bin")
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(inputfile, [4, 8])
+        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(inputfile, [4, 8])
         if fd < 0 or size != 730:
             assert False, "Unable to open the file"
         self.assertEqual(doffset, 376)
@@ -31,7 +31,7 @@ class TestFunctions(TestCase):
             os.path.dirname(
                 os.path.realpath(__file__)) +
             "/../../c/test/data/test_data_feather.bin")
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(inputfile, [4, 8])
+        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(inputfile, [4, 8])
         if fd < 0 or size != 384:
             assert False, "Unable to open the file"
         self.assertEqual(doffset, 8)
@@ -49,7 +49,7 @@ class TestFunctions(TestCase):
             os.path.dirname(
                 os.path.realpath(__file__)) +
             "/../../c/test/data/test_data_binsrc.bin")
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(inputfile, [4, 8])
+        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(inputfile, [4, 8])
         if fd < 0 or size != 176:
             assert False, "Unable to open the file"
         self.assertEqual(doffset, 40)
