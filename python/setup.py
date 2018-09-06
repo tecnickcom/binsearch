@@ -30,7 +30,7 @@ class RunTests(Command):
 
 setup(
     name='binsearch',
-    version='9.0.0',
+    version='9.0.1',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     long_description=read('../README.md'),
@@ -60,7 +60,6 @@ setup(
             "-Wundef",
             "-Wformat-security",
             "-Wshadow",
-            "-Wno-unused-function",
             "-I../src",
         ])
     ],
