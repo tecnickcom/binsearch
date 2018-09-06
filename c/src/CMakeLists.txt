@@ -8,8 +8,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 link_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 include_directories (${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_BINARY_DIR}/src )
 
-add_library (binsearch binsearch.c binsearch.h)
+add_library (binsearch binsearch.h)
 target_include_directories (binsearch PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(binsearch PROPERTIES LINKER_LANGUAGE "C")
 
 # Required to link the math library
 target_link_libraries(binsearch)

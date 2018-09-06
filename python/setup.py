@@ -30,7 +30,7 @@ class RunTests(Command):
 
 setup(
     name='binsearch',
-    version='8.4.1',
+    version='9.0.0',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     long_description=read('../README.md'),
@@ -42,7 +42,6 @@ setup(
     packages=find_packages(exclude=['docs', 'test*']),
     ext_modules=[
         Extension('binsearch', [
-             '../c/src/binsearch.c',
             'binsearch/pybinsearch.c'
         ],
         include_dirs=[
@@ -61,6 +60,7 @@ setup(
             "-Wundef",
             "-Wformat-security",
             "-Wshadow",
+            "-Wno-unused-function",
             "-I../src",
         ])
     ],
