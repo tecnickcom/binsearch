@@ -300,6 +300,10 @@ define_get_src_offset(uint64_t)
     { \
         return middle; \
     } \
+    if (*first > 0) \
+    { \
+        --(*first); \
+    } \
     return notfound;
 
 #define SUB_ITEM_VARS(T) \
