@@ -85,7 +85,7 @@ set(CPACK_COMPONENTS_IGNORE_GROUPS TRUE)
 set(CPACK_DEB_COMPONENT_INSTALL TRUE)
 
 # Add subdirectories
-add_subdirectory(src)
+add_subdirectory(src/binsearch)
 add_subdirectory(test)
 add_subdirectory(test/bench)
 

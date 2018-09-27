@@ -32,7 +32,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/mman.h>
-#include "../../src/binsearch.h"
+#include "../../src/binsearch/binsearch.h"
 
 #define TEST_DATA_SIZE 10000000ULL
 

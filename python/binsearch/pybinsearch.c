@@ -8,7 +8,7 @@
 #define MODULE_NAME "binsearch"
 
 #include <Python.h>
-#include "../../c/src/binsearch.h"
+#include "../../c/src/binsearch/binsearch.h"
 #include "pybinsearch.h"
 
 #ifndef Py_UNUSED // This is already defined for Python 3.4 onwards

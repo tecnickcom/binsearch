@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 # Add the binary tree directory to the search path for linking and include files
 link_directories( ${CMAKE_CURRENT_BINARY_DIR} )
-include_directories (${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_BINARY_DIR}/src )
+include_directories (${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_BINARY_DIR}/src/binsearch )
 
 add_library (binsearch binsearch.h)
 target_include_directories (binsearch PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

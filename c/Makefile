@@ -50,7 +50,7 @@ all: clean format test tidy build doc
 
 # Test C code compatibility with C++
 testcpp:
-	find ./src -type f -name '*.h' -exec gcc -c -pedantic -Werror -Wall -Wextra -Wcast-align -Wundef -Wformat-security -std=c++14 -x c++ -o /dev/null {} \;
+	find ./src/binsearch -type f -name '*.h' -exec gcc -c -pedantic -Werror -Wall -Wextra -Wcast-align -Wundef -Wformat-security -std=c++14 -x c++ -o /dev/null {} \;
 
 # Build and run the unit tests
 test: testcpp
@@ -69,7 +69,7 @@ test: testcpp
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./ && \
 	make | tee make.log ; test $${PIPESTATUS[0]} -eq 0 && \
 	lcov --zerocounters --directory . && \
-	lcov --capture --initial --directory . --output-file coverage/binsearch && \
+	lcov --capture --initial --directory . --output-file coverage/binsearch.cov && \
 	env CTEST_OUTPUT_ON_FAILURE=1 make test | tee test.log ; test $${PIPESTATUS[0]} -eq 0 && \
 	lcov --no-checksum --directory . --capture --output-file coverage/binsearch.info && \
 	lcov --remove coverage/binsearch.info "/test_*" --output-file coverage/binsearch.info && \
@@ -81,7 +81,7 @@ endif
 
 # use clang-tidy
 tidy:
-	clang-tidy -checks='*,-llvm-header-guard,-llvm-include-order,-android-cloexec-open,-hicpp-no-assembler,-hicpp-signed-bitwise' -header-filter=.* -p . src/*.h test/*.c test/bench/*.c
+	clang-tidy -checks='*,-llvm-header-guard,-llvm-include-order,-android-cloexec-open,-hicpp-no-assembler,-hicpp-signed-bitwise' -header-filter=.* -p . src/binsearch/*.h test/*.c test/bench/*.c
 
 # Build the library
 build:
