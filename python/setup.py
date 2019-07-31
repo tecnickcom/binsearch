@@ -30,7 +30,7 @@ class RunTests(Command):
 
 setup(
     name='binsearch',
-    version='9.2.2',
+    version='9.2.3',
     keywords=('binsearch'),
     description="Binsearch Bindings for Python",
     long_description=read('../README.md'),
@@ -77,6 +77,7 @@ setup(
             'pytest-benchmark',
             'pytest-cov',
             'pycodestyle',
+            'black',
         ],
     },
     cmdclass={'test': RunTests},
