@@ -1,6 +1,6 @@
 package:
   name: binsearch
-  version: 9.2.2
+  version: 9.2.3
 
 source:
   path: ../..
@@ -24,8 +24,9 @@ test:
     - coverage
     - pytest
     - pytest-cov
-    - pytest-benchmark
+    - pytest-benchmark >=3.2.*
     - pycodestyle
+    - black
   imports:
     - binsearch
 

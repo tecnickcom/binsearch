@@ -7,13 +7,14 @@ from unittest import TestCase
 
 
 class TestFunctions(TestCase):
-
     def test_load_arrow(self):
         inputfile = os.path.realpath(
-            os.path.dirname(
-                os.path.realpath(__file__)) +
-            "/../../c/test/data/test_data_arrow.bin")
-        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(inputfile, [4, 8])
+            os.path.dirname(os.path.realpath(__file__))
+            + "/../../c/test/data/test_data_arrow.bin"
+        )
+        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(
+            inputfile, [4, 8]
+        )
         if fd < 0 or size != 730:
             assert False, "Unable to open the file"
         self.assertEqual(doffset, 376)
@@ -28,10 +29,12 @@ class TestFunctions(TestCase):
 
     def test_load_feather(self):
         inputfile = os.path.realpath(
-            os.path.dirname(
-                os.path.realpath(__file__)) +
-            "/../../c/test/data/test_data_feather.bin")
-        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(inputfile, [4, 8])
+            os.path.dirname(os.path.realpath(__file__))
+            + "/../../c/test/data/test_data_feather.bin"
+        )
+        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(
+            inputfile, [4, 8]
+        )
         if fd < 0 or size != 384:
             assert False, "Unable to open the file"
         self.assertEqual(doffset, 8)
@@ -46,10 +49,12 @@ class TestFunctions(TestCase):
 
     def test_load_binsrc(self):
         inputfile = os.path.realpath(
-            os.path.dirname(
-                os.path.realpath(__file__)) +
-            "/../../c/test/data/test_data_binsrc.bin")
-        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(inputfile, [4, 8])
+            os.path.dirname(os.path.realpath(__file__))
+            + "/../../c/test/data/test_data_binsrc.bin"
+        )
+        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(
+            inputfile, [4, 8]
+        )
         if fd < 0 or size != 176:
             assert False, "Unable to open the file"
         self.assertEqual(doffset, 40)
