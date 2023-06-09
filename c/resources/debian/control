@@ -1,0 +1,17 @@
+Source: ~#PKGNAME#~
+Maintainer: Tecnick.com <info@tecnick.com>
+Section: utils
+Priority: optional
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.7
+Homepage: https://github.com/tecnickcom/binsearch
+Vcs-Git: https://github.com/tecnickcom/binsearch.git
+
+Package: ~#PKGNAME#~
+Provides: binsearch
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: binsearch
+ Provides C header-only files for:
+ binsearch, a fast binary search for columnar data formats.
+ 
