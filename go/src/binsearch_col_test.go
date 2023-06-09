@@ -2,6 +2,7 @@ package binsearch
 
 import "testing"
 
+//nolint:gochecknoglobals
 var testDataCol8 = []struct {
 	first       uint64
 	last        uint64
@@ -53,6 +54,7 @@ var testDataCol8 = []struct {
 	{150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataColSub8 = []struct {
 	first       uint64
 	last        uint64
@@ -104,6 +106,7 @@ var testDataColSub8 = []struct {
 	{150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataCol16 = []struct {
 	first       uint64
 	last        uint64
@@ -155,6 +158,7 @@ var testDataCol16 = []struct {
 	{150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataColSub16 = []struct {
 	first       uint64
 	last        uint64
@@ -206,6 +210,7 @@ var testDataColSub16 = []struct {
 	{150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataCol32 = []struct {
 	first       uint64
 	last        uint64
@@ -257,6 +262,7 @@ var testDataCol32 = []struct {
 	{150, 251, 0x70717273, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataColSub32 = []struct {
 	first       uint64
 	last        uint64
@@ -308,6 +314,7 @@ var testDataColSub32 = []struct {
 	{150, 251, 0x00007172, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataCol64 = []struct {
 	first       uint64
 	last        uint64
@@ -359,6 +366,7 @@ var testDataCol64 = []struct {
 	{150, 251, 0x7071727374757677, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataColSub64 = []struct {
 	first       uint64
 	last        uint64

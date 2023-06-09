@@ -2,6 +2,7 @@ package binsearch
 
 import "testing"
 
+//nolint:gochecknoglobals
 var testDataBE8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -54,6 +55,7 @@ var testDataBE8 = []struct {
 	{0, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataBESub8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -106,6 +108,7 @@ var testDataBESub8 = []struct {
 	{0, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLE8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -158,6 +161,7 @@ var testDataLE8 = []struct {
 	{15, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLESub8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -210,6 +214,7 @@ var testDataLESub8 = []struct {
 	{15, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataBE16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -262,6 +267,7 @@ var testDataBE16 = []struct {
 	{0, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataBESub16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -314,6 +320,7 @@ var testDataBESub16 = []struct {
 	{0, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLE16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -366,6 +373,7 @@ var testDataLE16 = []struct {
 	{14, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLESub16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -418,6 +426,7 @@ var testDataLESub16 = []struct {
 	{14, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataBE32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -470,6 +479,7 @@ var testDataBE32 = []struct {
 	{0, 150, 251, 0x70717273, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataBESub32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -522,6 +532,7 @@ var testDataBESub32 = []struct {
 	{0, 150, 251, 0x00007172, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLE32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -574,6 +585,7 @@ var testDataLE32 = []struct {
 	{12, 150, 251, 0x70717273, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLESub32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -626,6 +638,7 @@ var testDataLESub32 = []struct {
 	{12, 150, 251, 0x00007172, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataBE64 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -678,6 +691,7 @@ var testDataBE64 = []struct {
 	{0, 150, 251, 0x7071727374757677, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataBESub64 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -730,6 +744,7 @@ var testDataBESub64 = []struct {
 	{0, 150, 251, 0x0000000072737475, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLE64 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -782,6 +797,7 @@ var testDataLE64 = []struct {
 	{8, 150, 251, 0x7071727374757677, 251, 149, 150, 251, 149, 150},
 }
 
+//nolint:gochecknoglobals
 var testDataLESub64 = []struct {
 	blkpos      uint64
 	first       uint64

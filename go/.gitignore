@@ -1,4 +1,4 @@
 target
-/Dockerfile
 *.bak
 *.test
+example/example
