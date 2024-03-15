@@ -1,5 +1,8 @@
 .cache
 .coverage*
+c
+README.md
+LICENSE
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
