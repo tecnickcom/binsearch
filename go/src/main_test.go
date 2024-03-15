@@ -1,3 +1,4 @@
+//nolint:paralleltest
 package binsearch
 
 import (
@@ -11,7 +12,6 @@ import (
 var (
 	mf, cmf TMMFile
 	retCode int
-	nrows   uint64 = 251
 )
 
 func closeTMMFile(mmf TMMFile) {
@@ -35,7 +35,7 @@ func TestMain(m *testing.M) {
 
 	cmf, err = MmapBinFile("../../c/test/data/test_data_col.bin", []uint8{1, 2, 4, 8})
 	if err != nil {
-		os.Exit(1)
+		os.Exit(1) //nolint:gocritic
 	}
 
 	defer closeTMMFile(cmf)

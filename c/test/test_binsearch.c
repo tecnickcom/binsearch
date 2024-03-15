@@ -6,13 +6,7 @@
 // @author     Nicola Asuni <info@tecnick.com>
 // @link       https://github.com/tecnickcom/binsearch
 // @license    MIT (see LICENSE file)
-// @copyright  (c) 2017-2023 Nicola Asuni - Tecnick.com
-
-#if __STDC_VERSION__ >= 199901L
-#define _XOPEN_SOURCE 600
-#else
-#define _XOPEN_SOURCE 500
-#endif
+// @copyright  (c) 2017-2024 Nicola Asuni - Tecnick.com
 
 #include <stdio.h>
 #include <string.h>
@@ -35,11 +29,11 @@ typedef struct t_test_uint8_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} t_test_uint8_t;
+} __attribute__((packed)) __attribute__((aligned(128))) t_test_uint8_t;
 
 // bytes=1, bitstart=0, bitend=7, bitmask=00000000000000ff, rshift=0
 
-static t_test_uint8_t test_data_be_uint8_t[] =
+static const t_test_uint8_t test_data_be_uint8_t[] =
 {
     {   0,    0,  251, 0x00,    0,    0,    0,    1,    2,    2},
     {   0,    1,  251, 0x00,    1,    1,    1,    1,    2,    2},
@@ -81,7 +75,7 @@ static t_test_uint8_t test_data_be_uint8_t[] =
     {   0,  150,  251, 0x70,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint8_t test_data_sub_be_uint8_t[] =
+static const t_test_uint8_t test_data_sub_be_uint8_t[] =
 {
     {   0,    0,  251, 0x00,    0,    0,    0,    1,    2,    2},
     {   0,    1,  251, 0x00,    1,    1,    1,    1,    2,    2},
@@ -123,7 +117,7 @@ static t_test_uint8_t test_data_sub_be_uint8_t[] =
     {   0,  150,  251, 0x70,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint8_t test_data_le_uint8_t[] =
+static const t_test_uint8_t test_data_le_uint8_t[] =
 {
     {  15,    0,  251, 0x00,    0,    0,    0,    1,    2,    2},
     {  15,    1,  251, 0x00,    1,    1,    1,    1,    2,    2},
@@ -165,7 +159,7 @@ static t_test_uint8_t test_data_le_uint8_t[] =
     {  15,  150,  251, 0x70,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint8_t test_data_sub_le_uint8_t[] =
+static const t_test_uint8_t test_data_sub_le_uint8_t[] =
 {
     {  15,    0,  251, 0x00,    0,    0,    0,    1,    2,    2},
     {  15,    1,  251, 0x00,    1,    1,    1,    1,    2,    2},
@@ -220,11 +214,11 @@ typedef struct t_test_uint16_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} t_test_uint16_t;
+} __attribute__((packed)) __attribute__((aligned(128))) t_test_uint16_t;
 
 // bytes=2, bitstart=0, bitend=15, bitmask=000000000000ffff, rshift=0
 
-static t_test_uint16_t test_data_be_uint16_t[] =
+static const t_test_uint16_t test_data_be_uint16_t[] =
 {
     {   0,    0,  251, 0x0000,    0,    0,    0,    0,    1,    1},
     {   0,    1,  251, 0x0001,    1,    1,    1,    1,    2,    2},
@@ -266,7 +260,7 @@ static t_test_uint16_t test_data_be_uint16_t[] =
     {   0,  150,  251, 0x7071,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint16_t test_data_sub_be_uint16_t[] =
+static const t_test_uint16_t test_data_sub_be_uint16_t[] =
 {
     {   0,    0,  251, 0x0000,    0,    0,    0,    0,    1,    1},
     {   0,    1,  251, 0x0001,    1,    1,    1,    1,    2,    2},
@@ -308,7 +302,7 @@ static t_test_uint16_t test_data_sub_be_uint16_t[] =
     {   0,  150,  251, 0x7071,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint16_t test_data_le_uint16_t[] =
+static const t_test_uint16_t test_data_le_uint16_t[] =
 {
     {  14,    0,  251, 0x0000,    0,    0,    0,    0,    1,    1},
     {  14,    1,  251, 0x0001,    1,    1,    1,    1,    2,    2},
@@ -350,7 +344,7 @@ static t_test_uint16_t test_data_le_uint16_t[] =
     {  14,  150,  251, 0x7071,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint16_t test_data_sub_le_uint16_t[] =
+static const t_test_uint16_t test_data_sub_le_uint16_t[] =
 {
     {  14,    0,  251, 0x0000,    0,    0,    0,    0,    1,    1},
     {  14,    1,  251, 0x0001,    1,    1,    1,    1,    2,    2},
@@ -405,11 +399,11 @@ typedef struct t_test_uint32_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} t_test_uint32_t;
+} __attribute__((packed)) __attribute__((aligned(128))) t_test_uint32_t;
 
 // bytes=4, bitstart=8, bitend=23, bitmask=0000000000ffffff, rshift=8
 
-static t_test_uint32_t test_data_be_uint32_t[] =
+static const t_test_uint32_t test_data_be_uint32_t[] =
 {
     {   0,    0,  251, 0x00000000,    0,    0,    0,    0,    1,    1},
     {   0,    1,  251, 0x00010203,    1,    1,    1,    1,    2,    2},
@@ -451,7 +445,7 @@ static t_test_uint32_t test_data_be_uint32_t[] =
     {   0,  150,  251, 0x70717273,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint32_t test_data_sub_be_uint32_t[] =
+static const t_test_uint32_t test_data_sub_be_uint32_t[] =
 {
     {   0,    0,  251, 0x00000000,    0,    0,    0,    0,    1,    1},
     {   0,    1,  251, 0x00000102,    1,    1,    1,    1,    2,    2},
@@ -493,7 +487,7 @@ static t_test_uint32_t test_data_sub_be_uint32_t[] =
     {   0,  150,  251, 0x00007172,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint32_t test_data_le_uint32_t[] =
+static const t_test_uint32_t test_data_le_uint32_t[] =
 {
     {  12,    0,  251, 0x00000000,    0,    0,    0,    0,    1,    1},
     {  12,    1,  251, 0x00010203,    1,    1,    1,    1,    2,    2},
@@ -535,7 +529,7 @@ static t_test_uint32_t test_data_le_uint32_t[] =
     {  12,  150,  251, 0x70717273,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint32_t test_data_sub_le_uint32_t[] =
+static const t_test_uint32_t test_data_sub_le_uint32_t[] =
 {
     {  12,    0,  251, 0x00000000,    0,    0,    0,    0,    1,    1},
     {  12,    1,  251, 0x00000102,    1,    1,    1,    1,    2,    2},
@@ -589,11 +583,11 @@ typedef struct t_test_uint64_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} t_test_uint64_t;
+} __attribute__((packed)) __attribute__((aligned(128))) t_test_uint64_t;
 
 // bytes=8, bitstart=16, bitend=47, bitmask=0000ffffffffffff, rshift=16
 
-static t_test_uint64_t test_data_be_uint64_t[] =
+static const t_test_uint64_t test_data_be_uint64_t[] =
 {
     {   0,    0,  251, 0x0000000000000000,    0,    0,    0,    0,    1,    1},
     {   0,    1,  251, 0x0001020304050607,    1,    1,    1,    1,    2,    2},
@@ -635,7 +629,7 @@ static t_test_uint64_t test_data_be_uint64_t[] =
     {   0,  150,  251, 0x7071727374757677,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint64_t test_data_sub_be_uint64_t[] =
+static const t_test_uint64_t test_data_sub_be_uint64_t[] =
 {
     {   0,    0,  251, 0x0000000000000000,    0,    0,    0,    0,    1,    1},
     {   0,    1,  251, 0x0000000002030405,    1,    1,    1,    1,    2,    2},
@@ -677,7 +671,7 @@ static t_test_uint64_t test_data_sub_be_uint64_t[] =
     {   0,  150,  251, 0x0000000072737475,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint64_t test_data_le_uint64_t[] =
+static const t_test_uint64_t test_data_le_uint64_t[] =
 {
     {   8,    0,  251, 0x0000000000000000,    0,    0,    0,    0,    1,    1},
     {   8,    1,  251, 0x0001020304050607,    1,    1,    1,    1,    2,    2},
@@ -719,7 +713,7 @@ static t_test_uint64_t test_data_le_uint64_t[] =
     {   8,  150,  251, 0x7071727374757677,  251,  149,  150,  251,  149,  150},
 };
 
-static t_test_uint64_t test_data_sub_le_uint64_t[] =
+static const t_test_uint64_t test_data_sub_le_uint64_t[] =
 {
     {   8,    0,  251, 0x0000000000000000,    0,    0,    0,    0,    1,    1},
     {   8,    1,  251, 0x0000000002030405,    1,    1,    1,    1,    2,    2},
@@ -975,7 +969,7 @@ define_test_find_last(le, uint64_t)
 uint64_t get_time()
 {
     struct timespec t;
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
+    timespec_get(&t, TIME_UTC);
     return (((uint64_t)t.tv_sec * 1000000000) + (uint64_t)t.tv_nsec);
 }
 
@@ -996,7 +990,7 @@ void benchmark_find_first_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nrows
         found = find_first_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
-    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(size*4), found); \
+    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(uint64_t)(size*4), found); \
 }
 
 define_benchmark_find_first(be, uint8_t)
@@ -1025,7 +1019,7 @@ void benchmark_find_last_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nrows)
         found = find_last_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
-    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(size*4), found); \
+    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(uint64_t)(size*4), found); \
 }
 
 define_benchmark_find_last(be, uint8_t)
@@ -1057,7 +1051,7 @@ void benchmark_find_first_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t n
         found = find_first_sub_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, bitstart, bitend, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
-    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(size*4), found); \
+    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(uint64_t)(size*4), found); \
 }
 
 define_benchmark_find_first_sub(be, uint8_t)
@@ -1089,7 +1083,7 @@ void benchmark_find_last_sub_##O##_##T(mmfile_t mf, uint64_t blklen, uint64_t nr
         found = find_last_sub_##O##_##T(mf.src, blklen, test_data_##O##_##T[4].blkpos, bitstart, bitend, &first, &last, test_data_##O##_##T[4].search); \
     } \
     tend = get_time(); \
-    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(size*4), found); \
+    fprintf(stdout, " * %s : %lu ns/op (%" PRIx64 ")\n", __func__, (tend - tstart)/(uint64_t)(size*4), found); \
 }
 
 define_benchmark_find_last_sub(be, uint8_t)
@@ -1107,7 +1101,7 @@ int main()
 
     char *file = "test_data.bin"; // file containing test data
     uint64_t blklen = 16; // length of each binary block
-    uint64_t nrows; // number of binary blocks in the file
+    uint64_t nrows = 0; // number of binary blocks in the file
 
     mmfile_t mf = {0};
     mf.ncols = 1;

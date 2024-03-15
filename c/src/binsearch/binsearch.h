@@ -915,7 +915,7 @@ define_col_has_prev_sub(uint64_t)
 
 static inline void parse_col_offset(mmfile_t *mf)
 {
-    uint8_t i;
+    uint8_t i = 0;
     uint64_t b = 0;
     mf->index[0] = mf->doffset;
     for (i = 0; i < mf->ncols; i++)
@@ -941,13 +941,13 @@ static inline void parse_info_binsrc(mmfile_t *mf)
     mf->doffset = (uint64_t)9 + mf->ncols + ((8 - ((mf->ncols + 1) & 7)) & 7); // account for 8-byte padding
     const uint64_t *op = (const uint64_t *)(mf->src + mf->doffset);
     mf->nrows = *op++;
-    uint8_t i;
+    uint8_t i = 0;
     for (i = 0; i < mf->ncols; i++)
     {
         mf->ctbytes[i] = *tp++;
         mf->index[i] = *op++;
     }
-    mf->doffset += ((mf->ncols + 1) * 8); // skip column offsets section
+    mf->doffset += ((uint64_t)(mf->ncols + 1) * 8); // skip column offsets section
     mf->dlength -= mf->doffset;
 }
 
@@ -1016,6 +1016,8 @@ static inline void mmap_binfile(const char *file, mmfile_t *mf)
     // Basic support for Feather File format.
     case 0x0000000031414546: // magic number "FEA1" in LE
         parse_info_feather(mf);
+        break;
+    default:
         break;
     }
     parse_col_offset(mf);

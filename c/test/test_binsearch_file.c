@@ -6,13 +6,7 @@
 // @author     Nicola Asuni <info@tecnick.com>
 // @link       https://github.com/tecnickcom/binsearch
 // @license    MIT (see LICENSE file)
-// @copyright  (c) 2017-2023 Nicola Asuni - Tecnick.com
-
-#if __STDC_VERSION__ >= 199901L
-#define _XOPEN_SOURCE 600
-#else
-#define _XOPEN_SOURCE 500
-#endif
+// @copyright  (c) 2017-2024 Nicola Asuni - Tecnick.com
 
 #include <stdio.h>
 #include <string.h>
