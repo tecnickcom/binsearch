@@ -7,18 +7,6 @@
 SHELL=/bin/bash
 .SHELLFLAGS=-o pipefail -c
 
-# Project owner
-OWNER=Tecnick.com
-
-# Project vendor
-VENDOR=tecnickcom
-
-# Lowercase VENDOR name for Docker
-LCVENDOR=$(shell echo "${VENDOR}" | tr '[:upper:]' '[:lower:]')
-
-# CVS path (path to the parent dir containing the project)
-CVSPATH=github.com/${VENDOR}
-
 # Project name
 PROJECT=binsearch
 
@@ -26,19 +14,7 @@ PROJECT=binsearch
 VERSION=$(shell cat VERSION)
 
 # Project release number (packaging build number)
-RELEASE=$(shell cat RELEASE)
-
-# Current directory
-CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-
-# Target directory
-TARGETDIR=$(CURRENTDIR)target
-
-# Docker command
-ifeq ($(DOCKER),)
-	DOCKER=docker
-endif
-
+# RELEASE=$(shell cat RELEASE)
 
 # --- MAKE TARGETS ---
 
@@ -46,15 +22,14 @@ endif
 .PHONY: help
 help:
 	@echo ""
-	@echo "binsearch Makefile."
+	@echo "$(PROJECT) Makefile."
 	@echo "The following commands are available:"
 	@echo ""
-	@echo "    make c            : Build and test the C version"
-	@echo "    make go           : Build and test the GO version"
-	@echo "    make python       : Build and test the Python version"
-	@echo "    make clean        : Remove any build artifact"
-	@echo "    make dbuild       : Build everything inside a Docker container"
-	@echo "    make tag          : Tag the Git repository"
+	@echo "    make c      : Build and test the C version"
+	@echo "    make go     : Build and test the GO version"
+	@echo "    make python : Build and test the Python version"
+	@echo "    make clean  : Remove any build artifact"
+	@echo "    make tag    : Tag the Git repository"
 	@echo ""
 
 all: c go python
@@ -81,20 +56,6 @@ clean:
 	cd c && make clean
 	cd go && make clean
 	cd python && make clean
-
-# Build everything inside a Docker container
-.PHONY: dbuild
-dbuild: dockerdev
-	@mkdir -p $(TARGETDIR)
-	@rm -rf $(TARGETDIR)/*
-	@echo 0 > $(TARGETDIR)/make.exit
-	CVSPATH=$(CVSPATH) VENDOR=$(LCVENDOR) PROJECT=$(PROJECT) MAKETARGET='$(MAKETARGET)' $(CURRENTDIR)dockerbuild.sh
-	@exit `cat $(TARGETDIR)/make.exit`
-
-# Build a base development Docker image
-.PHONY: dockerdev
-dockerdev:
-	$(DOCKER) build --pull --tag ${LCVENDOR}/dev_${PROJECT} --file ./resources/docker/Dockerfile.dev ./resources/docker/
 
 # Tag the Git repository
 .PHONY: tag
