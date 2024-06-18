@@ -49,7 +49,7 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v4
       - name: setup python build environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
