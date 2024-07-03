@@ -855,8 +855,6 @@ var testDataLESub64 = []struct {
 
 func TestFindFirstBEUint8(t *testing.T) {
 	for _, tt := range testDataBE8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -905,8 +903,6 @@ func BenchmarkFindFirstBEUint8(b *testing.B) {
 
 func TestFindFirstSubBEUint8(t *testing.T) {
 	for _, tt := range testDataBESub8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -955,8 +951,6 @@ func BenchmarkFindFirstSubBEUint8(b *testing.B) {
 
 func TestFindLastBEUint8(t *testing.T) {
 	for _, tt := range testDataBE8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1005,8 +999,6 @@ func BenchmarkFindLastBEUint8(b *testing.B) {
 
 func TestFindLastSubBEUint8(t *testing.T) {
 	for _, tt := range testDataBESub8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1055,8 +1047,6 @@ func BenchmarkFindLastSubBEUint8(b *testing.B) {
 
 func TestFindFirstLEUint8(t *testing.T) {
 	for _, tt := range testDataLE8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1105,8 +1095,6 @@ func BenchmarkFindFirstLEUint8(b *testing.B) {
 
 func TestFindFirstSubLEUint8(t *testing.T) {
 	for _, tt := range testDataLESub8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1155,8 +1143,6 @@ func BenchmarkFindFirstSubLEUint8(b *testing.B) {
 
 func TestFindLastLEUint8(t *testing.T) {
 	for _, tt := range testDataLE8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1205,8 +1191,6 @@ func BenchmarkFindLastLEUint8(b *testing.B) {
 
 func TestFindLastSubLEUint8(t *testing.T) {
 	for _, tt := range testDataLESub8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1257,8 +1241,6 @@ func BenchmarkFindLastSubLEUint8(b *testing.B) {
 
 func TestFindFirstBEUint16(t *testing.T) {
 	for _, tt := range testDataBE16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1307,8 +1289,6 @@ func BenchmarkFindFirstBEUint16(b *testing.B) {
 
 func TestFindFirstSubBEUint16(t *testing.T) {
 	for _, tt := range testDataBESub16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1357,8 +1337,6 @@ func BenchmarkFindFirstSubBEUint16(b *testing.B) {
 
 func TestFindLastBEUint16(t *testing.T) {
 	for _, tt := range testDataBE16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1407,8 +1385,6 @@ func BenchmarkFindLastBEUint16(b *testing.B) {
 
 func TestFindLastSubBEUint16(t *testing.T) {
 	for _, tt := range testDataBESub16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1457,8 +1433,6 @@ func BenchmarkFindLastSubBEUint16(b *testing.B) {
 
 func TestFindFirstLEUint16(t *testing.T) {
 	for _, tt := range testDataLE16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1507,8 +1481,6 @@ func BenchmarkFindFirstLEUint16(b *testing.B) {
 
 func TestFindFirstSubLEUint16(t *testing.T) {
 	for _, tt := range testDataLESub16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1557,8 +1529,6 @@ func BenchmarkFindFirstSubLEUint16(b *testing.B) {
 
 func TestFindLastLEUint16(t *testing.T) {
 	for _, tt := range testDataLE16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1607,8 +1577,6 @@ func BenchmarkFindLastLEUint16(b *testing.B) {
 
 func TestFindLastSubLEUint16(t *testing.T) {
 	for _, tt := range testDataLESub16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1659,8 +1627,6 @@ func BenchmarkFindLastSubLEUint16(b *testing.B) {
 
 func TestFindFirstBEUint32(t *testing.T) {
 	for _, tt := range testDataBE32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1709,8 +1675,6 @@ func BenchmarkFindFirstBEUint32(b *testing.B) {
 
 func TestFindFirstSubBEUint32(t *testing.T) {
 	for _, tt := range testDataBESub32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1759,8 +1723,6 @@ func BenchmarkFindFirstSubBEUint32(b *testing.B) {
 
 func TestFindLastBEUint32(t *testing.T) {
 	for _, tt := range testDataBE32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1809,8 +1771,6 @@ func BenchmarkFindLastBEUint32(b *testing.B) {
 
 func TestFindLastSubBEUint32(t *testing.T) {
 	for _, tt := range testDataBESub32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1859,8 +1819,6 @@ func BenchmarkFindLastSubBEUint32(b *testing.B) {
 
 func TestFindFirstLEUint32(t *testing.T) {
 	for _, tt := range testDataLE32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1909,8 +1867,6 @@ func BenchmarkFindFirstLEUint32(b *testing.B) {
 
 func TestFindFirstSubLEUint32(t *testing.T) {
 	for _, tt := range testDataLESub32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1959,8 +1915,6 @@ func BenchmarkFindFirstSubLEUint32(b *testing.B) {
 
 func TestFindLastLEUint32(t *testing.T) {
 	for _, tt := range testDataLE32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2009,8 +1963,6 @@ func BenchmarkFindLastLEUint32(b *testing.B) {
 
 func TestFindLastSubLEUint32(t *testing.T) {
 	for _, tt := range testDataLESub32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2061,8 +2013,6 @@ func BenchmarkFindLastSubLEUint32(b *testing.B) {
 
 func TestFindFirstBEUint64(t *testing.T) {
 	for _, tt := range testDataBE64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2111,8 +2061,6 @@ func BenchmarkFindFirstBEUint64(b *testing.B) {
 
 func TestFindFirstSubBEUint64(t *testing.T) {
 	for _, tt := range testDataBESub64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2161,8 +2109,6 @@ func BenchmarkFindFirstSubBEUint64(b *testing.B) {
 
 func TestFindLastBEUint64(t *testing.T) {
 	for _, tt := range testDataBE64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2211,8 +2157,6 @@ func BenchmarkFindLastBEUint64(b *testing.B) {
 
 func TestFindLastSubBEUint64(t *testing.T) {
 	for _, tt := range testDataBESub64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2261,8 +2205,6 @@ func BenchmarkFindLastSubBEUint64(b *testing.B) {
 
 func TestFindFirstLEUint64(t *testing.T) {
 	for _, tt := range testDataLE64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2311,8 +2253,6 @@ func BenchmarkFindFirstLEUint64(b *testing.B) {
 
 func TestFindFirstSubLEUint64(t *testing.T) {
 	for _, tt := range testDataLESub64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2361,8 +2301,6 @@ func BenchmarkFindFirstSubLEUint64(b *testing.B) {
 
 func TestFindLastLEUint64(t *testing.T) {
 	for _, tt := range testDataLE64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -2411,8 +2349,6 @@ func BenchmarkFindLastLEUint64(b *testing.B) {
 
 func TestFindLastSubLEUint64(t *testing.T) {
 	for _, tt := range testDataLESub64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 

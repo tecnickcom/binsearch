@@ -421,8 +421,6 @@ var testDataColSub64 = []struct {
 
 func TestColFindFirstUint8(t *testing.T) {
 	for _, tt := range testDataCol8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -471,8 +469,6 @@ func BenchmarkColFindFirstUint8(b *testing.B) {
 
 func TestColFindFirstSubUint8(t *testing.T) {
 	for _, tt := range testDataColSub8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -521,8 +517,6 @@ func BenchmarkColFindFirstSubUint8(b *testing.B) {
 
 func TestColFindLastUint8(t *testing.T) {
 	for _, tt := range testDataCol8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -571,8 +565,6 @@ func BenchmarkColFindLastUint8(b *testing.B) {
 
 func TestColFindLastSubUint8(t *testing.T) {
 	for _, tt := range testDataColSub8 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -621,8 +613,6 @@ func BenchmarkColFindLastSubUint8(b *testing.B) {
 
 func TestColFindFirstUint16(t *testing.T) {
 	for _, tt := range testDataCol16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -671,8 +661,6 @@ func BenchmarkColFindFirstUint16(b *testing.B) {
 
 func TestColFindFirstSubUint16(t *testing.T) {
 	for _, tt := range testDataColSub16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -721,8 +709,6 @@ func BenchmarkColFindFirstSubUint16(b *testing.B) {
 
 func TestColFindLastUint16(t *testing.T) {
 	for _, tt := range testDataCol16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -771,8 +757,6 @@ func BenchmarkColFindLastUint16(b *testing.B) {
 
 func TestColFindLastSubUint16(t *testing.T) {
 	for _, tt := range testDataColSub16 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -821,8 +805,6 @@ func BenchmarkColFindLastSubUint16(b *testing.B) {
 
 func TestColFindFirstUint32(t *testing.T) {
 	for _, tt := range testDataCol32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -871,8 +853,6 @@ func BenchmarkColFindFirstUint32(b *testing.B) {
 
 func TestColFindFirstSubUint32(t *testing.T) {
 	for _, tt := range testDataColSub32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -921,8 +901,6 @@ func BenchmarkColFindFirstSubUint32(b *testing.B) {
 
 func TestColFindLastUint32(t *testing.T) {
 	for _, tt := range testDataCol32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -971,8 +949,6 @@ func BenchmarkColFindLastUint32(b *testing.B) {
 
 func TestColFindLastSubUint32(t *testing.T) {
 	for _, tt := range testDataColSub32 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1021,8 +997,6 @@ func BenchmarkColFindLastSubUint32(b *testing.B) {
 
 func TestColFindFirstUint64(t *testing.T) {
 	for _, tt := range testDataCol64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1071,8 +1045,6 @@ func BenchmarkColFindFirstUint64(b *testing.B) {
 
 func TestColFindFirstSubUint64(t *testing.T) {
 	for _, tt := range testDataColSub64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1121,8 +1093,6 @@ func BenchmarkColFindFirstSubUint64(b *testing.B) {
 
 func TestColFindLastUint64(t *testing.T) {
 	for _, tt := range testDataCol64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
@@ -1171,8 +1141,6 @@ func BenchmarkColFindLastUint64(b *testing.B) {
 
 func TestColFindLastSubUint64(t *testing.T) {
 	for _, tt := range testDataColSub64 {
-		tt := tt
-
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
