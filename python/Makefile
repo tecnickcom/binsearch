@@ -86,4 +86,4 @@ venv: clean version
 	&& python --version \
 	&& pip install --upgrade pip \
 	&& pip install --pre wheel build black pytest \
-	&& pip install -e .[test]
+	&& pip install --use-pep517 --no-build-isolation -e .[test]
