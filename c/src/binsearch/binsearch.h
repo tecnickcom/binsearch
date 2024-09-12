@@ -6,7 +6,7 @@
 // @author     Nicola Asuni <info@tecnick.com>
 // @link       https://github.com/tecnickcom/binsearch
 // @license    MIT (see LICENSE file)
-// @copyright  (c) 2017-2023 Nicola Asuni - Tecnick.com
+// @copyright  (c) 2017-2024 Nicola Asuni - Tecnick.com
 
 /**
  * @file binsearch.h
@@ -979,8 +979,6 @@ static inline void parse_info_feather(mmfile_t *mf)
  *
  * @param file  Path to the file to map.
  * @param mf    Structure containing the memory mapped file.
- *
- * @return Returns the memory-mapped file descriptors.
  */
 static inline void mmap_binfile(const char *file, mmfile_t *mf)
 {

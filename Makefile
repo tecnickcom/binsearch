@@ -25,11 +25,11 @@ help:
 	@echo "$(PROJECT) Makefile."
 	@echo "The following commands are available:"
 	@echo ""
-	@echo "    make c      : Build and test the C version"
-	@echo "    make go     : Build and test the GO version"
-	@echo "    make python : Build and test the Python version"
-	@echo "    make clean  : Remove any build artifact"
-	@echo "    make tag    : Tag the Git repository"
+	@echo "  make c      : Build and test the C version"
+	@echo "  make go     : Build and test the GO version"
+	@echo "  make python : Build and test the Python version"
+	@echo "  make clean  : Remove any build artifact"
+	@echo "  make tag    : Tag the Git repository"
 	@echo ""
 
 all: c go python
