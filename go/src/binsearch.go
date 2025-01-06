@@ -16,7 +16,7 @@ import (
 // maxcols is the maximum number of indexable columns as in binsearch.h file.
 const maxcols = 256
 
-// TMMFile contains the memory mapped file info
+// TMMFile contains the memory mapped file info.
 type TMMFile struct {
 	Src     unsafe.Pointer // Pointer to the memory map.
 	Fd      int            // File descriptor.
@@ -74,8 +74,8 @@ func castGoTMMFileToC(mf TMMFile) C.mmfile_t {
 	return cmf
 }
 
-// StringToNTBytes safely convert a string to byte array with an extra null terminator
-// This is to ensure a correct CGO conversion to char*
+// StringToNTBytes safely convert a string to byte array with an extra null terminator.
+// This is to ensure a correct CGO conversion to char*.
 func StringToNTBytes(s string) []byte {
 	b := make([]byte, len(s)+1)
 	copy(b, s)
