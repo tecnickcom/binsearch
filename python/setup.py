@@ -30,7 +30,7 @@ class RunTests(Command):
 
 setup(
     name="binsearch",
-    version="9.4.35.0",
+    version="9.4.36.0",
     keywords=("binsearch"),
     description="Binsearch Bindings for Python",
     long_description=read("../README.md"),
@@ -63,7 +63,6 @@ setup(
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "License :: OSI Approved :: MIT License",
         "Intended Audience :: Developers",
         "Programming Language :: C",
         "Programming Language :: Python",
