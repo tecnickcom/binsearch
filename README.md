@@ -2,13 +2,13 @@
 
 *Fast binary search for columnar data formats.*
 
-[![Master Build Status](https://secure.travis-ci.org/tecnickcom/binsearch.png?branch=master)](https://travis-ci.org/tecnickcom/binsearch?branch=master)
-[![Master Coverage Status](https://coveralls.io/repos/tecnickcom/binsearch/badge.svg?branch=master&service=github)](https://coveralls.io/github/tecnickcom/binsearch?branch=master)
+[![Donate via PayPal](https://img.shields.io/badge/donate-paypal-87ceeb.svg)](https://www.paypal.com/donate/?hosted_button_id=NZUEC5XS8MFBJ)
+*Please consider supporting this project by making a donation via [PayPal](https://www.paypal.com/donate/?hosted_button_id=NZUEC5XS8MFBJ)*
 
 * **category**    Libraries
 * **license**     MIT (see LICENSE)
 * **author**      Nicola Asuni
-* **copyright**   2017-2024 Nicola Asuni - Tecnick.com
+* **copyright**   2017-2025 Nicola Asuni - Tecnick.com
 * **link**        https://github.com/tecnickcom/binsearch
 
 
