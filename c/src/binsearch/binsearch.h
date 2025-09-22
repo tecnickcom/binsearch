@@ -6,7 +6,7 @@
 // @author     Nicola Asuni <info@tecnick.com>
 // @link       https://github.com/tecnickcom/binsearch
 // @license    MIT (see LICENSE file)
-// @copyright  (c) 2017-2024 Nicola Asuni - Tecnick.com
+// @copyright  (c) 2017-2025 Nicola Asuni - Tecnick.com
 
 /**
  * @file binsearch.h
@@ -44,6 +44,7 @@
 #include <inttypes.h>
 #include <fcntl.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -216,7 +217,7 @@
 /**
  * Struct containing the memory mapped file info.
  */
-typedef struct mmfile_t
+typedef struct __attribute__((packed, aligned(128))) mmfile_t
 {
     uint8_t *src;               //!< Pointer to the memory map.
     int fd;                     //!< File descriptor.
@@ -989,7 +990,8 @@ static inline void mmap_binfile(const char *file, mmfile_t *mf)
     mf->dlength = 0;
     mf->nrows = 0;
     struct stat statbuf;
-    if (((mf->fd = open(file, O_RDONLY)) < 0) || (fstat(mf->fd, &statbuf) < 0))
+    mf->fd = open(file, O_RDONLY);
+    if ((mf->fd < 0) || (fstat(mf->fd, &statbuf) < 0))
     {
         return;
     }
