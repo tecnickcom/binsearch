@@ -30,7 +30,7 @@ class RunTests(Command):
 
 setup(
     name="binsearch",
-    version="9.4.50.0",
+    version="9.4.51.0",
     keywords=("binsearch"),
     description="Binsearch Bindings for Python",
     long_description=read("../README.md"),
@@ -48,7 +48,7 @@ setup(
             extra_compile_args=[
                 "-O3",
                 "-pedantic",
-                "-std=c99",
+                "-std=c2x",
                 "-Wall",
                 "-Wextra",
                 "-Wno-strict-prototypes",
