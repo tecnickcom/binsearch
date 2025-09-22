@@ -39,7 +39,7 @@ typedef struct t_test_col_uint8_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} __attribute__((packed)) __attribute__((aligned(128))) t_test_col_uint8_t;
+} __attribute__((packed,aligned(128))) t_test_col_uint8_t;
 
 // bytes=1, bitstart=0, bitend=7, bitmask=00000000000000ff, rshift=0
 
@@ -138,7 +138,7 @@ typedef struct t_test_col_uint16_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} __attribute__((packed)) __attribute__((aligned(128))) t_test_col_uint16_t;
+} __attribute__((packed,aligned(128))) t_test_col_uint16_t;
 
 // bytes=2, bitstart=0, bitend=15, bitmask=000000000000ffff, rshift=0
 
@@ -237,7 +237,7 @@ typedef struct t_test_col_uint32_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} __attribute__((packed)) __attribute__((aligned(128))) t_test_col_uint32_t;
+} __attribute__((packed,aligned(128))) t_test_col_uint32_t;
 
 // bytes=4, bitstart=8, bitend=23, bitmask=0000000000ffffff, rshift=8
 
@@ -337,7 +337,7 @@ typedef struct t_test_col_uint64_t
     uint64_t foundLast;
     uint64_t foundLFirst;
     uint64_t foundLLast;
-} __attribute__((packed)) __attribute__((aligned(128))) t_test_col_uint64_t;
+} __attribute__((packed,aligned(128))) t_test_col_uint64_t;
 
 // bytes=8, bitstart=16, bitend=47, bitmask=0000ffffffffffff, rshift=16
 

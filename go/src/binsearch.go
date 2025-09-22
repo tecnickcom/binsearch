@@ -3,7 +3,7 @@
 package binsearch
 
 /*
-#cgo CFLAGS: -O3 -pedantic -std=c99 -Wextra -Wno-strict-prototypes -Wcast-align -Wundef -Wformat -Wformat-security -Wshadow
+#cgo CFLAGS: -O3 -pedantic -std=c2x -Wextra -Wno-strict-prototypes -Wcast-align -Wundef -Wformat -Wformat-security -Wshadow
 #include "../../c/src/binsearch/binsearch.h"
 */
 import "C" //nolint:nolintlint,gci,typecheck

@@ -217,7 +217,7 @@
 /**
  * Struct containing the memory mapped file info.
  */
-typedef struct __attribute__((packed, aligned(128))) mmfile_t
+typedef struct mmfile_t
 {
     uint8_t *src;               //!< Pointer to the memory map.
     int fd;                     //!< File descriptor.
