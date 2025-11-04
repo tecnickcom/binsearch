@@ -460,9 +460,7 @@ func TestColFindFirstUint8(t *testing.T) {
 }
 
 func BenchmarkColFindFirstUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstUint8(cmf.Index[0], testDataCol8[4].first, testDataCol8[4].last, testDataCol8[4].search)
 	}
 }
@@ -508,9 +506,7 @@ func TestColFindFirstSubUint8(t *testing.T) {
 }
 
 func BenchmarkColFindFirstSubUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstSubUint8(cmf.Index[0], 0, 7, testDataColSub8[4].first, testDataColSub8[4].last, testDataColSub8[4].search)
 	}
 }
@@ -556,9 +552,7 @@ func TestColFindLastUint8(t *testing.T) {
 }
 
 func BenchmarkColFindLastUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastUint8(cmf.Index[0], testDataCol8[4].first, testDataCol8[4].last, testDataCol8[4].search)
 	}
 }
@@ -604,9 +598,7 @@ func TestColFindLastSubUint8(t *testing.T) {
 }
 
 func BenchmarkColFindLastSubUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastSubUint8(cmf.Index[0], 0, 7, testDataColSub8[4].first, testDataColSub8[4].last, testDataColSub8[4].search)
 	}
 }
@@ -652,9 +644,7 @@ func TestColFindFirstUint16(t *testing.T) {
 }
 
 func BenchmarkColFindFirstUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstUint16(cmf.Index[1], testDataCol16[4].first, testDataCol16[4].last, testDataCol16[4].search)
 	}
 }
@@ -700,9 +690,7 @@ func TestColFindFirstSubUint16(t *testing.T) {
 }
 
 func BenchmarkColFindFirstSubUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstSubUint16(cmf.Index[1], 0, 15, testDataColSub16[4].first, testDataColSub16[4].last, testDataColSub16[4].search)
 	}
 }
@@ -748,9 +736,7 @@ func TestColFindLastUint16(t *testing.T) {
 }
 
 func BenchmarkColFindLastUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastUint16(cmf.Index[1], testDataCol16[4].first, testDataCol16[4].last, testDataCol16[4].search)
 	}
 }
@@ -796,9 +782,7 @@ func TestColFindLastSubUint16(t *testing.T) {
 }
 
 func BenchmarkColFindLastSubUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastSubUint16(cmf.Index[1], 0, 15, testDataColSub16[4].first, testDataColSub16[4].last, testDataColSub16[4].search)
 	}
 }
@@ -844,9 +828,7 @@ func TestColFindFirstUint32(t *testing.T) {
 }
 
 func BenchmarkColFindFirstUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstUint32(cmf.Index[2], testDataCol32[4].first, testDataCol32[4].last, testDataCol32[4].search)
 	}
 }
@@ -892,9 +874,7 @@ func TestColFindFirstSubUint32(t *testing.T) {
 }
 
 func BenchmarkColFindFirstSubUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstSubUint32(cmf.Index[2], 8, 23, testDataColSub32[4].first, testDataColSub32[4].last, testDataColSub32[4].search)
 	}
 }
@@ -940,9 +920,7 @@ func TestColFindLastUint32(t *testing.T) {
 }
 
 func BenchmarkColFindLastUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastUint32(cmf.Index[2], testDataCol32[4].first, testDataCol32[4].last, testDataCol32[4].search)
 	}
 }
@@ -988,9 +966,7 @@ func TestColFindLastSubUint32(t *testing.T) {
 }
 
 func BenchmarkColFindLastSubUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastSubUint32(cmf.Index[2], 8, 23, testDataColSub32[4].first, testDataColSub32[4].last, testDataColSub32[4].search)
 	}
 }
@@ -1036,9 +1012,7 @@ func TestColFindFirstUint64(t *testing.T) {
 }
 
 func BenchmarkColFindFirstUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstUint64(cmf.Index[3], testDataCol64[4].first, testDataCol64[4].last, testDataCol64[4].search)
 	}
 }
@@ -1084,9 +1058,7 @@ func TestColFindFirstSubUint64(t *testing.T) {
 }
 
 func BenchmarkColFindFirstSubUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindFirstSubUint64(cmf.Index[3], 16, 47, testDataColSub64[4].first, testDataColSub64[4].last, testDataColSub64[4].search)
 	}
 }
@@ -1132,9 +1104,7 @@ func TestColFindLastUint64(t *testing.T) {
 }
 
 func BenchmarkColFindLastUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastUint64(cmf.Index[3], testDataCol64[4].first, testDataCol64[4].last, testDataCol64[4].search)
 	}
 }
@@ -1180,9 +1150,7 @@ func TestColFindLastSubUint64(t *testing.T) {
 }
 
 func BenchmarkColFindLastSubUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		cmf.ColFindLastSubUint64(cmf.Index[3], 16, 47, testDataColSub64[4].first, testDataColSub64[4].last, testDataColSub64[4].search)
 	}
 }

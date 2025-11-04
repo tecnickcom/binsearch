@@ -894,9 +894,7 @@ func TestFindFirstBEUint8(t *testing.T) {
 }
 
 func BenchmarkFindFirstBEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstBEUint8(0, 16, testDataBE8[4].blkpos, testDataBE8[4].first, testDataBE8[4].last, testDataBE8[4].search)
 	}
 }
@@ -942,9 +940,7 @@ func TestFindFirstSubBEUint8(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubBEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubBEUint8(0, 16, testDataBESub8[4].blkpos, 0, 7, testDataBESub8[4].first, testDataBESub8[4].last, testDataBESub8[4].search)
 	}
 }
@@ -990,9 +986,7 @@ func TestFindLastBEUint8(t *testing.T) {
 }
 
 func BenchmarkFindLastBEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastBEUint8(0, 16, testDataBE8[4].blkpos, testDataBE8[4].first, testDataBE8[4].last, testDataBE8[4].search)
 	}
 }
@@ -1038,9 +1032,7 @@ func TestFindLastSubBEUint8(t *testing.T) {
 }
 
 func BenchmarkFindLastSubBEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubBEUint8(0, 16, testDataBESub8[4].blkpos, 0, 7, testDataBESub8[4].first, testDataBESub8[4].last, testDataBESub8[4].search)
 	}
 }
@@ -1086,9 +1078,7 @@ func TestFindFirstLEUint8(t *testing.T) {
 }
 
 func BenchmarkFindFirstLEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstLEUint8(0, 16, testDataLE8[4].blkpos, testDataLE8[4].first, testDataLE8[4].last, testDataLE8[4].search)
 	}
 }
@@ -1134,9 +1124,7 @@ func TestFindFirstSubLEUint8(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubLEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubLEUint8(0, 16, testDataLESub8[4].blkpos, 0, 7, testDataLESub8[4].first, testDataLESub8[4].last, testDataLESub8[4].search)
 	}
 }
@@ -1182,9 +1170,7 @@ func TestFindLastLEUint8(t *testing.T) {
 }
 
 func BenchmarkFindLastLEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastLEUint8(0, 16, testDataLE8[4].blkpos, testDataLE8[4].first, testDataLE8[4].last, testDataLE8[4].search)
 	}
 }
@@ -1230,9 +1216,7 @@ func TestFindLastSubLEUint8(t *testing.T) {
 }
 
 func BenchmarkFindLastSubLEUint8(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubLEUint8(0, 16, testDataLESub8[4].blkpos, 0, 7, testDataLESub8[4].first, testDataLESub8[4].last, testDataLESub8[4].search)
 	}
 }
@@ -1280,9 +1264,7 @@ func TestFindFirstBEUint16(t *testing.T) {
 }
 
 func BenchmarkFindFirstBEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstBEUint16(0, 16, testDataBE16[4].blkpos, testDataBE16[4].first, testDataBE16[4].last, testDataBE16[4].search)
 	}
 }
@@ -1328,9 +1310,7 @@ func TestFindFirstSubBEUint16(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubBEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubBEUint16(0, 16, testDataBESub16[4].blkpos, 0, 15, testDataBESub16[4].first, testDataBESub16[4].last, testDataBESub16[4].search)
 	}
 }
@@ -1376,9 +1356,7 @@ func TestFindLastBEUint16(t *testing.T) {
 }
 
 func BenchmarkFindLastBEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastBEUint16(0, 16, testDataBE16[4].blkpos, testDataBE16[4].first, testDataBE16[4].last, testDataBE16[4].search)
 	}
 }
@@ -1424,9 +1402,7 @@ func TestFindLastSubBEUint16(t *testing.T) {
 }
 
 func BenchmarkFindLastSubBEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubBEUint16(0, 16, testDataBESub16[4].blkpos, 0, 15, testDataBESub16[4].first, testDataBESub16[4].last, testDataBESub16[4].search)
 	}
 }
@@ -1472,9 +1448,7 @@ func TestFindFirstLEUint16(t *testing.T) {
 }
 
 func BenchmarkFindFirstLEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstLEUint16(0, 16, testDataLE16[4].blkpos, testDataLE16[4].first, testDataLE16[4].last, testDataLE16[4].search)
 	}
 }
@@ -1520,9 +1494,7 @@ func TestFindFirstSubLEUint16(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubLEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubLEUint16(0, 16, testDataLESub16[4].blkpos, 0, 15, testDataLESub16[4].first, testDataLESub16[4].last, testDataLESub16[4].search)
 	}
 }
@@ -1568,9 +1540,7 @@ func TestFindLastLEUint16(t *testing.T) {
 }
 
 func BenchmarkFindLastLEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastLEUint16(0, 16, testDataLE16[4].blkpos, testDataLE16[4].first, testDataLE16[4].last, testDataLE16[4].search)
 	}
 }
@@ -1616,9 +1586,7 @@ func TestFindLastSubLEUint16(t *testing.T) {
 }
 
 func BenchmarkFindLastSubLEUint16(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubLEUint16(0, 16, testDataLESub16[4].blkpos, 0, 15, testDataLESub16[4].first, testDataLESub16[4].last, testDataLESub16[4].search)
 	}
 }
@@ -1666,9 +1634,7 @@ func TestFindFirstBEUint32(t *testing.T) {
 }
 
 func BenchmarkFindFirstBEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstBEUint32(0, 16, testDataBE32[4].blkpos, testDataBE32[4].first, testDataBE32[4].last, testDataBE32[4].search)
 	}
 }
@@ -1714,9 +1680,7 @@ func TestFindFirstSubBEUint32(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubBEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubBEUint32(0, 16, testDataBESub32[4].blkpos, 8, 23, testDataBESub32[4].first, testDataBESub32[4].last, testDataBESub32[4].search)
 	}
 }
@@ -1762,9 +1726,7 @@ func TestFindLastBEUint32(t *testing.T) {
 }
 
 func BenchmarkFindLastBEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastBEUint32(0, 16, testDataBE32[4].blkpos, testDataBE32[4].first, testDataBE32[4].last, testDataBE32[4].search)
 	}
 }
@@ -1810,9 +1772,7 @@ func TestFindLastSubBEUint32(t *testing.T) {
 }
 
 func BenchmarkFindLastSubBEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubBEUint32(0, 16, testDataBESub32[4].blkpos, 8, 23, testDataBESub32[4].first, testDataBESub32[4].last, testDataBESub32[4].search)
 	}
 }
@@ -1858,9 +1818,7 @@ func TestFindFirstLEUint32(t *testing.T) {
 }
 
 func BenchmarkFindFirstLEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstLEUint32(0, 16, testDataLE32[4].blkpos, testDataLE32[4].first, testDataLE32[4].last, testDataLE32[4].search)
 	}
 }
@@ -1906,9 +1864,7 @@ func TestFindFirstSubLEUint32(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubLEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubLEUint32(0, 16, testDataLESub32[4].blkpos, 8, 23, testDataLESub32[4].first, testDataLESub32[4].last, testDataLESub32[4].search)
 	}
 }
@@ -1954,9 +1910,7 @@ func TestFindLastLEUint32(t *testing.T) {
 }
 
 func BenchmarkFindLastLEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastLEUint32(0, 16, testDataLE32[4].blkpos, testDataLE32[4].first, testDataLE32[4].last, testDataLE32[4].search)
 	}
 }
@@ -2002,9 +1956,7 @@ func TestFindLastSubLEUint32(t *testing.T) {
 }
 
 func BenchmarkFindLastSubLEUint32(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubLEUint32(0, 16, testDataLESub32[4].blkpos, 8, 23, testDataLESub32[4].first, testDataLESub32[4].last, testDataLESub32[4].search)
 	}
 }
@@ -2052,9 +2004,7 @@ func TestFindFirstBEUint64(t *testing.T) {
 }
 
 func BenchmarkFindFirstBEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstBEUint64(0, 16, testDataBE64[4].blkpos, testDataBE64[4].first, testDataBE64[4].last, testDataBE64[4].search)
 	}
 }
@@ -2100,9 +2050,7 @@ func TestFindFirstSubBEUint64(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubBEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubBEUint64(0, 16, testDataBESub64[4].blkpos, 16, 47, testDataBESub64[4].first, testDataBESub64[4].last, testDataBESub64[4].search)
 	}
 }
@@ -2148,9 +2096,7 @@ func TestFindLastBEUint64(t *testing.T) {
 }
 
 func BenchmarkFindLastBEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastBEUint64(0, 16, testDataBE64[4].blkpos, testDataBE64[4].first, testDataBE64[4].last, testDataBE64[4].search)
 	}
 }
@@ -2196,9 +2142,7 @@ func TestFindLastSubBEUint64(t *testing.T) {
 }
 
 func BenchmarkFindLastSubBEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubBEUint64(0, 16, testDataBESub64[4].blkpos, 16, 47, testDataBESub64[4].first, testDataBESub64[4].last, testDataBESub64[4].search)
 	}
 }
@@ -2244,9 +2188,7 @@ func TestFindFirstLEUint64(t *testing.T) {
 }
 
 func BenchmarkFindFirstLEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstLEUint64(0, 16, testDataLE64[4].blkpos, testDataLE64[4].first, testDataLE64[4].last, testDataLE64[4].search)
 	}
 }
@@ -2292,9 +2234,7 @@ func TestFindFirstSubLEUint64(t *testing.T) {
 }
 
 func BenchmarkFindFirstSubLEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindFirstSubLEUint64(0, 16, testDataLESub64[4].blkpos, 16, 47, testDataLESub64[4].first, testDataLESub64[4].last, testDataLESub64[4].search)
 	}
 }
@@ -2340,9 +2280,7 @@ func TestFindLastLEUint64(t *testing.T) {
 }
 
 func BenchmarkFindLastLEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastLEUint64(0, 16, testDataLE64[4].blkpos, testDataLE64[4].first, testDataLE64[4].last, testDataLE64[4].search)
 	}
 }
@@ -2388,9 +2326,7 @@ func TestFindLastSubLEUint64(t *testing.T) {
 }
 
 func BenchmarkFindLastSubLEUint64(b *testing.B) {
-	b.ResetTimer()
-
-	for range b.N {
+	for b.Loop() {
 		mf.FindLastSubLEUint64(0, 16, testDataLESub64[4].blkpos, 16, 47, testDataLESub64[4].first, testDataLESub64[4].last, testDataLESub64[4].search)
 	}
 }
