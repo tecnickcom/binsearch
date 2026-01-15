@@ -8,7 +8,7 @@
 * **category**    Libraries
 * **license**     MIT (see LICENSE)
 * **author**      Nicola Asuni
-* **copyright**   2017-2025 Nicola Asuni - Tecnick.com
+* **copyright**   2017-2026 Nicola Asuni - Tecnick.com
 * **link**        https://github.com/tecnickcom/binsearch
 
 
