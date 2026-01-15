@@ -133,7 +133,7 @@ func GetAddress(blklen, blkpos, item uint64) uint64 {
 func (mf TMMFile) FindFirstBEUint8(offset, blklen, blkpos, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_first_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -145,7 +145,7 @@ func (mf TMMFile) FindFirstBEUint8(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindLastBEUint8(offset, blklen, blkpos, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_last_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -157,7 +157,7 @@ func (mf TMMFile) FindLastBEUint8(offset, blklen, blkpos, first, last uint64, se
 func (mf TMMFile) FindFirstBEUint16(offset, blklen, blkpos, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_first_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -169,7 +169,7 @@ func (mf TMMFile) FindFirstBEUint16(offset, blklen, blkpos, first, last uint64, 
 func (mf TMMFile) FindLastBEUint16(offset, blklen, blkpos, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_last_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -181,7 +181,7 @@ func (mf TMMFile) FindLastBEUint16(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindFirstBEUint32(offset, blklen, blkpos, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_first_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -193,7 +193,7 @@ func (mf TMMFile) FindFirstBEUint32(offset, blklen, blkpos, first, last uint64, 
 func (mf TMMFile) FindLastBEUint32(offset, blklen, blkpos, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_last_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -205,7 +205,7 @@ func (mf TMMFile) FindLastBEUint32(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindFirstBEUint64(offset, blklen, blkpos, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_first_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -217,7 +217,7 @@ func (mf TMMFile) FindFirstBEUint64(offset, blklen, blkpos, first, last uint64, 
 func (mf TMMFile) FindLastBEUint64(offset, blklen, blkpos, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_last_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -229,7 +229,7 @@ func (mf TMMFile) FindLastBEUint64(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindFirstSubBEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_first_sub_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -241,7 +241,7 @@ func (mf TMMFile) FindFirstSubBEUint8(offset, blklen, blkpos uint64, bitstart, b
 func (mf TMMFile) FindLastSubBEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_last_sub_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -253,7 +253,7 @@ func (mf TMMFile) FindLastSubBEUint8(offset, blklen, blkpos uint64, bitstart, bi
 func (mf TMMFile) FindFirstSubBEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_first_sub_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -265,7 +265,7 @@ func (mf TMMFile) FindFirstSubBEUint16(offset, blklen, blkpos uint64, bitstart, 
 func (mf TMMFile) FindLastSubBEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_last_sub_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -277,7 +277,7 @@ func (mf TMMFile) FindLastSubBEUint16(offset, blklen, blkpos uint64, bitstart, b
 func (mf TMMFile) FindFirstSubBEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_first_sub_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -289,7 +289,7 @@ func (mf TMMFile) FindFirstSubBEUint32(offset, blklen, blkpos uint64, bitstart, 
 func (mf TMMFile) FindLastSubBEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_last_sub_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -301,7 +301,7 @@ func (mf TMMFile) FindLastSubBEUint32(offset, blklen, blkpos uint64, bitstart, b
 func (mf TMMFile) FindFirstSubBEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_first_sub_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -313,7 +313,7 @@ func (mf TMMFile) FindFirstSubBEUint64(offset, blklen, blkpos uint64, bitstart, 
 func (mf TMMFile) FindLastSubBEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_last_sub_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -326,7 +326,7 @@ func (mf TMMFile) FindLastSubBEUint64(offset, blklen, blkpos uint64, bitstart, b
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextBEUint8(offset, blklen, blkpos, pos, last uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint8_t(search)))
+	ret := bool(C.has_next_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -339,7 +339,7 @@ func (mf TMMFile) HasNextBEUint8(offset, blklen, blkpos, pos, last uint64, searc
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextBEUint16(offset, blklen, blkpos, pos, last uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint16_t(search)))
+	ret := bool(C.has_next_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -352,7 +352,7 @@ func (mf TMMFile) HasNextBEUint16(offset, blklen, blkpos, pos, last uint64, sear
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextBEUint32(offset, blklen, blkpos, pos, last uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint32_t(search)))
+	ret := bool(C.has_next_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -365,7 +365,7 @@ func (mf TMMFile) HasNextBEUint32(offset, blklen, blkpos, pos, last uint64, sear
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextBEUint64(offset, blklen, blkpos, pos, last uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint64_t(search)))
+	ret := bool(C.has_next_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -378,7 +378,7 @@ func (mf TMMFile) HasNextBEUint64(offset, blklen, blkpos, pos, last uint64, sear
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubBEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint8_t(search)))
+	ret := bool(C.has_next_sub_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -391,7 +391,7 @@ func (mf TMMFile) HasNextSubBEUint8(offset, blklen, blkpos uint64, bitstart, bit
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubBEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint16_t(search)))
+	ret := bool(C.has_next_sub_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -404,7 +404,7 @@ func (mf TMMFile) HasNextSubBEUint16(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubBEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint32_t(search)))
+	ret := bool(C.has_next_sub_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -417,7 +417,7 @@ func (mf TMMFile) HasNextSubBEUint32(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubBEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint64_t(search)))
+	ret := bool(C.has_next_sub_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -430,7 +430,7 @@ func (mf TMMFile) HasNextSubBEUint64(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevBEUint8(offset, blklen, blkpos, first, pos uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint8_t(search)))
+	ret := bool(C.has_prev_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -443,7 +443,7 @@ func (mf TMMFile) HasPrevBEUint8(offset, blklen, blkpos, first, pos uint64, sear
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevBEUint16(offset, blklen, blkpos, first, pos uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint16_t(search)))
+	ret := bool(C.has_prev_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -456,7 +456,7 @@ func (mf TMMFile) HasPrevBEUint16(offset, blklen, blkpos, first, pos uint64, sea
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevBEUint32(offset, blklen, blkpos, first, pos uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint32_t(search)))
+	ret := bool(C.has_prev_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -469,7 +469,7 @@ func (mf TMMFile) HasPrevBEUint32(offset, blklen, blkpos, first, pos uint64, sea
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevBEUint64(offset, blklen, blkpos, first, pos uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint64_t(search)))
+	ret := bool(C.has_prev_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -482,7 +482,7 @@ func (mf TMMFile) HasPrevBEUint64(offset, blklen, blkpos, first, pos uint64, sea
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubBEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_be_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint8_t(search)))
+	ret := bool(C.has_prev_sub_be_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -495,7 +495,7 @@ func (mf TMMFile) HasPrevSubBEUint8(offset, blklen, blkpos uint64, bitstart, bit
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubBEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_be_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint16_t(search)))
+	ret := bool(C.has_prev_sub_be_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -508,7 +508,7 @@ func (mf TMMFile) HasPrevSubBEUint16(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubBEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_be_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint32_t(search)))
+	ret := bool(C.has_prev_sub_be_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -521,7 +521,7 @@ func (mf TMMFile) HasPrevSubBEUint32(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubBEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_be_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint64_t(search)))
+	ret := bool(C.has_prev_sub_be_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -533,7 +533,7 @@ func (mf TMMFile) HasPrevSubBEUint64(offset, blklen, blkpos uint64, bitstart, bi
 func (mf TMMFile) FindFirstLEUint8(offset, blklen, blkpos, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_first_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -545,7 +545,7 @@ func (mf TMMFile) FindFirstLEUint8(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindLastLEUint8(offset, blklen, blkpos, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_last_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -557,7 +557,7 @@ func (mf TMMFile) FindLastLEUint8(offset, blklen, blkpos, first, last uint64, se
 func (mf TMMFile) FindFirstLEUint16(offset, blklen, blkpos, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_first_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -569,7 +569,7 @@ func (mf TMMFile) FindFirstLEUint16(offset, blklen, blkpos, first, last uint64, 
 func (mf TMMFile) FindLastLEUint16(offset, blklen, blkpos, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_last_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -581,7 +581,7 @@ func (mf TMMFile) FindLastLEUint16(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindFirstLEUint32(offset, blklen, blkpos, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_first_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -593,7 +593,7 @@ func (mf TMMFile) FindFirstLEUint32(offset, blklen, blkpos, first, last uint64, 
 func (mf TMMFile) FindLastLEUint32(offset, blklen, blkpos, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_last_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -605,7 +605,7 @@ func (mf TMMFile) FindLastLEUint32(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindFirstLEUint64(offset, blklen, blkpos, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_first_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -617,7 +617,7 @@ func (mf TMMFile) FindFirstLEUint64(offset, blklen, blkpos, first, last uint64, 
 func (mf TMMFile) FindLastLEUint64(offset, blklen, blkpos, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_last_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -629,7 +629,7 @@ func (mf TMMFile) FindLastLEUint64(offset, blklen, blkpos, first, last uint64, s
 func (mf TMMFile) FindFirstSubLEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_first_sub_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -641,7 +641,7 @@ func (mf TMMFile) FindFirstSubLEUint8(offset, blklen, blkpos uint64, bitstart, b
 func (mf TMMFile) FindLastSubLEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.find_last_sub_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -653,7 +653,7 @@ func (mf TMMFile) FindLastSubLEUint8(offset, blklen, blkpos uint64, bitstart, bi
 func (mf TMMFile) FindFirstSubLEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_first_sub_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -665,7 +665,7 @@ func (mf TMMFile) FindFirstSubLEUint16(offset, blklen, blkpos uint64, bitstart, 
 func (mf TMMFile) FindLastSubLEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.find_last_sub_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -677,7 +677,7 @@ func (mf TMMFile) FindLastSubLEUint16(offset, blklen, blkpos uint64, bitstart, b
 func (mf TMMFile) FindFirstSubLEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_first_sub_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -689,7 +689,7 @@ func (mf TMMFile) FindFirstSubLEUint32(offset, blklen, blkpos uint64, bitstart, 
 func (mf TMMFile) FindLastSubLEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.find_last_sub_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -701,7 +701,7 @@ func (mf TMMFile) FindLastSubLEUint32(offset, blklen, blkpos uint64, bitstart, b
 func (mf TMMFile) FindFirstSubLEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_first_sub_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_first_sub_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -713,7 +713,7 @@ func (mf TMMFile) FindFirstSubLEUint64(offset, blklen, blkpos uint64, bitstart, 
 func (mf TMMFile) FindLastSubLEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.find_last_sub_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.find_last_sub_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -726,7 +726,7 @@ func (mf TMMFile) FindLastSubLEUint64(offset, blklen, blkpos uint64, bitstart, b
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextLEUint8(offset, blklen, blkpos, pos, last uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint8_t(search)))
+	ret := bool(C.has_next_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -739,7 +739,7 @@ func (mf TMMFile) HasNextLEUint8(offset, blklen, blkpos, pos, last uint64, searc
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextLEUint16(offset, blklen, blkpos, pos, last uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint16_t(search)))
+	ret := bool(C.has_next_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -752,7 +752,7 @@ func (mf TMMFile) HasNextLEUint16(offset, blklen, blkpos, pos, last uint64, sear
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextLEUint32(offset, blklen, blkpos, pos, last uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint32_t(search)))
+	ret := bool(C.has_next_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -765,7 +765,7 @@ func (mf TMMFile) HasNextLEUint32(offset, blklen, blkpos, pos, last uint64, sear
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextLEUint64(offset, blklen, blkpos, pos, last uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint64_t(search)))
+	ret := bool(C.has_next_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), &cpos, C.uint64_t(last), C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -778,7 +778,7 @@ func (mf TMMFile) HasNextLEUint64(offset, blklen, blkpos, pos, last uint64, sear
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubLEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint8_t(search)))
+	ret := bool(C.has_next_sub_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -791,7 +791,7 @@ func (mf TMMFile) HasNextSubLEUint8(offset, blklen, blkpos uint64, bitstart, bit
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubLEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint16_t(search)))
+	ret := bool(C.has_next_sub_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -804,7 +804,7 @@ func (mf TMMFile) HasNextSubLEUint16(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubLEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint32_t(search)))
+	ret := bool(C.has_next_sub_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -817,7 +817,7 @@ func (mf TMMFile) HasNextSubLEUint32(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasNextSubLEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, pos, last uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_next_sub_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint64_t(search)))
+	ret := bool(C.has_next_sub_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -830,7 +830,7 @@ func (mf TMMFile) HasNextSubLEUint64(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevLEUint8(offset, blklen, blkpos, first, pos uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint8_t(search)))
+	ret := bool(C.has_prev_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -843,7 +843,7 @@ func (mf TMMFile) HasPrevLEUint8(offset, blklen, blkpos, first, pos uint64, sear
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevLEUint16(offset, blklen, blkpos, first, pos uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint16_t(search)))
+	ret := bool(C.has_prev_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -856,7 +856,7 @@ func (mf TMMFile) HasPrevLEUint16(offset, blklen, blkpos, first, pos uint64, sea
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevLEUint32(offset, blklen, blkpos, first, pos uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint32_t(search)))
+	ret := bool(C.has_prev_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -869,7 +869,7 @@ func (mf TMMFile) HasPrevLEUint32(offset, blklen, blkpos, first, pos uint64, sea
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevLEUint64(offset, blklen, blkpos, first, pos uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint64_t(search)))
+	ret := bool(C.has_prev_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint64_t(first), &cpos, C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -882,7 +882,7 @@ func (mf TMMFile) HasPrevLEUint64(offset, blklen, blkpos, first, pos uint64, sea
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubLEUint8(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_le_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint8_t(search)))
+	ret := bool(C.has_prev_sub_le_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -895,7 +895,7 @@ func (mf TMMFile) HasPrevSubLEUint8(offset, blklen, blkpos uint64, bitstart, bit
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubLEUint16(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_le_uint16_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint16_t(search)))
+	ret := bool(C.has_prev_sub_le_uint16_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -908,7 +908,7 @@ func (mf TMMFile) HasPrevSubLEUint16(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubLEUint32(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_le_uint32_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint32_t(search)))
+	ret := bool(C.has_prev_sub_le_uint32_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -921,7 +921,7 @@ func (mf TMMFile) HasPrevSubLEUint32(offset, blklen, blkpos uint64, bitstart, bi
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) HasPrevSubLEUint64(offset, blklen, blkpos uint64, bitstart, bitend uint8, first, pos uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.has_prev_sub_le_uint64_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint64_t(search)))
+	ret := bool(C.has_prev_sub_le_uint64_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(blklen), C.uint64_t(blkpos), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -935,7 +935,7 @@ func (mf TMMFile) HasPrevSubLEUint64(offset, blklen, blkpos uint64, bitstart, bi
 func (mf TMMFile) ColFindFirstUint8(offset, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.col_find_first_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -947,7 +947,7 @@ func (mf TMMFile) ColFindFirstUint8(offset, first, last uint64, search uint8) (u
 func (mf TMMFile) ColFindLastUint8(offset, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.col_find_last_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -959,7 +959,7 @@ func (mf TMMFile) ColFindLastUint8(offset, first, last uint64, search uint8) (ui
 func (mf TMMFile) ColFindFirstUint16(offset, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.col_find_first_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -971,7 +971,7 @@ func (mf TMMFile) ColFindFirstUint16(offset, first, last uint64, search uint16) 
 func (mf TMMFile) ColFindLastUint16(offset, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.col_find_last_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -983,7 +983,7 @@ func (mf TMMFile) ColFindLastUint16(offset, first, last uint64, search uint16) (
 func (mf TMMFile) ColFindFirstUint32(offset, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.col_find_first_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -995,7 +995,7 @@ func (mf TMMFile) ColFindFirstUint32(offset, first, last uint64, search uint32) 
 func (mf TMMFile) ColFindLastUint32(offset, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.col_find_last_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1007,7 +1007,7 @@ func (mf TMMFile) ColFindLastUint32(offset, first, last uint64, search uint32) (
 func (mf TMMFile) ColFindFirstUint64(offset, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.col_find_first_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1019,7 +1019,7 @@ func (mf TMMFile) ColFindFirstUint64(offset, first, last uint64, search uint64) 
 func (mf TMMFile) ColFindLastUint64(offset, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.col_find_last_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1031,7 +1031,7 @@ func (mf TMMFile) ColFindLastUint64(offset, first, last uint64, search uint64) (
 func (mf TMMFile) ColFindFirstSubUint8(offset uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_sub_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.col_find_first_sub_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1043,7 +1043,7 @@ func (mf TMMFile) ColFindFirstSubUint8(offset uint64, bitstart, bitend uint8, fi
 func (mf TMMFile) ColFindLastSubUint8(offset uint64, bitstart, bitend uint8, first, last uint64, search uint8) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_sub_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
+	ret := uint64(C.col_find_last_sub_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint8_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1055,7 +1055,7 @@ func (mf TMMFile) ColFindLastSubUint8(offset uint64, bitstart, bitend uint8, fir
 func (mf TMMFile) ColFindFirstSubUint16(offset uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_sub_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.col_find_first_sub_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1067,7 +1067,7 @@ func (mf TMMFile) ColFindFirstSubUint16(offset uint64, bitstart, bitend uint8, f
 func (mf TMMFile) ColFindLastSubUint16(offset uint64, bitstart, bitend uint8, first, last uint64, search uint16) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_sub_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
+	ret := uint64(C.col_find_last_sub_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint16_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1079,7 +1079,7 @@ func (mf TMMFile) ColFindLastSubUint16(offset uint64, bitstart, bitend uint8, fi
 func (mf TMMFile) ColFindFirstSubUint32(offset uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_sub_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.col_find_first_sub_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1091,7 +1091,7 @@ func (mf TMMFile) ColFindFirstSubUint32(offset uint64, bitstart, bitend uint8, f
 func (mf TMMFile) ColFindLastSubUint32(offset uint64, bitstart, bitend uint8, first, last uint64, search uint32) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_sub_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
+	ret := uint64(C.col_find_last_sub_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint32_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1103,7 +1103,7 @@ func (mf TMMFile) ColFindLastSubUint32(offset uint64, bitstart, bitend uint8, fi
 func (mf TMMFile) ColFindFirstSubUint64(offset uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_first_sub_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.col_find_first_sub_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1115,7 +1115,7 @@ func (mf TMMFile) ColFindFirstSubUint64(offset uint64, bitstart, bitend uint8, f
 func (mf TMMFile) ColFindLastSubUint64(offset uint64, bitstart, bitend uint8, first, last uint64, search uint64) (uint64, uint64, uint64) {
 	cfirst := C.uint64_t(first)
 	clast := C.uint64_t(last)
-	ret := uint64(C.col_find_last_sub_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
+	ret := uint64(C.col_find_last_sub_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cfirst, &clast, C.uint64_t(search)))
 
 	return ret, uint64(cfirst), uint64(clast)
 }
@@ -1128,7 +1128,7 @@ func (mf TMMFile) ColFindLastSubUint64(offset uint64, bitstart, bitend uint8, fi
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextUint8(offset, pos, last uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cpos, C.uint64_t(last), C.uint8_t(search)))
+	ret := bool(C.col_has_next_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), &cpos, C.uint64_t(last), C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1141,7 +1141,7 @@ func (mf TMMFile) ColHasNextUint8(offset, pos, last uint64, search uint8) (bool,
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextUint16(offset, pos, last uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cpos, C.uint64_t(last), C.uint16_t(search)))
+	ret := bool(C.col_has_next_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), &cpos, C.uint64_t(last), C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1154,7 +1154,7 @@ func (mf TMMFile) ColHasNextUint16(offset, pos, last uint64, search uint16) (boo
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextUint32(offset, pos, last uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cpos, C.uint64_t(last), C.uint32_t(search)))
+	ret := bool(C.col_has_next_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), &cpos, C.uint64_t(last), C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1167,7 +1167,7 @@ func (mf TMMFile) ColHasNextUint32(offset, pos, last uint64, search uint32) (boo
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextUint64(offset, pos, last uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), &cpos, C.uint64_t(last), C.uint64_t(search)))
+	ret := bool(C.col_has_next_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), &cpos, C.uint64_t(last), C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1180,7 +1180,7 @@ func (mf TMMFile) ColHasNextUint64(offset, pos, last uint64, search uint64) (boo
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextSubUint8(offset uint64, bitstart, bitend uint8, pos, last uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_sub_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint8_t(search)))
+	ret := bool(C.col_has_next_sub_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1193,7 +1193,7 @@ func (mf TMMFile) ColHasNextSubUint8(offset uint64, bitstart, bitend uint8, pos,
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextSubUint16(offset uint64, bitstart, bitend uint8, pos, last uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_sub_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint16_t(search)))
+	ret := bool(C.col_has_next_sub_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1206,7 +1206,7 @@ func (mf TMMFile) ColHasNextSubUint16(offset uint64, bitstart, bitend uint8, pos
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextSubUint32(offset uint64, bitstart, bitend uint8, pos, last uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_sub_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint32_t(search)))
+	ret := bool(C.col_has_next_sub_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1219,7 +1219,7 @@ func (mf TMMFile) ColHasNextSubUint32(offset uint64, bitstart, bitend uint8, pos
 // Return true if the next item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasNextSubUint64(offset uint64, bitstart, bitend uint8, pos, last uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_next_sub_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint64_t(search)))
+	ret := bool(C.col_has_next_sub_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), &cpos, C.uint64_t(last), C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1232,7 +1232,7 @@ func (mf TMMFile) ColHasNextSubUint64(offset uint64, bitstart, bitend uint8, pos
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevUint8(offset, first, pos uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(first), &cpos, C.uint8_t(search)))
+	ret := bool(C.col_has_prev_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(first), &cpos, C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1245,7 +1245,7 @@ func (mf TMMFile) ColHasPrevUint8(offset, first, pos uint64, search uint8) (bool
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevUint16(offset, first, pos uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(first), &cpos, C.uint16_t(search)))
+	ret := bool(C.col_has_prev_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(first), &cpos, C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1258,7 +1258,7 @@ func (mf TMMFile) ColHasPrevUint16(offset, first, pos uint64, search uint16) (bo
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevUint32(offset, first, pos uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(first), &cpos, C.uint32_t(search)))
+	ret := bool(C.col_has_prev_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(first), &cpos, C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1271,7 +1271,7 @@ func (mf TMMFile) ColHasPrevUint32(offset, first, pos uint64, search uint32) (bo
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevUint64(offset, first, pos uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint64_t(first), &cpos, C.uint64_t(search)))
+	ret := bool(C.col_has_prev_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), C.uint64_t(first), &cpos, C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1284,7 +1284,7 @@ func (mf TMMFile) ColHasPrevUint64(offset, first, pos uint64, search uint64) (bo
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevSubUint8(offset uint64, bitstart, bitend uint8, first, pos uint64, search uint8) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_sub_uint8_t((*C.uint8_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint8_t(search)))
+	ret := bool(C.col_has_prev_sub_uint8_t((*C.uint8_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint8_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1297,7 +1297,7 @@ func (mf TMMFile) ColHasPrevSubUint8(offset uint64, bitstart, bitend uint8, firs
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevSubUint16(offset uint64, bitstart, bitend uint8, first, pos uint64, search uint16) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_sub_uint16_t((*C.uint16_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint16_t(search)))
+	ret := bool(C.col_has_prev_sub_uint16_t((*C.uint16_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint16_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1310,7 +1310,7 @@ func (mf TMMFile) ColHasPrevSubUint16(offset uint64, bitstart, bitend uint8, fir
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevSubUint32(offset uint64, bitstart, bitend uint8, first, pos uint64, search uint32) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_sub_uint32_t((*C.uint32_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint32_t(search)))
+	ret := bool(C.col_has_prev_sub_uint32_t((*C.uint32_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint32_t(search)))
 
 	return ret, uint64(cpos)
 }
@@ -1323,7 +1323,7 @@ func (mf TMMFile) ColHasPrevSubUint32(offset uint64, bitstart, bitend uint8, fir
 // Return true if the previous item is valid, false otherwise, plus the position.
 func (mf TMMFile) ColHasPrevSubUint64(offset uint64, bitstart, bitend uint8, first, pos uint64, search uint64) (bool, uint64) {
 	cpos := C.uint64_t(pos)
-	ret := bool(C.col_has_prev_sub_uint64_t((*C.uint64_t)(unsafe.Pointer(uintptr(mf.Src)+uintptr(offset))), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint64_t(search)))
+	ret := bool(C.col_has_prev_sub_uint64_t((*C.uint64_t)(unsafe.Add(mf.Src, offset)), C.uint8_t(bitstart), C.uint8_t(bitend), C.uint64_t(first), &cpos, C.uint64_t(search)))
 
 	return ret, uint64(cpos)
 }
