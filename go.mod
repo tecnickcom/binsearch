@@ -1,8 +1,8 @@
 module github.com/tecnickcom/binsearch
 
-go 1.25
+go 1.26
 
-toolchain go1.25.6
+toolchain go1.26.0
 
 require github.com/stretchr/testify v1.11.1
 
