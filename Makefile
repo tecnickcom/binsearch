@@ -18,39 +18,33 @@ VERSION=$(shell cat VERSION)
 
 # --- MAKE TARGETS ---
 
-# Display general help about this command
 .PHONY: help
 help:
 	@echo ""
 	@echo "$(PROJECT) Makefile."
 	@echo "The following commands are available:"
 	@echo ""
-	@echo "  make c         : Build and test the C version"
-	@echo "  make go        : Build and test the GO version"
-	@echo "  make python    : Build and test the Python version"
-	@echo "  make clean     : Remove any build artifact"
-	@echo "  make tag       : Tag the Git repository"
-	@echo "  make versionup : Increase the patch number in the VERSION file"
+	@awk '/^## /{desc=substr($$0,4)} /^\.PHONY:/{if(NF>1) {target=$$2; if(desc) printf "  make %-15s: %s\n",target,desc; desc=""}}' Makefile
 	@echo ""
 
 all: c go python
 
-# Build and test the C version
+## Build and test the C version
 .PHONY: c
 c:
 	cd c && make all
 
-# Build and test the GO version
+## Build and test the GO version
 .PHONY: go
 go:
 	cd go && make all
 
-# Build and test the Python version
+## Build and test the Python version
 .PHONY: python
 python:
 	cd python && make all
 
-# Remove any build artifact
+## Remove any build artifact
 .PHONY: clean
 clean:
 	rm -rf target
@@ -58,13 +52,13 @@ clean:
 	cd go && make clean
 	cd python && make clean
 
-# Tag the Git repository
+## Tag the Git repository
 .PHONY: tag
 tag:
 	git tag -a "v$(VERSION)" -m "Version $(VERSION)" && \
 	git push origin --tags
 
-# Increase the patch number in the VERSION file
+## Increase the patch number in the VERSION file
 .PHONY: versionup
 versionup:
 	echo ${VERSION} | gawk -F. '{printf("%d.%d.%d\n",$$1,$$2,(($$3+1)));}' > VERSION
