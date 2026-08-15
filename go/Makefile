@@ -91,10 +91,13 @@ x:
 clean:
 	rm -rf "$(TARGETDIR)"
 
-## Generate the coverage report
+## Generate the coverage report and fail if below 100%
 .PHONY: coverage
 coverage: ensuretarget
 	$(GO) tool cover -html="$(TARGETDIR)/report/coverage.out" -o "$(TARGETDIR)/report/coverage.html"
+	@total=$$($(GO) tool cover -func="$(TARGETDIR)/report/coverage.out" | awk '/^total:/{print $$3}'); \
+	echo "Total coverage: $$total"; \
+	if [ "$$total" != "100.0%" ]; then echo "ERROR: coverage $$total is below 100.0%"; exit 1; fi
 
 ## Get the test dependencies
 .PHONY: deps
@@ -108,12 +111,6 @@ ensuretarget:
 	@mkdir -p "$(TARGETDIR)/report"
 	@mkdir -p "$(TARGETDIR)/binutil"
 	@mkdir -p "$(TARGETDIR)/docs"
-
-## build example
-.PHONY: example
-example:
-	$(GO) build -o "$(TARGETDIR)/example" "$(CURRENTDIR)/example" \
-	&& $(TARGETDIR)/example
 
 ## Format the source code
 .PHONY: format
@@ -138,16 +135,33 @@ qa: linter test coverage
 .PHONY: test
 test: ensuretarget
 	@echo -e "\n\n>>> START: Unit Tests <<<\n\n"
+	# NOTE: the benchmarks are compiled and run for one iteration here only to
+	# check that they still work. Their timings under -race and -covermode are
+	# meaningless: use the benchmark target to measure.
 	$(GOTEST) \
 	-shuffle=on \
-	-tags=unit \
 	-covermode=atomic \
 	-bench=. \
+	-benchtime=1x \
 	-race \
 	-failfast \
 	-coverprofile=target/report/coverage.out \
 	-v "$(SRCDIR)" $(TESTEXTRACMD)
 	@echo -e "\n\n>>> END: Unit Tests <<<\n\n"
+
+## Run the benchmarks
+.PHONY: benchmark
+benchmark:
+	@echo -e "\n\n>>> START: Benchmarks <<<\n\n"
+	# The race detector and the coverage instrumentation both distort the
+	# timings, so neither is enabled here. -benchmem reports the allocations
+	# the cgo noescape directives are there to avoid.
+	$(GOTEST) \
+	-run='^$$' \
+	-bench=. \
+	-benchmem \
+	"$(SRCDIR)"
+	@echo -e "\n\n>>> END: Benchmarks <<<\n\n"
 
 ## Get the go tools
 .PHONY: gotools

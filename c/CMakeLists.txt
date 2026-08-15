@@ -1,5 +1,7 @@
-cmake_minimum_required (VERSION 3.5)
-project (binsearch)
+cmake_minimum_required (VERSION 3.10)
+project (binsearch C)
+
+include(GNUInstallDirs)
 
 set( CMAKE_VERBOSE_MAKEFILE on )
 
@@ -27,16 +29,20 @@ if(CMAKE_COMPILER_IS_GNUCC)
     message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
                     OUTPUT_VARIABLE GCC_VERSION)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D VERSION='\"${PROJECT_VERSION}\"' -s -pedantic -std=c2x -Wall -Wextra -Wno-strict-prototypes -Wunused-value -Wcast-align -Wundef -Wformat -Wformat-security")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D VERSION='\"${PROJECT_VERSION}\"' -pedantic -std=c2x -Wall -Wextra -Wno-strict-prototypes -Wunused-value -Wcast-align -Wundef -Wformat -Wformat-security")
 
     if (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wshadow")
-        set(CMAKE_C_FLAGS_ASAN    "fsanitize=address")
+        set(CMAKE_C_FLAGS_ASAN    "-fsanitize=address")
     else (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)
         message(STATUS "GCC 4.8 required to run address sanitizer - please upgrade your installation")
     endif(GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)
 
-    set(CMAKE_C_FLAGS_RELEASE     "-O3")
+    # NOTE: -s (strip) belongs to the release flags only: in the global
+    # CMAKE_C_FLAGS it also stripped the -g3 added by the Debug and Coverage
+    # builds. -DNDEBUG is set explicitly because assigning CMAKE_C_FLAGS_RELEASE
+    # overrides the CMake default.
+    set(CMAKE_C_FLAGS_RELEASE     "-O3 -s -DNDEBUG")
     set(CMAKE_C_FLAGS_DEBUG       "-O0 -g3")
     set(CMAKE_C_FLAGS_COVERAGE    "-O0 -g3 --coverage")
     set(CMAKE_C_FLAGS_CHECK       "-O2 -Werror")

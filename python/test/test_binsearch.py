@@ -1,9 +1,11 @@
 """Tests for binsearch module - row mode."""
 
-
-import binsearch as bs
 import os
 from unittest import TestCase
+
+import binsearch as bs
+
+fd = -1
 
 
 testDataBE8 = [
@@ -671,18 +673,17 @@ class TestFunctions(TestCase):
             os.path.dirname(os.path.realpath(__file__))
             + "/../../c/test/data/test_data.bin"
         )
-        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
             inputfile, [12]
         )
-        if fd < 0 or size != 4016:
-            assert False, "Unable to open the file"
+        assert fd >= 0 and size == 4016, "Unable to open the file"
 
     @classmethod
     def tearDownClass(cls):
-        global src, fd, size
+        global fd
         h = bs.munmap_binfile(src, fd, size)
-        if h != 0:
-            assert False, "Error while closing the memory-mapped file"
+        assert h == 0, "Error while closing the memory-mapped file"
+        fd = -1
 
     def test_find_first_be_uint8(self):
         for blkpos, first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataBE8:
@@ -1325,32 +1326,39 @@ class TestFunctions(TestCase):
                 self.assertEqual(counter, numitems)
 
 
-class TestBenchmark(object):
+class TestBenchmark:
+    """The mapping is created once for the whole class: pytest-benchmark
+    evaluates the argument list before the first round, so a mapping recreated
+    at every round would leave the arguments pointing at a stale one."""
 
-    global setup
-
-    def setup():
-        global src, fd, size, doffset, dlength, nrows, ncols, index
-        try:
-            fd
-            bs.munmap_binfile(src, fd, size)
-        except NameError:
-            pass
+    @classmethod
+    def setup_class(cls):
         inputfile = os.path.realpath(
             os.path.dirname(os.path.realpath(__file__))
             + "/../../c/test/data/test_data.bin"
         )
-        src, fd, size, doffset, dlength, nrows, ncols, index, idx = bs.mmap_binfile(
-            inputfile, [12]
+        (
+            cls.src,
+            cls.fd,
+            cls.size,
+            cls.doffset,
+            cls.dlength,
+            cls.nrows,
+            cls.ncols,
+            cls.index,
+        ) = bs.mmap_binfile(inputfile, [12])
+        assert cls.fd >= 0 and cls.size == 4016, "Unable to open the file"
+
+    @classmethod
+    def teardown_class(cls):
+        assert bs.munmap_binfile(cls.src, cls.fd, cls.size) == 0, (
+            "Error while closing the memory-mapped file"
         )
-        if fd < 0 or size != 4016:
-            assert False, "Unable to open the file"
 
     def test_find_first_be_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_be_uint8,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1358,8 +1366,7 @@ class TestBenchmark(object):
     def test_find_first_be_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_be_uint16,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1367,8 +1374,7 @@ class TestBenchmark(object):
     def test_find_first_be_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_be_uint32,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F303132],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F303132],
             iterations=1,
             rounds=10000,
         )
@@ -1376,8 +1382,7 @@ class TestBenchmark(object):
     def test_find_first_be_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_be_uint64,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F30313233343536],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F30313233343536],
             iterations=1,
             rounds=10000,
         )
@@ -1385,8 +1390,7 @@ class TestBenchmark(object):
     def test_find_last_be_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_be_uint8,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1394,8 +1398,7 @@ class TestBenchmark(object):
     def test_find_last_be_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_be_uint16,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1403,8 +1406,7 @@ class TestBenchmark(object):
     def test_find_last_be_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_be_uint32,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F303132],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F303132],
             iterations=1,
             rounds=10000,
         )
@@ -1412,8 +1414,7 @@ class TestBenchmark(object):
     def test_find_last_be_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_be_uint64,
-            args=[src, doffset, 16, 0, 0, 251, 0x2F30313233343536],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 251, 0x2F30313233343536],
             iterations=1,
             rounds=10000,
         )
@@ -1421,8 +1422,7 @@ class TestBenchmark(object):
     def test_find_first_sub_be_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_be_uint8,
-            args=[src, doffset, 16, 0, 0, 7, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 7, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1430,8 +1430,7 @@ class TestBenchmark(object):
     def test_find_first_sub_be_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_be_uint16,
-            args=[src, doffset, 16, 0, 0, 15, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 15, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1439,8 +1438,7 @@ class TestBenchmark(object):
     def test_find_first_sub_be_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_be_uint32,
-            args=[src, doffset, 16, 0, 8, 23, 0, 251, 0x00003031],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 8, 23, 0, 251, 0x00003031],
             iterations=1,
             rounds=10000,
         )
@@ -1448,8 +1446,7 @@ class TestBenchmark(object):
     def test_find_first_sub_be_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_be_uint64,
-            args=[src, doffset, 16, 0, 16, 47, 0, 251, 0x0000000031323334],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 16, 47, 0, 251, 0x0000000031323334],
             iterations=1,
             rounds=10000,
         )
@@ -1457,8 +1454,7 @@ class TestBenchmark(object):
     def test_find_last_sub_be_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_be_uint8,
-            args=[src, doffset, 16, 0, 0, 7, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 7, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1466,8 +1462,7 @@ class TestBenchmark(object):
     def test_find_last_sub_be_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_be_uint16,
-            args=[src, doffset, 16, 0, 0, 15, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 0, 15, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1475,8 +1470,7 @@ class TestBenchmark(object):
     def test_find_last_sub_be_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_be_uint32,
-            args=[src, doffset, 16, 0, 8, 23, 0, 251, 0x00003031],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 8, 23, 0, 251, 0x00003031],
             iterations=1,
             rounds=10000,
         )
@@ -1484,8 +1478,7 @@ class TestBenchmark(object):
     def test_find_last_sub_be_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_be_uint64,
-            args=[src, doffset, 16, 0, 16, 47, 0, 251, 0x0000000031323334],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 0, 16, 47, 0, 251, 0x0000000031323334],
             iterations=1,
             rounds=10000,
         )
@@ -1493,8 +1486,7 @@ class TestBenchmark(object):
     def test_find_first_le_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_le_uint8,
-            args=[src, doffset, 16, 15, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 15, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1502,8 +1494,7 @@ class TestBenchmark(object):
     def test_find_first_le_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_le_uint16,
-            args=[src, doffset, 16, 14, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 14, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1511,8 +1502,7 @@ class TestBenchmark(object):
     def test_find_first_le_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_le_uint32,
-            args=[src, doffset, 16, 12, 0, 251, 0x2F303132],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 12, 0, 251, 0x2F303132],
             iterations=1,
             rounds=10000,
         )
@@ -1520,8 +1510,7 @@ class TestBenchmark(object):
     def test_find_first_le_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_le_uint64,
-            args=[src, doffset, 16, 8, 0, 251, 0x2F30313233343536],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 8, 0, 251, 0x2F30313233343536],
             iterations=1,
             rounds=10000,
         )
@@ -1529,8 +1518,7 @@ class TestBenchmark(object):
     def test_find_last_le_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_le_uint8,
-            args=[src, doffset, 16, 15, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 15, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1538,8 +1526,7 @@ class TestBenchmark(object):
     def test_find_last_le_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_le_uint16,
-            args=[src, doffset, 16, 14, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 14, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1547,8 +1534,7 @@ class TestBenchmark(object):
     def test_find_last_le_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_le_uint32,
-            args=[src, doffset, 16, 12, 0, 251, 0x2F303132],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 12, 0, 251, 0x2F303132],
             iterations=1,
             rounds=10000,
         )
@@ -1556,8 +1542,7 @@ class TestBenchmark(object):
     def test_find_last_le_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_le_uint64,
-            args=[src, doffset, 16, 8, 0, 251, 0x2F30313233343536],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 8, 0, 251, 0x2F30313233343536],
             iterations=1,
             rounds=10000,
         )
@@ -1565,8 +1550,7 @@ class TestBenchmark(object):
     def test_find_first_sub_le_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_le_uint8,
-            args=[src, doffset, 16, 15, 0, 7, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 15, 0, 7, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1574,8 +1558,7 @@ class TestBenchmark(object):
     def test_find_first_sub_le_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_le_uint16,
-            args=[src, doffset, 16, 14, 0, 15, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 14, 0, 15, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1583,8 +1566,7 @@ class TestBenchmark(object):
     def test_find_first_sub_le_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_le_uint32,
-            args=[src, doffset, 16, 12, 8, 23, 0, 251, 0x00003031],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 12, 8, 23, 0, 251, 0x00003031],
             iterations=1,
             rounds=10000,
         )
@@ -1592,8 +1574,7 @@ class TestBenchmark(object):
     def test_find_first_sub_le_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_first_sub_le_uint64,
-            args=[src, doffset, 16, 8, 16, 47, 0, 251, 0x0000000031323334],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 8, 16, 47, 0, 251, 0x0000000031323334],
             iterations=1,
             rounds=10000,
         )
@@ -1601,8 +1582,7 @@ class TestBenchmark(object):
     def test_find_last_sub_le_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_le_uint8,
-            args=[src, doffset, 16, 15, 0, 7, 0, 251, 0x2F],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 15, 0, 7, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
         )
@@ -1610,8 +1590,7 @@ class TestBenchmark(object):
     def test_find_last_sub_le_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_le_uint16,
-            args=[src, doffset, 16, 14, 0, 15, 0, 251, 0x2F30],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 14, 0, 15, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
         )
@@ -1619,8 +1598,7 @@ class TestBenchmark(object):
     def test_find_last_sub_le_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_le_uint32,
-            args=[src, doffset, 16, 12, 8, 23, 0, 251, 0x00003031],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 12, 8, 23, 0, 251, 0x00003031],
             iterations=1,
             rounds=10000,
         )
@@ -1628,16 +1606,7 @@ class TestBenchmark(object):
     def test_find_last_sub_le_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
             bs.find_last_sub_le_uint64,
-            args=[src, doffset, 16, 8, 16, 47, 0, 251, 0x0000000031323334],
-            setup=setup,
+            args=[self.src, self.doffset, 16, 8, 16, 47, 0, 251, 0x0000000031323334],
             iterations=1,
             rounds=10000,
         )
-
-    def test_tearDown(self):
-        global src, fd, size
-        h = bs.munmap_binfile(src, fd, size)
-        fd = -1
-        size = 0
-        if h != 0:
-            assert False, "Error while closing the memory-mapped file"

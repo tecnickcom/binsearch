@@ -3,6 +3,7 @@
 c
 README.md
 LICENSE
+binsearch/binsearch.h
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

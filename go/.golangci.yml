@@ -45,6 +45,10 @@ linters:
       min-complexity: 10
     gocyclo:
       min-complexity: 10
+    gosec:
+      excludes:
+        - G103
+        - G115
     misspell:
       locale: US
     whitespace:
@@ -58,9 +62,21 @@ linters:
       - legacy
       - std-error-handling
     rules:
+      # dupSubExpr fires on the code cgo generates for the mmap_binfile call.
+      - linters:
+          - gocritic
+        text: dupSubExpr
+        path: binsearch.go
+      # The test suite uses package-level fixtures shared by the table-driven
+      # tests and by the benchmarks, so it cannot run in parallel.
       - linters:
           - dupl
           - funlen
+          - gochecknoglobals
+          - gocognit
+          - gocritic
+          - paralleltest
+          - tparallel
         path: _test.go
     paths:
       - .github

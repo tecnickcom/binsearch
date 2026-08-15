@@ -44,6 +44,27 @@ go:
 python:
 	cd python && make all
 
+## Run the unit tests for every language
+.PHONY: test
+test:
+	cd c && make test
+	cd go && make test
+	cd python && make test
+
+## Run the linters for every language
+.PHONY: linter
+linter:
+	cd c && make linter
+	cd go && make linter
+	cd python && make linter
+
+## Check the unit test coverage for every language
+.PHONY: coverage
+coverage:
+	cd c && make coverage
+	cd go && make coverage
+	cd python && make coverage
+
 ## Remove any build artifact
 .PHONY: clean
 clean:

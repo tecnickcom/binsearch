@@ -37,14 +37,14 @@
 #define TEST_DATA_SIZE 10000000ULL
 
 // returns current time in nanoseconds
-uint64_t get_time()
+static uint64_t get_time(void)
 {
     struct timespec t;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
     return (((uint64_t)t.tv_sec * 1000000000) + (uint64_t)t.tv_nsec);
 }
 
-int benchmark_find_first_be_uint64()
+static int benchmark_find_first_be_uint64(void)
 {
     const char *filename = "test.bin";
 
@@ -68,7 +68,6 @@ int benchmark_find_first_be_uint64()
     fclose(f);
 
     mmfile_t mf = {0};
-    mf.nrows = TEST_DATA_SIZE;
     mf.ncols = 1;
     mf.ctbytes[0] = 8;
     mmap_binfile(filename, &mf);
@@ -106,12 +105,22 @@ int benchmark_find_first_be_uint64()
             sum += find_first_be_uint64_t(mf.src, 8, 0, &first, &last, i);
         }
         tend = get_time();
-        fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, (tend - tstart - offset), (tend - tstart - offset)/(uint64_t)TEST_DATA_SIZE);
+        // The calibration loop can be the slower one, so the subtraction is
+        // clamped instead of wrapping around.
+        uint64_t elapsed = (tend - tstart);
+        elapsed = (elapsed > offset) ? (elapsed - offset) : 0;
+        fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, elapsed, elapsed / (uint64_t)TEST_DATA_SIZE);
     }
+    if (munmap_binfile(mf) != 0)
+    {
+        fprintf(stderr, " * %s Unable to unmap %s.\n", __func__, filename);
+        return 1;
+    }
+    (void)remove(filename);
     return 0;
 }
 
-int benchmark_find_first_le_uint64()
+static int benchmark_find_first_le_uint64(void)
 {
     const char *filename = "test.bin";
 
@@ -135,7 +144,6 @@ int benchmark_find_first_le_uint64()
     fclose(f);
 
     mmfile_t mf = {0};
-    mf.nrows = TEST_DATA_SIZE;
     mf.ncols = 1;
     mf.ctbytes[0] = 8;
     mmap_binfile(filename, &mf);
@@ -173,12 +181,22 @@ int benchmark_find_first_le_uint64()
             sum += find_first_le_uint64_t(mf.src, 8, 0, &first, &last, i);
         }
         tend = get_time();
-        fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, (tend - tstart - offset), (tend - tstart - offset)/(uint64_t)TEST_DATA_SIZE);
+        // The calibration loop can be the slower one, so the subtraction is
+        // clamped instead of wrapping around.
+        uint64_t elapsed = (tend - tstart);
+        elapsed = (elapsed > offset) ? (elapsed - offset) : 0;
+        fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, elapsed, elapsed / (uint64_t)TEST_DATA_SIZE);
     }
+    if (munmap_binfile(mf) != 0)
+    {
+        fprintf(stderr, " * %s Unable to unmap %s.\n", __func__, filename);
+        return 1;
+    }
+    (void)remove(filename);
     return 0;
 }
 
-int benchmark_col_find_first_uint64()
+static int benchmark_col_find_first_uint64(void)
 {
     const char *filename = "test.bin";
 
@@ -202,7 +220,6 @@ int benchmark_col_find_first_uint64()
     fclose(f);
 
     mmfile_t mf = {0};
-    mf.nrows = TEST_DATA_SIZE;
     mf.ncols = 1;
     mf.ctbytes[0] = 8;
     mmap_binfile(filename, &mf);
@@ -242,15 +259,26 @@ int benchmark_col_find_first_uint64()
             sum += col_find_first_uint64_t(src, &first, &last, i);
         }
         tend = get_time();
-        fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, (tend - tstart - offset), (tend - tstart - offset)/(uint64_t)TEST_DATA_SIZE);
+        // The calibration loop can be the slower one, so the subtraction is
+        // clamped instead of wrapping around.
+        uint64_t elapsed = (tend - tstart);
+        elapsed = (elapsed > offset) ? (elapsed - offset) : 0;
+        fprintf(stdout, "   * %s %d. sum: %" PRIu64 " -- time: %" PRIu64 " ns -- %" PRIu64 " ns/op\n", __func__, j, sum, elapsed, elapsed / (uint64_t)TEST_DATA_SIZE);
     }
+    if (munmap_binfile(mf) != 0)
+    {
+        fprintf(stderr, " * %s Unable to unmap %s.\n", __func__, filename);
+        return 1;
+    }
+    (void)remove(filename);
     return 0;
 }
 
-int main()
+int main(void)
 {
-    benchmark_find_first_be_uint64();
-    benchmark_find_first_le_uint64();
-    benchmark_col_find_first_uint64();
-    return 0;
+    int ret = 0;
+    ret |= benchmark_find_first_be_uint64();
+    ret |= benchmark_find_first_le_uint64();
+    ret |= benchmark_col_find_first_uint64();
+    return ret;
 }

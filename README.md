@@ -15,10 +15,9 @@ If this project is useful to you, please consider [supporting development via Gi
 
 ## Description
 
-The functions provided here allows to search unsigned integers in a binary file made of adjacent constant-length binary blocks sorted in ascending order.
+This library searches unsigned integers in a memory mapped binary file. Two data layouts are supported.
 
-For example, the first 4 bytes of each 8-bytes blocks below represent a `uint32` in big-endian.
-The integers are sorted in ascending order.
+In row mode the file is a sequence of adjacent constant-length blocks, each holding the searched value at a fixed offset. In the 8-byte blocks below the first 4 bytes are a `uint32` in big-endian and the blocks are sorted by that value.
 
 ```
 2f 81 f5 77 1a cc 7b 43
@@ -26,42 +25,43 @@ The integers are sorted in ascending order.
 2f 81 f5 79 ca a9 a6 52
 ```
 
-This binary representation can be used to encode sortable key-value data, even with nested keys.
+This representation can be used to encode sortable key-value data, even with nested keys.
 
-The xxd command-line application can be used to convert a binary file to hexdump and reverse.
-For example:
+In column mode the data is a contiguous array of unsigned integers of one type, in host byte order. The `col_` functions take a typed pointer to that array, so the byte offset of a column must be a multiple of the size of its type.
+
+The values must be sorted in ascending order in both layouts.
+
+Each search returns the item number when the value is found, or the initial `last` value when it is not, along with the updated `first` and `last` positions. The `has_next` and `has_prev` functions walk over the remaining matches.
+
+The `mmap_binfile` function maps a file and reads the header of the Apache Arrow, Feather and custom BINSRC1 formats. For any other content the caller sets the number of columns and their type sizes before the call. The data block is reported as empty (zero rows) when the header is inconsistent or when the columns it describes do not fit in the file.
+
+The xxd command-line application converts a binary file to a hexdump and back:
 
 ```
 xxd -p -c8 binaryfile.bin > hexfile.txt
 xxd -r -p hexfile.txt > binaryfile.bin
 ```
 
-This library also provide functions to read columnar data in Little-Endian format.
+## Naming
 
-The `mmap_binfile` function is able to extract some basic data from files in Apache Arrow, Feather or custom BINSRC format.
-
-
-
+* the `_be_` or `BE` functions read big-endian values.
+* the `_le_` or `LE` functions read little-endian values.
+* the `col_` or `Col` functions read a contiguous array in host byte order.
+* the `_sub_` or `Sub` functions match only the bits from `bitstart` to `bitend`, counted from the most significant bit of the type.
 
 ## Getting Started
 
-The reference code of this application is written in C language and includes wrappers for GO and Python.
+The reference implementation is a header-only C library, with wrappers for Go and Python.
 
-A wrapper Makefile is available to allows building the project in a Linux-compatible system with simple commands.  
-All the artifacts and reports produced using this Makefile are stored in the *target* folder.  
+A wrapper Makefile builds the project on a Linux-compatible system.
+All the artifacts and reports it produces are stored in the *target* folder.
 
 To see all available options:
 ```
 make help
 ```
 
-use the command ```make all``` to build and test all the implementations.
-
-## NOTE
-
-* the "_be_" or "BE" functions refer to source files sorted in Big-Endian.
-* the "_le_" or "LE" functions refer to source files sorted in Little-Endian.
-
+Use `make all` to build and test every implementation, `make test` to run the unit tests, `make linter` to run the linters and `make coverage` to check that the unit test coverage is 100%.
 
 
 ## BINSRC Format:

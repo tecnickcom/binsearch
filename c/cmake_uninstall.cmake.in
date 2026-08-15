@@ -7,14 +7,11 @@ string(REGEX REPLACE "\n" ";" files "${files}")
 foreach(file ${files})
   message(STATUS "Uninstalling $ENV{DESTDIR}${file}")
   if(IS_SYMLINK "$ENV{DESTDIR}${file}" OR EXISTS "$ENV{DESTDIR}${file}")
-    exec_program(
-      "@CMAKE_COMMAND@" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
-      OUTPUT_VARIABLE rm_out
-      RETURN_VALUE rm_retval
-      )
-    if(NOT "${rm_retval}" STREQUAL 0)
+    # NOTE: exec_program() was removed in CMake 4.
+    file(REMOVE "$ENV{DESTDIR}${file}")
+    if(EXISTS "$ENV{DESTDIR}${file}")
       message(FATAL_ERROR "Problem when removing $ENV{DESTDIR}${file}")
-    endif(NOT "${rm_retval}" STREQUAL 0)
+    endif(EXISTS "$ENV{DESTDIR}${file}")
   else(IS_SYMLINK "$ENV{DESTDIR}${file}" OR EXISTS "$ENV{DESTDIR}${file}")
     message(STATUS "File $ENV{DESTDIR}${file} does not exist.")
   endif(IS_SYMLINK "$ENV{DESTDIR}${file}" OR EXISTS "$ENV{DESTDIR}${file}")

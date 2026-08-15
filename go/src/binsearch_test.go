@@ -1,9 +1,7 @@
-//nolint:gocognit,paralleltest,tparallel
 package binsearch
 
 import "testing"
 
-//nolint:gochecknoglobals
 var testDataBE8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -56,7 +54,6 @@ var testDataBE8 = []struct {
 	{0, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataBESub8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -109,7 +106,6 @@ var testDataBESub8 = []struct {
 	{0, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLE8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -162,7 +158,6 @@ var testDataLE8 = []struct {
 	{15, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLESub8 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -215,7 +210,6 @@ var testDataLESub8 = []struct {
 	{15, 150, 251, 0x70, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataBE16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -268,7 +262,6 @@ var testDataBE16 = []struct {
 	{0, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataBESub16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -321,7 +314,6 @@ var testDataBESub16 = []struct {
 	{0, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLE16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -374,7 +366,6 @@ var testDataLE16 = []struct {
 	{14, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLESub16 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -427,7 +418,6 @@ var testDataLESub16 = []struct {
 	{14, 150, 251, 0x7071, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataBE32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -480,7 +470,6 @@ var testDataBE32 = []struct {
 	{0, 150, 251, 0x70717273, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataBESub32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -533,7 +522,6 @@ var testDataBESub32 = []struct {
 	{0, 150, 251, 0x00007172, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLE32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -586,7 +574,6 @@ var testDataLE32 = []struct {
 	{12, 150, 251, 0x70717273, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLESub32 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -639,7 +626,6 @@ var testDataLESub32 = []struct {
 	{12, 150, 251, 0x00007172, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataBE64 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -692,7 +678,6 @@ var testDataBE64 = []struct {
 	{0, 150, 251, 0x7071727374757677, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataBESub64 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -745,7 +730,6 @@ var testDataBESub64 = []struct {
 	{0, 150, 251, 0x0000000072737475, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLE64 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -798,7 +782,6 @@ var testDataLE64 = []struct {
 	{8, 150, 251, 0x7071727374757677, 251, 149, 150, 251, 149, 150},
 }
 
-//nolint:gochecknoglobals
 var testDataLESub64 = []struct {
 	blkpos      uint64
 	first       uint64
@@ -2328,5 +2311,33 @@ func TestFindLastSubLEUint64(t *testing.T) {
 func BenchmarkFindLastSubLEUint64(b *testing.B) {
 	for b.Loop() {
 		mf.FindLastSubLEUint64(0, 16, testDataLESub64[4].blkpos, 16, 47, testDataLESub64[4].first, testDataLESub64[4].last, testDataLESub64[4].search)
+	}
+}
+
+// The value 0x70 is the item 113 of the test data, so a search restricted to
+// the items from 114 on must not report it: find_last inspects the item that
+// precedes the position its loop converges to, which is exactly item 113.
+func TestFindLastBelowSubRange(t *testing.T) {
+	t.Parallel()
+
+	const (
+		first  = uint64(114)
+		last   = uint64(251)
+		search = uint8(0x70)
+	)
+
+	h, _, _ := mf.FindLastBEUint8(0, 16, 0, first, last, search)
+	if h != last {
+		t.Errorf("FindLastBEUint8: expected %d, got %d", last, h)
+	}
+
+	h, _, _ = mf.FindLastSubBEUint8(0, 16, 0, 0, 7, first, last, search)
+	if h != last {
+		t.Errorf("FindLastSubBEUint8: expected %d, got %d", last, h)
+	}
+
+	h, _, _ = mf.FindFirstBEUint8(0, 16, 0, first, last, search)
+	if h != last {
+		t.Errorf("FindFirstBEUint8: expected %d, got %d", last, h)
 	}
 }

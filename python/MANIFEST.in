@@ -1,11 +1,10 @@
 exclude .gitignore
 exclude .coverage
 exclude .coveragerc
-exclude .travis.yml
 include setup.cfg
-include ../README.md
-include ../LICENSE
-include ../c/src/binsearch/binsearch.h
+include README.md
+include LICENSE
+include binsearch/binsearch.h
 include binsearch/pybinsearch.h
 prune .cache
 prune .git
@@ -13,4 +12,5 @@ prune build
 prune dist
 prune htmlcov
 recursive-exclude *.egg-info *
-recursive-include tests *
+recursive-exclude test/__pycache__ *
+recursive-include test *.py

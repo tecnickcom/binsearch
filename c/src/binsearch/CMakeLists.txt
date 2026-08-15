@@ -1,16 +1,12 @@
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+# binsearch is a header-only library, so it is modelled as an INTERFACE target:
+# it carries the include directory and nothing is compiled or linked.
+add_library(binsearch INTERFACE)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+target_include_directories(binsearch INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
 
-# Add the binary tree directory to the search path for linking and include files
-link_directories( ${CMAKE_CURRENT_BINARY_DIR} )
-include_directories (${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_BINARY_DIR}/src/binsearch )
-
-add_library (binsearch binsearch.h)
-target_include_directories (binsearch PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-set_target_properties(binsearch PROPERTIES LINKER_LANGUAGE "C")
-
-# Required to link the math library
-target_link_libraries(binsearch)
+install(FILES binsearch.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tecnickcom/binsearch
+)
