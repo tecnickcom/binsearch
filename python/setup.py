@@ -77,7 +77,7 @@ prepare()
 
 setup(
     name="binsearch",
-    version="9.5.4.0",
+    version="9.5.5.0",
     keywords=("binsearch"),
     description="Binsearch Bindings for Python",
     long_description=read("README.md"),
