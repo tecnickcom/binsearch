@@ -54,14 +54,17 @@ def search_kwargs(name, mfsrc, **overrides):
     else:
         kwargs["first"] = 0
         kwargs["last"] = 1
-    kwargs["search"] = 0
+    # The find_many functions search a sequence of values rather than one.
+    kwargs["search"] = [0] if "_many_" in name else 0
     kwargs.update({k: v for k, v in overrides.items() if k in kwargs})
+    if ("_many_" in name) and not isinstance(kwargs["search"], list):
+        kwargs["search"] = [kwargs["search"]]
     return kwargs
 
 
 class TestMmap(TestCase):
     def test_mmap_binfile_missing_file(self):
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = bs.mmap_binfile(
             "missing_file.bin", [4, 8]
         )
         self.assertEqual(fd, -1)
@@ -72,6 +75,41 @@ class TestMmap(TestCase):
         self.assertEqual(doffset, 0)
         self.assertEqual(dlength, 0)
         self.assertEqual(ncols, 2)
+        self.assertEqual(border, 0)
+
+    def test_mmap_binfile_file_not_a_string(self):
+        with self.assertRaises(TypeError):
+            bs.mmap_binfile(12, [4])
+
+    def test_munmap_binfile_fd_not_a_number(self):
+        src, fd, size, *_ = bs.mmap_binfile(TEST_FILE, [12])
+        with self.assertRaises(TypeError):
+            bs.munmap_binfile(src, "12", size)
+        self.assertEqual(bs.munmap_binfile(src, fd, size), 0)
+
+    def test_munmap_binfile_size_not_a_number(self):
+        src, fd, size, *_ = bs.mmap_binfile(TEST_FILE, [12])
+        with self.assertRaises(TypeError):
+            bs.munmap_binfile(src, fd, None)
+        self.assertEqual(bs.munmap_binfile(src, fd, size), 0)
+
+    def test_munmap_binfile_fd_mismatch(self):
+        src, fd, size, *_ = bs.mmap_binfile(TEST_FILE, [12])
+        with self.assertRaises(ValueError):
+            bs.munmap_binfile(src, -1, size)
+        self.assertEqual(bs.munmap_binfile(src, fd, size), 0)
+
+    def test_get_address_blklen_not_a_number(self):
+        with self.assertRaises(TypeError):
+            bs.get_address(None, 0, 0)
+
+    def test_get_address_blkpos_not_a_number(self):
+        with self.assertRaises(TypeError):
+            bs.get_address(0, None, 0)
+
+    def test_get_address_item_not_a_number(self):
+        with self.assertRaises(TypeError):
+            bs.get_address(0, 0, None)
 
     def test_mmap_binfile_ctbytes_not_iterable(self):
         with self.assertRaises(TypeError):
@@ -115,10 +153,11 @@ class TestMmap(TestCase):
             bs.get_address(3, 5, -7)
 
     def test_mmap_binfile_ctbytes_tuple(self):
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = bs.mmap_binfile(
             TEST_FILE, (4, 8)
         )
         self.assertEqual(ncols, 2)
+        self.assertEqual(border, 0)
         self.assertEqual(size, TEST_FILE_SIZE)
         self.assertEqual(doffset, 0)
         self.assertEqual(dlength, TEST_FILE_SIZE)
@@ -128,10 +167,11 @@ class TestMmap(TestCase):
 
     def test_mmap_binfile_ctbytes_iterator(self):
         """A generator is converted to a temporary list that is released."""
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = bs.mmap_binfile(
             TEST_FILE, (v for v in [4, 8])
         )
         self.assertEqual(ncols, 2)
+        self.assertEqual(border, 0)
         self.assertEqual(nrows, 334)
         self.assertEqual(index, [0, 1336])
         self.assertEqual(size, TEST_FILE_SIZE)
@@ -152,10 +192,11 @@ class TestMmap(TestCase):
             bs.mmap_binfile(TEST_FILE, (v for v in [4, -8]))
 
     def test_mmap_binfile_ctbytes_empty_tuple(self):
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = bs.mmap_binfile(
             TEST_FILE, ()
         )
         self.assertEqual(ncols, 0)
+        self.assertEqual(border, 0)
         self.assertEqual(nrows, 0)
         self.assertEqual(index, [])
         self.assertEqual(size, TEST_FILE_SIZE)
@@ -167,10 +208,11 @@ class TestMmap(TestCase):
         class ColumnList(list):
             pass
 
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = bs.mmap_binfile(
             TEST_FILE, ColumnList([4, 8])
         )
         self.assertEqual(ncols, 2)
+        self.assertEqual(border, 0)
         self.assertEqual(nrows, 334)
         self.assertEqual(index, [0, 1336])
         self.assertEqual(size, TEST_FILE_SIZE)
@@ -251,8 +293,30 @@ class TestSearchArguments(TestCase):
         bs.munmap_binfile(self.src, self.fd, self.size)
 
     def test_function_list(self):
-        self.assertEqual(len(SEARCH_FUNCTIONS), 96)
-        self.assertEqual(len(SUB_FUNCTIONS), 48)
+        self.assertEqual(len(SEARCH_FUNCTIONS), 192)
+        self.assertEqual(len(SUB_FUNCTIONS), 96)
+
+    def test_argument_not_a_number(self):
+        """Every numeric argument of every search function is converted, so a
+        value that is not a number is refused rather than silently accepted."""
+        for name in SEARCH_FUNCTIONS:
+            kwargs = search_kwargs(name, self.src)
+            for key in kwargs:
+                if key == "mfsrc":
+                    continue
+                with self.subTest(name=name, argument=key), self.assertRaises(
+                    TypeError
+                ):
+                    getattr(bs, name)(**{**kwargs, key: None})
+
+    def test_searched_value_not_a_number(self):
+        """The find_many functions convert every value of the sequence."""
+        for name in SEARCH_FUNCTIONS:
+            if "_many_" not in name:
+                continue
+            kwargs = search_kwargs(name, self.src)
+            with self.subTest(name=name), self.assertRaises(TypeError):
+                getattr(bs, name)(**{**kwargs, "search": [None]})
 
     def test_not_a_capsule(self):
         for name in SEARCH_FUNCTIONS:

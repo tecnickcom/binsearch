@@ -59,8 +59,7 @@ build: version prepare
 clean:
 	rm -rf venv target htmlcov build dist .pytest_cache .cache .benchmarks ./test/*.so ./test/__pycache__ ./binsearch/__pycache__ ./binsearch.egg-info
 	rm -f binsearch/binsearch.h README.md LICENSE ./binsearch*.so
-	# Leftovers of an older layout: a stale copy of the C sources and the
-	# backup the version target used to write.
+	# A stale copy of the C sources and the backup of the version target.
 	rm -rf c setup.py.bak
 	find . -type f -name '*.pyc' -exec rm -f {} \;
 	find . -type f -name '*.gcda' -exec rm -f {} \;

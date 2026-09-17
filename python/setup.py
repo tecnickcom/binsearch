@@ -37,9 +37,13 @@ def prepare():
 # setuptools appends extra_compile_args after the CFLAGS of the environment, so
 # the optimisation level set here would override the one of a coverage or debug
 # build. It is only added when the environment does not set its own flags.
+# _DEFAULT_SOURCE makes the POSIX memory advice macros visible. Without it a
+# strict ISO C build sees neither MADV_WILLNEED nor POSIX_MADV_WILLNEED, and the
+# page requests of the find_many functions are not compiled at all.
 COMPILE_ARGS = [
     "-pedantic",
     "-std=c2x",
+    "-D_DEFAULT_SOURCE",
     "-Wall",
     "-Wextra",
     "-Wno-strict-prototypes",
@@ -77,7 +81,7 @@ prepare()
 
 setup(
     name="binsearch",
-    version="9.5.5.0",
+    version="10.0.0.0",
     keywords=("binsearch"),
     description="Binsearch Bindings for Python",
     long_description=read("README.md"),

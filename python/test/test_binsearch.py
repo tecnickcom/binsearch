@@ -668,12 +668,12 @@ testDataSubLE64 = [
 class TestFunctions(TestCase):
     @classmethod
     def setUpClass(cls):
-        global src, fd, size, doffset, dlength, nrows, ncols, index
+        global src, fd, size, doffset, dlength, nrows, ncols, border, index
         inputfile = os.path.realpath(
             os.path.dirname(os.path.realpath(__file__))
             + "/../../c/test/data/test_data.bin"
         )
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = bs.mmap_binfile(
             inputfile, [12]
         )
         assert fd >= 0 and size == 4016, "Unable to open the file"
@@ -1345,7 +1345,9 @@ class TestBenchmark:
             cls.dlength,
             cls.nrows,
             cls.ncols,
+            cls.border,
             cls.index,
+            cls.ctbytes,
         ) = bs.mmap_binfile(inputfile, [12])
         assert cls.fd >= 0 and cls.size == 4016, "Unable to open the file"
 

@@ -3,14 +3,21 @@ package binsearch
 import (
 	"os"
 	"path/filepath"
+	"slices"
+	"syscall"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
+// colFile is the column mode fixture and colCTBytes describes its columns.
+const colFile = "../../c/test/data/test_data_col.bin"
+
+var colCTBytes = []uint8{1, 2, 4, 8}
+
 var (
-	mf, cmf TMMFile
-	retCode int
+	mf, cmf, bcmf TMMFile
+	retCode       int
 )
 
 func closeTMMFile(mmf *TMMFile) {
@@ -18,6 +25,21 @@ func closeTMMFile(mmf *TMMFile) {
 	if err != nil {
 		retCode++
 	}
+}
+
+// swapColumns returns a copy of the data with the bytes of every column value
+// reversed, which turns the little-endian fixture into its big-endian form.
+func swapColumns(data []byte, nrows uint64, ctbytes []uint8, index []uint64) []byte {
+	out := slices.Clone(data)
+
+	for col, tsize := range ctbytes {
+		for row := range nrows {
+			pos := index[col] + (row * uint64(tsize))
+			slices.Reverse(out[pos : pos+uint64(tsize)])
+		}
+	}
+
+	return out
 }
 
 func TestMain(m *testing.M) {
@@ -30,7 +52,33 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 
-	cmf, err = MmapBinFile("../../c/test/data/test_data_col.bin", []uint8{1, 2, 4, 8})
+	cmf, err = MmapBinFile(colFile, colCTBytes)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	// The column mode tests run on the fixture read with the LE methods and on
+	// a byte-swapped copy of it read with the BE ones, so that the swapping is
+	// covered on any host.
+	data, err := os.ReadFile(colFile)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	tmpdir, err := os.MkdirTemp("", "binsearch")
+	if err != nil {
+		os.Exit(1)
+	}
+
+	befile := filepath.Join(tmpdir, "test_data_col_be.bin")
+	swapped := swapColumns(data, cmf.NRows, cmf.CTBytes, cmf.Index)
+
+	err = os.WriteFile(befile, swapped, 0o600) //nolint:gosec // the path is the temporary directory of this process
+	if err != nil {
+		os.Exit(1)
+	}
+
+	bcmf, err = MmapBinFile(befile, colCTBytes)
 	if err != nil {
 		os.Exit(1)
 	}
@@ -41,6 +89,12 @@ func TestMain(m *testing.M) {
 	// unmapped explicitly.
 	closeTMMFile(&mf)
 	closeTMMFile(&cmf)
+	closeTMMFile(&bcmf)
+
+	err = os.RemoveAll(tmpdir)
+	if err != nil {
+		retCode++
+	}
 
 	os.Exit(retCode)
 }
@@ -92,11 +146,43 @@ func TestCloseUnmapError(t *testing.T) {
 func TestMmapBinFileError(t *testing.T) {
 	_, err := MmapBinFile("error", []uint8{4})
 	require.Error(t, err)
+
+	// The reason the mapping failed travels with the error.
+	require.ErrorIs(t, err, syscall.ENOENT)
 }
 
-func TestMmapBinFileNoColumns(t *testing.T) {
-	_, err := MmapBinFile("../../c/test/data/test_data.bin", []uint8{})
+// Only a regular file has a size that describes the bytes that can be read from
+// it, so a directory is rejected instead of being mapped.
+func TestMmapBinFileNotRegular(t *testing.T) {
+	_, err := MmapBinFile(t.TempDir(), []uint8{4})
 	require.Error(t, err)
+	require.ErrorIs(t, err, syscall.EINVAL)
+}
+
+// A BINSRC1 file carries the number of columns and their type sizes in its
+// header, so the caller does not have to describe them.
+func TestMmapBinFileNoColumns(t *testing.T) {
+	amf, err := MmapBinFile("../../c/test/data/test_data_binsrc.bin", nil)
+	require.NoError(t, err)
+
+	require.Equal(t, uint8(2), amf.NCols)
+	require.Equal(t, []uint8{4, 8}, amf.CTBytes)
+	require.Equal(t, uint64(11), amf.NRows)
+
+	require.NoError(t, amf.Close())
+}
+
+// Content without a header carries no column layout either, so a caller that
+// describes no column gets a data block with no row.
+func TestMmapBinFileNoColumnsRaw(t *testing.T) {
+	amf, err := MmapBinFile("../../c/test/data/test_data.bin", []uint8{})
+	require.NoError(t, err)
+
+	require.Equal(t, uint8(0), amf.NCols)
+	require.Equal(t, uint64(0), amf.NRows)
+	require.Empty(t, amf.Index)
+
+	require.NoError(t, amf.Close())
 }
 
 func TestMmapBinFileTooManyColumns(t *testing.T) {
@@ -126,6 +212,7 @@ func TestLoadArrow(t *testing.T) {
 	require.Equal(t, uint64(136), amf.DLength)
 	require.Equal(t, uint64(11), amf.NRows)
 	require.Equal(t, uint8(2), amf.NCols)
+	require.Equal(t, OrderLE, amf.Border)
 	require.Equal(t, uint64(376), amf.Index[0])
 	require.Equal(t, uint64(424), amf.Index[1])
 
@@ -145,6 +232,7 @@ func TestLoadFeather(t *testing.T) {
 	require.Equal(t, uint64(136), amf.DLength)
 	require.Equal(t, uint64(11), amf.NRows)
 	require.Equal(t, uint8(2), amf.NCols)
+	require.Equal(t, OrderLE, amf.Border)
 	require.Equal(t, uint64(8), amf.Index[0])
 	require.Equal(t, uint64(56), amf.Index[1])
 
@@ -164,6 +252,7 @@ func TestLoadBinsrc(t *testing.T) {
 	require.Equal(t, uint64(136), amf.DLength)
 	require.Equal(t, uint64(11), amf.NRows)
 	require.Equal(t, uint8(2), amf.NCols)
+	require.Equal(t, OrderLE, amf.Border)
 	require.Equal(t, uint64(40), amf.Index[0])
 	require.Equal(t, uint64(88), amf.Index[1])
 
@@ -198,10 +287,12 @@ func TestLoadPaddedColumns(t *testing.T) {
 	require.Equal(t, uint64(204), pmf.DLength)
 	require.Equal(t, uint64(100), pmf.NRows)
 	require.Equal(t, uint8(2), pmf.NCols)
+	require.Equal(t, OrderLE, pmf.Border)
 	require.Equal(t, uint64(0), pmf.Index[0])
 	require.Equal(t, uint64(104), pmf.Index[1])
 
-	item, _, _ := pmf.ColFindFirstUint8(pmf.Index[1], 0, pmf.NRows, 42)
+	item, _, _, err := pmf.ColFindFirstLEUint8(pmf.Index[1], 0, pmf.NRows, 42)
+	require.NoError(t, err)
 	require.Equal(t, uint64(42), item)
 
 	require.NoError(t, pmf.Close())

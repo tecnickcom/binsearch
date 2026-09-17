@@ -1,6 +1,7 @@
 """Tests for binsearch module - column mode."""
 
 import os
+import tempfile
 from unittest import TestCase
 
 import binsearch as bs
@@ -8,6 +9,19 @@ import binsearch as bs
 fd = -1
 
 nrows = 251
+
+ctbytes = [1, 2, 4, 8]
+
+
+def swap_columns(data, rows, offsets):
+    """Returns a copy of the data with the bytes of every column value reversed."""
+    out = bytearray(data)
+    for col, tsize in enumerate(ctbytes):
+        for row in range(rows):
+            pos = offsets[col] + (row * tsize)
+            out[pos : pos + tsize] = out[pos : pos + tsize][::-1]
+    return bytes(out)
+
 
 testDataCol8 = [
     (0, 251, 0x00, 0, 0, 0, 1, 2, 2),
@@ -339,312 +353,349 @@ testDataColSub64 = [
 
 
 class TestFunctions(TestCase):
+    """Every case runs twice: on the fixture, which is little-endian, read with
+    the le functions, and on a byte-swapped copy of it read with the be ones.
+    Both must return the same items, so the swapping is covered on any host."""
+
     @classmethod
     def setUpClass(cls):
-        global src, fd, size, doffset, dlength, nrows, ncols, index
+        global src, fd, size, doffset, dlength, nrows, ncols, border, index
+        global besrc, befd, besize, beindex, orders
         inputfile = os.path.realpath(
             os.path.dirname(os.path.realpath(__file__))
             + "/../../c/test/data/test_data_col.bin"
         )
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
-            inputfile, [1, 2, 4, 8]
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = bs.mmap_binfile(
+            inputfile, ctbytes
         )
         assert fd >= 0 and size == 3776, "Unable to open the file"
+        assert border == 0, "The fixture must be little-endian"
+        with open(inputfile, "rb") as f:
+            data = f.read()
+        cls.tmpdir = tempfile.TemporaryDirectory()
+        befile = os.path.join(cls.tmpdir.name, "test_data_col_be.bin")
+        with open(befile, "wb") as f:
+            f.write(swap_columns(data, nrows, index))
+        besrc, befd, besize, _, _, _, _, _, beindex, _ = bs.mmap_binfile(
+            befile, ctbytes
+        )
+        assert befd >= 0 and besize == size, "Unable to open the swapped file"
+        orders = [("le", src, index), ("be", besrc, beindex)]
 
     @classmethod
     def tearDownClass(cls):
-        global fd
+        global fd, befd
         h = bs.munmap_binfile(src, fd, size)
         assert h == 0, "Error while closing the memory-mapped file"
         fd = -1
+        h = bs.munmap_binfile(besrc, befd, besize)
+        assert h == 0, "Error while closing the swapped memory-mapped file"
+        befd = -1
+        cls.tmpdir.cleanup()
 
     def test_col_find_first_uint8(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol8:
-            rp, rf, rl = bs.col_find_first_uint8(src, index[0], first, last, search)
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_uint8(src, index[0], pos, last, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_{order}_uint8")
+            step = getattr(bs, f"col_has_next_{order}_uint8")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol8:
+                rp, rf, rl = find(msrc, idx[0], first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[0], pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_first_uint16(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol16:
-            rp, rf, rl = bs.col_find_first_uint16(src, index[1], first, last, search)
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_uint16(src, index[1], pos, last, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_{order}_uint16")
+            step = getattr(bs, f"col_has_next_{order}_uint16")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol16:
+                rp, rf, rl = find(msrc, idx[1], first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[1], pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_first_uint32(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol32:
-            rp, rf, rl = bs.col_find_first_uint32(src, index[2], first, last, search)
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_uint32(src, index[2], pos, last, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_{order}_uint32")
+            step = getattr(bs, f"col_has_next_{order}_uint32")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol32:
+                rp, rf, rl = find(msrc, idx[2], first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[2], pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_first_uint64(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol64:
-            rp, rf, rl = bs.col_find_first_uint64(src, index[3], first, last, search)
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_uint64(src, index[3], pos, last, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_{order}_uint64")
+            step = getattr(bs, f"col_has_next_{order}_uint64")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol64:
+                rp, rf, rl = find(msrc, idx[3], first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[3], pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_uint8(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol8:
-            rp, rf, rl = bs.col_find_last_uint8(src, index[0], first, last, search)
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_uint8(src, index[0], first, pos, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_{order}_uint8")
+            step = getattr(bs, f"col_has_prev_{order}_uint8")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol8:
+                rp, rf, rl = find(msrc, idx[0], first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[0], first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_uint16(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol16:
-            rp, rf, rl = bs.col_find_last_uint16(src, index[1], first, last, search)
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_uint16(src, index[1], first, pos, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_{order}_uint16")
+            step = getattr(bs, f"col_has_prev_{order}_uint16")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol16:
+                rp, rf, rl = find(msrc, idx[1], first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[1], first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_uint32(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol32:
-            rp, rf, rl = bs.col_find_last_uint32(src, index[2], first, last, search)
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_uint32(src, index[2], first, pos, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_{order}_uint32")
+            step = getattr(bs, f"col_has_prev_{order}_uint32")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol32:
+                rp, rf, rl = find(msrc, idx[2], first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[2], first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_uint64(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol64:
-            rp, rf, rl = bs.col_find_last_uint64(src, index[3], first, last, search)
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_uint64(src, index[3], first, pos, search)
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_{order}_uint64")
+            step = getattr(bs, f"col_has_prev_{order}_uint64")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataCol64:
+                rp, rf, rl = find(msrc, idx[3], first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[3], first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_first_sub_uint8(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub8:
-            rp, rf, rl = bs.col_find_first_sub_uint8(
-                src, index[0], 0, 7, first, last, search
-            )
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_sub_uint8(
-                        src, index[0], 0, 7, pos, last, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_sub_{order}_uint8")
+            step = getattr(bs, f"col_has_next_sub_{order}_uint8")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub8:
+                rp, rf, rl = find(msrc, idx[0], 0, 7, first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[0], 0, 7, pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_first_sub_uint16(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub16:
-            rp, rf, rl = bs.col_find_first_sub_uint16(
-                src, index[1], 0, 15, first, last, search
-            )
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_sub_uint16(
-                        src, index[1], 0, 15, pos, last, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_sub_{order}_uint16")
+            step = getattr(bs, f"col_has_next_sub_{order}_uint16")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub16:
+                rp, rf, rl = find(msrc, idx[1], 0, 15, first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[1], 0, 15, pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_first_sub_uint32(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub32:
-            rp, rf, rl = bs.col_find_first_sub_uint32(
-                src, index[2], 8, 23, first, last, search
-            )
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_sub_uint32(
-                        src, index[2], 8, 23, pos, last, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_sub_{order}_uint32")
+            step = getattr(bs, f"col_has_next_sub_{order}_uint32")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub32:
+                rp, rf, rl = find(msrc, idx[2], 8, 23, first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[2], 8, 23, pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_first_sub_uint64(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub64:
-            rp, rf, rl = bs.col_find_first_sub_uint64(
-                src, index[3], 16, 47, first, last, search
-            )
-            self.assertEqual(rp, fF)
-            self.assertEqual(rf, fFF)
-            self.assertEqual(rl, fFL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_next_sub_uint64(
-                        src, index[3], 16, 47, pos, last, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_first_sub_{order}_uint64")
+            step = getattr(bs, f"col_has_next_sub_{order}_uint64")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub64:
+                rp, rf, rl = find(msrc, idx[3], 16, 47, first, last, search)
+                self.assertEqual(rp, fF)
+                self.assertEqual(rf, fFF)
+                self.assertEqual(rl, fFL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[3], 16, 47, pos, last, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_sub_uint8(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub8:
-            rp, rf, rl = bs.col_find_last_sub_uint8(
-                src, index[0], 0, 7, first, last, search
-            )
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_sub_uint8(
-                        src, index[0], 0, 7, first, pos, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_sub_{order}_uint8")
+            step = getattr(bs, f"col_has_prev_sub_{order}_uint8")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub8:
+                rp, rf, rl = find(msrc, idx[0], 0, 7, first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[0], 0, 7, first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_sub_uint16(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub16:
-            rp, rf, rl = bs.col_find_last_sub_uint16(
-                src, index[1], 0, 15, first, last, search
-            )
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_sub_uint16(
-                        src, index[1], 0, 15, first, pos, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_sub_{order}_uint16")
+            step = getattr(bs, f"col_has_prev_sub_{order}_uint16")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub16:
+                rp, rf, rl = find(msrc, idx[1], 0, 15, first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[1], 0, 15, first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_sub_uint32(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub32:
-            rp, rf, rl = bs.col_find_last_sub_uint32(
-                src, index[2], 8, 23, first, last, search
-            )
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_sub_uint32(
-                        src, index[2], 8, 23, first, pos, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_sub_{order}_uint32")
+            step = getattr(bs, f"col_has_prev_sub_{order}_uint32")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub32:
+                rp, rf, rl = find(msrc, idx[2], 8, 23, first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[2], 8, 23, first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
     def test_col_find_last_sub_uint64(self):
-        for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub64:
-            rp, rf, rl = bs.col_find_last_sub_uint64(
-                src, index[3], 16, 47, first, last, search
-            )
-            self.assertEqual(rp, fL)
-            self.assertEqual(rf, fLF)
-            self.assertEqual(rl, fLL)
-            numitems = fL - fF + 1
-            if (rp < last) and (numitems > 0):
-                pos = rp
-                ret = True
-                counter = 0
-                while ret:
-                    ret, pos = bs.col_has_prev_sub_uint64(
-                        src, index[3], 16, 47, first, pos, search
-                    )
-                    counter = counter + 1
-                self.assertEqual(counter, numitems)
+        for order, msrc, idx in orders:
+            find = getattr(bs, f"col_find_last_sub_{order}_uint64")
+            step = getattr(bs, f"col_has_prev_sub_{order}_uint64")
+            for first, last, search, fF, fFF, fFL, fL, fLF, fLL in testDataColSub64:
+                rp, rf, rl = find(msrc, idx[3], 16, 47, first, last, search)
+                self.assertEqual(rp, fL)
+                self.assertEqual(rf, fLF)
+                self.assertEqual(rl, fLL)
+                numitems = fL - fF + 1
+                if (rp < last) and (numitems > 0):
+                    pos = rp
+                    ret = True
+                    counter = 0
+                    while ret:
+                        ret, pos = step(msrc, idx[3], 16, 47, first, pos, search)
+                        counter = counter + 1
+                    self.assertEqual(counter, numitems)
 
 
 class TestBenchmark:
@@ -666,7 +717,9 @@ class TestBenchmark:
             cls.dlength,
             cls.nrows,
             cls.ncols,
+            cls.border,
             cls.index,
+            cls.ctbytes,
         ) = bs.mmap_binfile(inputfile, [1, 2, 4, 8])
         assert cls.fd >= 0 and cls.size == 3776, "Unable to open the file"
 
@@ -678,7 +731,7 @@ class TestBenchmark:
 
     def test_col_find_first_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_uint8,
+            bs.col_find_first_le_uint8,
             args=[self.src, self.index[0], 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
@@ -686,7 +739,7 @@ class TestBenchmark:
 
     def test_col_find_first_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_uint16,
+            bs.col_find_first_le_uint16,
             args=[self.src, self.index[1], 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
@@ -694,7 +747,7 @@ class TestBenchmark:
 
     def test_col_find_first_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_uint32,
+            bs.col_find_first_le_uint32,
             args=[self.src, self.index[2], 0, 251, 0x2F303132],
             iterations=1,
             rounds=10000,
@@ -702,7 +755,7 @@ class TestBenchmark:
 
     def test_col_find_first_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_uint64,
+            bs.col_find_first_le_uint64,
             args=[self.src, self.index[3], 0, 251, 0x2F30313233343536],
             iterations=1,
             rounds=10000,
@@ -710,7 +763,7 @@ class TestBenchmark:
 
     def test_col_find_last_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_uint8,
+            bs.col_find_last_le_uint8,
             args=[self.src, self.index[0], 0, 250, 0x2F],
             iterations=1,
             rounds=10000,
@@ -718,7 +771,7 @@ class TestBenchmark:
 
     def test_col_find_last_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_uint16,
+            bs.col_find_last_le_uint16,
             args=[self.src, self.index[1], 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
@@ -726,7 +779,7 @@ class TestBenchmark:
 
     def test_col_find_last_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_uint32,
+            bs.col_find_last_le_uint32,
             args=[self.src, self.index[2], 0, 251, 0x2F303132],
             iterations=1,
             rounds=10000,
@@ -734,7 +787,7 @@ class TestBenchmark:
 
     def test_col_find_last_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_uint64,
+            bs.col_find_last_le_uint64,
             args=[self.src, self.index[3], 0, 251, 0x2F30313233343536],
             iterations=1,
             rounds=10000,
@@ -742,7 +795,7 @@ class TestBenchmark:
 
     def test_col_find_first_sub_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_sub_uint8,
+            bs.col_find_first_sub_le_uint8,
             args=[self.src, self.index[0], 0, 7, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
@@ -750,7 +803,7 @@ class TestBenchmark:
 
     def test_col_find_first_sub_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_sub_uint16,
+            bs.col_find_first_sub_le_uint16,
             args=[self.src, self.index[1], 0, 15, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
@@ -758,7 +811,7 @@ class TestBenchmark:
 
     def test_col_find_first_sub_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_sub_uint32,
+            bs.col_find_first_sub_le_uint32,
             args=[self.src, self.index[2], 8, 23, 0, 251, 0x00003031],
             iterations=1,
             rounds=10000,
@@ -766,7 +819,7 @@ class TestBenchmark:
 
     def test_col_find_first_sub_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_first_sub_uint64,
+            bs.col_find_first_sub_le_uint64,
             args=[self.src, self.index[3], 16, 47, 0, 251, 0x0000000031323334],
             iterations=1,
             rounds=10000,
@@ -774,7 +827,7 @@ class TestBenchmark:
 
     def test_col_find_last_sub_uint8_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_sub_uint8,
+            bs.col_find_last_sub_le_uint8,
             args=[self.src, self.index[0], 0, 7, 0, 251, 0x2F],
             iterations=1,
             rounds=10000,
@@ -782,7 +835,7 @@ class TestBenchmark:
 
     def test_col_find_last_sub_uint16_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_sub_uint16,
+            bs.col_find_last_sub_le_uint16,
             args=[self.src, self.index[1], 0, 15, 0, 251, 0x2F30],
             iterations=1,
             rounds=10000,
@@ -790,7 +843,7 @@ class TestBenchmark:
 
     def test_col_find_last_sub_uint32_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_sub_uint32,
+            bs.col_find_last_sub_le_uint32,
             args=[self.src, self.index[2], 8, 23, 0, 251, 0x00003031],
             iterations=1,
             rounds=10000,
@@ -798,7 +851,7 @@ class TestBenchmark:
 
     def test_col_find_last_sub_uint64_benchmark(self, benchmark):
         benchmark.pedantic(
-            bs.col_find_last_sub_uint64,
+            bs.col_find_last_sub_le_uint64,
             args=[self.src, self.index[3], 16, 47, 0, 251, 0x0000000031323334],
             iterations=1,
             rounds=10000,

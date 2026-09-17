@@ -18,17 +18,18 @@ class TestFunctions(TestCase):
                 f.write(bytes(range(100)))
                 f.write(bytes(4))
                 f.write(bytes(range(100)))
-            src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
-                inputfile, [1, 1]
+            src, fd, size, doffset, dlength, nrows, ncols, border, index, _ = (
+                bs.mmap_binfile(inputfile, [1, 1])
             )
             assert fd >= 0 and size == 204, "Unable to open the file"
             self.assertEqual(doffset, 0)
             self.assertEqual(dlength, 204)
             self.assertEqual(nrows, 100)
             self.assertEqual(ncols, 2)
+            self.assertEqual(border, 0)
             self.assertEqual(index[0], 0)
             self.assertEqual(index[1], 104)
-            item, _, _ = bs.col_find_first_uint8(src, index[1], 0, nrows, 42)
+            item, _, _ = bs.col_find_first_le_uint8(src, index[1], 0, nrows, 42)
             self.assertEqual(item, 42)
             h = bs.munmap_binfile(src, fd, size)
             assert h == 0, "Error while closing the memory-mapped file"
@@ -38,7 +39,7 @@ class TestFunctions(TestCase):
             os.path.dirname(os.path.realpath(__file__))
             + "/../../c/test/data/test_data_arrow.bin"
         )
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, ctbytes = bs.mmap_binfile(
             inputfile, [4, 8]
         )
         assert fd >= 0 and size == 730, "Unable to open the file"
@@ -46,8 +47,10 @@ class TestFunctions(TestCase):
         self.assertEqual(dlength, 136)
         self.assertEqual(nrows, 11)
         self.assertEqual(ncols, 2)
+        self.assertEqual(border, 0)
         self.assertEqual(index[0], 376)
         self.assertEqual(index[1], 424)
+        self.assertEqual(ctbytes, [4, 8])
         h = bs.munmap_binfile(src, fd, size)
         assert h == 0, "Error while closing the memory-mapped file"
 
@@ -56,7 +59,7 @@ class TestFunctions(TestCase):
             os.path.dirname(os.path.realpath(__file__))
             + "/../../c/test/data/test_data_feather.bin"
         )
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, ctbytes = bs.mmap_binfile(
             inputfile, [4, 8]
         )
         assert fd >= 0 and size == 384, "Unable to open the file"
@@ -64,8 +67,10 @@ class TestFunctions(TestCase):
         self.assertEqual(dlength, 136)
         self.assertEqual(nrows, 11)
         self.assertEqual(ncols, 2)
+        self.assertEqual(border, 0)
         self.assertEqual(index[0], 8)
         self.assertEqual(index[1], 56)
+        self.assertEqual(ctbytes, [4, 8])
         h = bs.munmap_binfile(src, fd, size)
         assert h == 0, "Error while closing the memory-mapped file"
 
@@ -74,7 +79,7 @@ class TestFunctions(TestCase):
             os.path.dirname(os.path.realpath(__file__))
             + "/../../c/test/data/test_data_binsrc.bin"
         )
-        src, fd, size, doffset, dlength, nrows, ncols, index = bs.mmap_binfile(
+        src, fd, size, doffset, dlength, nrows, ncols, border, index, ctbytes = bs.mmap_binfile(
             inputfile, [4, 8]
         )
         assert fd >= 0 and size == 176, "Unable to open the file"
@@ -82,7 +87,27 @@ class TestFunctions(TestCase):
         self.assertEqual(dlength, 136)
         self.assertEqual(nrows, 11)
         self.assertEqual(ncols, 2)
+        self.assertEqual(border, 0)
         self.assertEqual(index[0], 40)
         self.assertEqual(index[1], 88)
+        self.assertEqual(ctbytes, [4, 8])
+        h = bs.munmap_binfile(src, fd, size)
+        assert h == 0, "Error while closing the memory-mapped file"
+
+    def test_load_binsrc_without_ctbytes(self):
+        inputfile = os.path.realpath(
+            os.path.dirname(os.path.realpath(__file__))
+            + "/../../c/test/data/test_data_binsrc.bin"
+        )
+        # The header carries the number of columns and their type sizes, so the
+        # ones given here are ignored and the real ones are reported back.
+        src, fd, size, _, _, nrows, ncols, _, index, ctbytes = bs.mmap_binfile(
+            inputfile, []
+        )
+        assert fd >= 0 and size == 176, "Unable to open the file"
+        self.assertEqual(nrows, 11)
+        self.assertEqual(ncols, 2)
+        self.assertEqual(ctbytes, [4, 8])
+        self.assertEqual(index, [40, 88])
         h = bs.munmap_binfile(src, fd, size)
         assert h == 0, "Error while closing the memory-mapped file"

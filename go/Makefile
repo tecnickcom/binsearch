@@ -126,10 +126,39 @@ ensuretarget:
 format:
 	@find "$(SRCDIR)" -type f -name "*.go" -exec bash -c "$(GOFMT) -s -w {}" \;
 
+## Files written by the generator
+GENERATED=$(SRCDIR)/binsearch_search.go $(SRCDIR)/binsearch_guard_test.go $(SRCDIR)/binsearch_range_test.go
+
+## Generate the search methods and their argument checks.
+## The generator belongs to the tools module, so it is built from there and then
+## run in the package directory, where it writes its output.
+.PHONY: generate
+generate: ensuretarget
+	$(GOTOOLSMOD) build -o "$(CURDIR)/$(BINUTIL)/generator" ./generator
+	cd "$(SRCDIR)" && "$(CURDIR)/$(BINUTIL)/generator"
+
+## Check that the generated sources match the generator.
+## The stored copies are compared with freshly generated ones, so the check does
+## not depend on whether they have been committed yet.
+.PHONY: generatecheck
+generatecheck:
+	@tmp=$$(mktemp -d); \
+	for f in $(GENERATED); do cp "$$f" "$$tmp/$$(basename $$f)"; done; \
+	$(MAKE) --no-print-directory generate; \
+	status=0; \
+	for f in $(GENERATED); do \
+		if ! diff -u "$$tmp/$$(basename $$f)" "$$f"; then \
+			echo "ERROR: $$f is out of date: run 'make generate'"; \
+			status=1; \
+		fi; \
+	done; \
+	rm -rf "$$tmp"; \
+	exit $$status
+
 ## Execute multiple linter tools
 .PHONY: linter
 linter:
-	$(GOLANGCILINT) run "$(SRCDIR)/..."
+	$(GOLANGCILINT) run --build-tags binsearchdiff "$(SRCDIR)/..."
 
 ## Download mod dependencies
 .PHONY: mod
@@ -159,6 +188,7 @@ test: ensuretarget
 	# check that they still work. Their timings under -race and -covermode are
 	# meaningless: use the benchmark target to measure.
 	$(GOTEST) \
+	-tags binsearchdiff \
 	-shuffle=on \
 	-covermode=atomic \
 	-bench=. \

@@ -1,6 +1,10 @@
 package binsearch
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 var testDataCol8 = []struct {
 	first       uint64
@@ -410,738 +414,990 @@ var testDataColSub64 = []struct {
 	{150, 251, 0x0000000072737475, 251, 149, 150, 251, 149, 150},
 }
 
+// colValue is the set of types a column can hold.
+type colValue interface {
+	uint8 | uint16 | uint32 | uint64
+}
+
+// colOrder pairs the memory mapped fixture of one byte order with the methods
+// that read it, so that every case runs on both.
+type colOrder[T colValue] struct {
+	name         string
+	mf           *TMMFile
+	findFirst    func(offset, first, last uint64, search T) (uint64, uint64, uint64, error)
+	findLast     func(offset, first, last uint64, search T) (uint64, uint64, uint64, error)
+	findFirstSub func(offset uint64, bitstart, bitend uint8, first, last uint64, search T) (uint64, uint64, uint64, error)
+	findLastSub  func(offset uint64, bitstart, bitend uint8, first, last uint64, search T) (uint64, uint64, uint64, error)
+	hasNext      func(offset, pos, last uint64, search T) (bool, uint64, error)
+	hasNextSub   func(offset uint64, bitstart, bitend uint8, pos, last uint64, search T) (bool, uint64, error)
+	hasPrev      func(offset, first, pos uint64, search T) (bool, uint64, error)
+	hasPrevSub   func(offset uint64, bitstart, bitend uint8, first, pos uint64, search T) (bool, uint64, error)
+	findRange    func(offset, first, last uint64, search T) (uint64, uint64, uint64, error)
+	findRangeSub func(offset uint64, bitstart, bitend uint8, first, last uint64, search T) (uint64, uint64, uint64, error)
+	findMany     func(offset, first, last uint64, search []T) ([]uint64, error)
+	findManySub  func(offset uint64, bitstart, bitend uint8, first, last uint64, search []T) ([]uint64, error)
+}
+
+func colOrders8() []colOrder[uint8] {
+	return []colOrder[uint8]{
+		{
+			name:         "LE",
+			mf:           &cmf,
+			findFirst:    cmf.ColFindFirstLEUint8,
+			findLast:     cmf.ColFindLastLEUint8,
+			findFirstSub: cmf.ColFindFirstSubLEUint8,
+			findLastSub:  cmf.ColFindLastSubLEUint8,
+			hasNext:      cmf.ColHasNextLEUint8,
+			hasNextSub:   cmf.ColHasNextSubLEUint8,
+			hasPrev:      cmf.ColHasPrevLEUint8,
+			hasPrevSub:   cmf.ColHasPrevSubLEUint8,
+			findRange:    cmf.ColFindRangeLEUint8,
+			findRangeSub: cmf.ColFindRangeSubLEUint8,
+			findMany:     cmf.ColFindManyLEUint8,
+			findManySub:  cmf.ColFindManySubLEUint8,
+		},
+		{
+			name:         "BE",
+			mf:           &bcmf,
+			findFirst:    bcmf.ColFindFirstBEUint8,
+			findLast:     bcmf.ColFindLastBEUint8,
+			findFirstSub: bcmf.ColFindFirstSubBEUint8,
+			findLastSub:  bcmf.ColFindLastSubBEUint8,
+			hasNext:      bcmf.ColHasNextBEUint8,
+			hasNextSub:   bcmf.ColHasNextSubBEUint8,
+			hasPrev:      bcmf.ColHasPrevBEUint8,
+			hasPrevSub:   bcmf.ColHasPrevSubBEUint8,
+			findRange:    bcmf.ColFindRangeBEUint8,
+			findRangeSub: bcmf.ColFindRangeSubBEUint8,
+			findMany:     bcmf.ColFindManyBEUint8,
+			findManySub:  bcmf.ColFindManySubBEUint8,
+		},
+	}
+}
+
+func colOrders16() []colOrder[uint16] {
+	return []colOrder[uint16]{
+		{
+			name:         "LE",
+			mf:           &cmf,
+			findFirst:    cmf.ColFindFirstLEUint16,
+			findLast:     cmf.ColFindLastLEUint16,
+			findFirstSub: cmf.ColFindFirstSubLEUint16,
+			findLastSub:  cmf.ColFindLastSubLEUint16,
+			hasNext:      cmf.ColHasNextLEUint16,
+			hasNextSub:   cmf.ColHasNextSubLEUint16,
+			hasPrev:      cmf.ColHasPrevLEUint16,
+			hasPrevSub:   cmf.ColHasPrevSubLEUint16,
+			findRange:    cmf.ColFindRangeLEUint16,
+			findRangeSub: cmf.ColFindRangeSubLEUint16,
+			findMany:     cmf.ColFindManyLEUint16,
+			findManySub:  cmf.ColFindManySubLEUint16,
+		},
+		{
+			name:         "BE",
+			mf:           &bcmf,
+			findFirst:    bcmf.ColFindFirstBEUint16,
+			findLast:     bcmf.ColFindLastBEUint16,
+			findFirstSub: bcmf.ColFindFirstSubBEUint16,
+			findLastSub:  bcmf.ColFindLastSubBEUint16,
+			hasNext:      bcmf.ColHasNextBEUint16,
+			hasNextSub:   bcmf.ColHasNextSubBEUint16,
+			hasPrev:      bcmf.ColHasPrevBEUint16,
+			hasPrevSub:   bcmf.ColHasPrevSubBEUint16,
+			findRange:    bcmf.ColFindRangeBEUint16,
+			findRangeSub: bcmf.ColFindRangeSubBEUint16,
+			findMany:     bcmf.ColFindManyBEUint16,
+			findManySub:  bcmf.ColFindManySubBEUint16,
+		},
+	}
+}
+
+func colOrders32() []colOrder[uint32] {
+	return []colOrder[uint32]{
+		{
+			name:         "LE",
+			mf:           &cmf,
+			findFirst:    cmf.ColFindFirstLEUint32,
+			findLast:     cmf.ColFindLastLEUint32,
+			findFirstSub: cmf.ColFindFirstSubLEUint32,
+			findLastSub:  cmf.ColFindLastSubLEUint32,
+			hasNext:      cmf.ColHasNextLEUint32,
+			hasNextSub:   cmf.ColHasNextSubLEUint32,
+			hasPrev:      cmf.ColHasPrevLEUint32,
+			hasPrevSub:   cmf.ColHasPrevSubLEUint32,
+			findRange:    cmf.ColFindRangeLEUint32,
+			findRangeSub: cmf.ColFindRangeSubLEUint32,
+			findMany:     cmf.ColFindManyLEUint32,
+			findManySub:  cmf.ColFindManySubLEUint32,
+		},
+		{
+			name:         "BE",
+			mf:           &bcmf,
+			findFirst:    bcmf.ColFindFirstBEUint32,
+			findLast:     bcmf.ColFindLastBEUint32,
+			findFirstSub: bcmf.ColFindFirstSubBEUint32,
+			findLastSub:  bcmf.ColFindLastSubBEUint32,
+			hasNext:      bcmf.ColHasNextBEUint32,
+			hasNextSub:   bcmf.ColHasNextSubBEUint32,
+			hasPrev:      bcmf.ColHasPrevBEUint32,
+			hasPrevSub:   bcmf.ColHasPrevSubBEUint32,
+			findRange:    bcmf.ColFindRangeBEUint32,
+			findRangeSub: bcmf.ColFindRangeSubBEUint32,
+			findMany:     bcmf.ColFindManyBEUint32,
+			findManySub:  bcmf.ColFindManySubBEUint32,
+		},
+	}
+}
+
+func colOrders64() []colOrder[uint64] {
+	return []colOrder[uint64]{
+		{
+			name:         "LE",
+			mf:           &cmf,
+			findFirst:    cmf.ColFindFirstLEUint64,
+			findLast:     cmf.ColFindLastLEUint64,
+			findFirstSub: cmf.ColFindFirstSubLEUint64,
+			findLastSub:  cmf.ColFindLastSubLEUint64,
+			hasNext:      cmf.ColHasNextLEUint64,
+			hasNextSub:   cmf.ColHasNextSubLEUint64,
+			hasPrev:      cmf.ColHasPrevLEUint64,
+			hasPrevSub:   cmf.ColHasPrevSubLEUint64,
+			findRange:    cmf.ColFindRangeLEUint64,
+			findRangeSub: cmf.ColFindRangeSubLEUint64,
+			findMany:     cmf.ColFindManyLEUint64,
+			findManySub:  cmf.ColFindManySubLEUint64,
+		},
+		{
+			name:         "BE",
+			mf:           &bcmf,
+			findFirst:    bcmf.ColFindFirstBEUint64,
+			findLast:     bcmf.ColFindLastBEUint64,
+			findFirstSub: bcmf.ColFindFirstSubBEUint64,
+			findLastSub:  bcmf.ColFindLastSubBEUint64,
+			hasNext:      bcmf.ColHasNextBEUint64,
+			hasNextSub:   bcmf.ColHasNextSubBEUint64,
+			hasPrev:      bcmf.ColHasPrevBEUint64,
+			hasPrevSub:   bcmf.ColHasPrevSubBEUint64,
+			findRange:    bcmf.ColFindRangeBEUint64,
+			findRangeSub: bcmf.ColFindRangeSubBEUint64,
+			findMany:     bcmf.ColFindManyBEUint64,
+			findManySub:  bcmf.ColFindManySubBEUint64,
+		},
+	}
+}
+
 func TestColFindFirstUint8(t *testing.T) {
-	for _, tt := range testDataCol8 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders8() {
+		for _, tt := range testDataCol8 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstUint8(cmf.Index[0], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirst(o.mf.Index[0], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextUint8(cmf.Index[0], pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNext(o.mf.Index[0], pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstUint8(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstUint8(cmf.Index[0], testDataCol8[4].first, testDataCol8[4].last, testDataCol8[4].search)
+		_, _, _, _ = cmf.ColFindFirstLEUint8(cmf.Index[0], testDataCol8[4].first, testDataCol8[4].last, testDataCol8[4].search)
 	}
 }
 
 func TestColFindFirstSubUint8(t *testing.T) {
-	for _, tt := range testDataColSub8 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders8() {
+		for _, tt := range testDataColSub8 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstSubUint8(cmf.Index[0], 0, 7, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirstSub(o.mf.Index[0], 0, 7, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextSubUint8(cmf.Index[0], 0, 7, pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNextSub(o.mf.Index[0], 0, 7, pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstSubUint8(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstSubUint8(cmf.Index[0], 0, 7, testDataColSub8[4].first, testDataColSub8[4].last, testDataColSub8[4].search)
+		_, _, _, _ = cmf.ColFindFirstSubLEUint8(cmf.Index[0], 0, 7, testDataColSub8[4].first, testDataColSub8[4].last, testDataColSub8[4].search)
 	}
 }
 
 func TestColFindLastUint8(t *testing.T) {
-	for _, tt := range testDataCol8 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders8() {
+		for _, tt := range testDataCol8 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastUint8(cmf.Index[0], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLast(o.mf.Index[0], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevUint8(cmf.Index[0], tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrev(o.mf.Index[0], tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastUint8(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastUint8(cmf.Index[0], testDataCol8[4].first, testDataCol8[4].last, testDataCol8[4].search)
+		_, _, _, _ = cmf.ColFindLastLEUint8(cmf.Index[0], testDataCol8[4].first, testDataCol8[4].last, testDataCol8[4].search)
 	}
 }
 
 func TestColFindLastSubUint8(t *testing.T) {
-	for _, tt := range testDataColSub8 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders8() {
+		for _, tt := range testDataColSub8 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastSubUint8(cmf.Index[0], 0, 7, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLastSub(o.mf.Index[0], 0, 7, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevSubUint8(cmf.Index[0], 0, 7, tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrevSub(o.mf.Index[0], 0, 7, tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastSubUint8(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastSubUint8(cmf.Index[0], 0, 7, testDataColSub8[4].first, testDataColSub8[4].last, testDataColSub8[4].search)
+		_, _, _, _ = cmf.ColFindLastSubLEUint8(cmf.Index[0], 0, 7, testDataColSub8[4].first, testDataColSub8[4].last, testDataColSub8[4].search)
 	}
 }
 
 func TestColFindFirstUint16(t *testing.T) {
-	for _, tt := range testDataCol16 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders16() {
+		for _, tt := range testDataCol16 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstUint16(cmf.Index[1], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirst(o.mf.Index[1], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextUint16(cmf.Index[1], pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNext(o.mf.Index[1], pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstUint16(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstUint16(cmf.Index[1], testDataCol16[4].first, testDataCol16[4].last, testDataCol16[4].search)
+		_, _, _, _ = cmf.ColFindFirstLEUint16(cmf.Index[1], testDataCol16[4].first, testDataCol16[4].last, testDataCol16[4].search)
 	}
 }
 
 func TestColFindFirstSubUint16(t *testing.T) {
-	for _, tt := range testDataColSub16 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders16() {
+		for _, tt := range testDataColSub16 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstSubUint16(cmf.Index[1], 0, 15, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirstSub(o.mf.Index[1], 0, 15, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextSubUint16(cmf.Index[1], 0, 15, pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNextSub(o.mf.Index[1], 0, 15, pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstSubUint16(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstSubUint16(cmf.Index[1], 0, 15, testDataColSub16[4].first, testDataColSub16[4].last, testDataColSub16[4].search)
+		_, _, _, _ = cmf.ColFindFirstSubLEUint16(cmf.Index[1], 0, 15, testDataColSub16[4].first, testDataColSub16[4].last, testDataColSub16[4].search)
 	}
 }
 
 func TestColFindLastUint16(t *testing.T) {
-	for _, tt := range testDataCol16 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders16() {
+		for _, tt := range testDataCol16 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastUint16(cmf.Index[1], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLast(o.mf.Index[1], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevUint16(cmf.Index[1], tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrev(o.mf.Index[1], tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastUint16(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastUint16(cmf.Index[1], testDataCol16[4].first, testDataCol16[4].last, testDataCol16[4].search)
+		_, _, _, _ = cmf.ColFindLastLEUint16(cmf.Index[1], testDataCol16[4].first, testDataCol16[4].last, testDataCol16[4].search)
 	}
 }
 
 func TestColFindLastSubUint16(t *testing.T) {
-	for _, tt := range testDataColSub16 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders16() {
+		for _, tt := range testDataColSub16 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastSubUint16(cmf.Index[1], 0, 15, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLastSub(o.mf.Index[1], 0, 15, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevSubUint16(cmf.Index[1], 0, 15, tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrevSub(o.mf.Index[1], 0, 15, tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastSubUint16(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastSubUint16(cmf.Index[1], 0, 15, testDataColSub16[4].first, testDataColSub16[4].last, testDataColSub16[4].search)
+		_, _, _, _ = cmf.ColFindLastSubLEUint16(cmf.Index[1], 0, 15, testDataColSub16[4].first, testDataColSub16[4].last, testDataColSub16[4].search)
 	}
 }
 
 func TestColFindFirstUint32(t *testing.T) {
-	for _, tt := range testDataCol32 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders32() {
+		for _, tt := range testDataCol32 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstUint32(cmf.Index[2], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirst(o.mf.Index[2], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextUint32(cmf.Index[2], pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNext(o.mf.Index[2], pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstUint32(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstUint32(cmf.Index[2], testDataCol32[4].first, testDataCol32[4].last, testDataCol32[4].search)
+		_, _, _, _ = cmf.ColFindFirstLEUint32(cmf.Index[2], testDataCol32[4].first, testDataCol32[4].last, testDataCol32[4].search)
 	}
 }
 
 func TestColFindFirstSubUint32(t *testing.T) {
-	for _, tt := range testDataColSub32 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders32() {
+		for _, tt := range testDataColSub32 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstSubUint32(cmf.Index[2], 8, 23, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirstSub(o.mf.Index[2], 8, 23, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextSubUint32(cmf.Index[2], 8, 23, pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNextSub(o.mf.Index[2], 8, 23, pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstSubUint32(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstSubUint32(cmf.Index[2], 8, 23, testDataColSub32[4].first, testDataColSub32[4].last, testDataColSub32[4].search)
+		_, _, _, _ = cmf.ColFindFirstSubLEUint32(cmf.Index[2], 8, 23, testDataColSub32[4].first, testDataColSub32[4].last, testDataColSub32[4].search)
 	}
 }
 
 func TestColFindLastUint32(t *testing.T) {
-	for _, tt := range testDataCol32 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders32() {
+		for _, tt := range testDataCol32 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastUint32(cmf.Index[2], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLast(o.mf.Index[2], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevUint32(cmf.Index[2], tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrev(o.mf.Index[2], tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastUint32(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastUint32(cmf.Index[2], testDataCol32[4].first, testDataCol32[4].last, testDataCol32[4].search)
+		_, _, _, _ = cmf.ColFindLastLEUint32(cmf.Index[2], testDataCol32[4].first, testDataCol32[4].last, testDataCol32[4].search)
 	}
 }
 
 func TestColFindLastSubUint32(t *testing.T) {
-	for _, tt := range testDataColSub32 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders32() {
+		for _, tt := range testDataColSub32 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastSubUint32(cmf.Index[2], 8, 23, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLastSub(o.mf.Index[2], 8, 23, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevSubUint32(cmf.Index[2], 8, 23, tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrevSub(o.mf.Index[2], 8, 23, tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastSubUint32(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastSubUint32(cmf.Index[2], 8, 23, testDataColSub32[4].first, testDataColSub32[4].last, testDataColSub32[4].search)
+		_, _, _, _ = cmf.ColFindLastSubLEUint32(cmf.Index[2], 8, 23, testDataColSub32[4].first, testDataColSub32[4].last, testDataColSub32[4].search)
 	}
 }
 
 func TestColFindFirstUint64(t *testing.T) {
-	for _, tt := range testDataCol64 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders64() {
+		for _, tt := range testDataCol64 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstUint64(cmf.Index[3], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirst(o.mf.Index[3], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextUint64(cmf.Index[3], pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNext(o.mf.Index[3], pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstUint64(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstUint64(cmf.Index[3], testDataCol64[4].first, testDataCol64[4].last, testDataCol64[4].search)
+		_, _, _, _ = cmf.ColFindFirstLEUint64(cmf.Index[3], testDataCol64[4].first, testDataCol64[4].last, testDataCol64[4].search)
 	}
 }
 
 func TestColFindFirstSubUint64(t *testing.T) {
-	for _, tt := range testDataColSub64 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders64() {
+		for _, tt := range testDataColSub64 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindFirstSubUint64(cmf.Index[3], 16, 47, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findFirstSub(o.mf.Index[3], 16, 47, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundFirst {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
-			}
-
-			if f != tt.foundFFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
-			}
-
-			if l != tt.foundFLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasNextSubUint64(cmf.Index[3], 16, 47, pos, tt.last, tt.search)
-					counter++
+				if h != tt.foundFirst {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundFirst, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundFFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundFFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundFLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundFLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasNextSub(o.mf.Index[3], 16, 47, pos, tt.last, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindFirstSubUint64(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindFirstSubUint64(cmf.Index[3], 16, 47, testDataColSub64[4].first, testDataColSub64[4].last, testDataColSub64[4].search)
+		_, _, _, _ = cmf.ColFindFirstSubLEUint64(cmf.Index[3], 16, 47, testDataColSub64[4].first, testDataColSub64[4].last, testDataColSub64[4].search)
 	}
 }
 
 func TestColFindLastUint64(t *testing.T) {
-	for _, tt := range testDataCol64 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders64() {
+		for _, tt := range testDataCol64 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastUint64(cmf.Index[3], tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLast(o.mf.Index[3], tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevUint64(cmf.Index[3], tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrev(o.mf.Index[3], tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastUint64(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastUint64(cmf.Index[3], testDataCol64[4].first, testDataCol64[4].last, testDataCol64[4].search)
+		_, _, _, _ = cmf.ColFindLastLEUint64(cmf.Index[3], testDataCol64[4].first, testDataCol64[4].last, testDataCol64[4].search)
 	}
 }
 
 func TestColFindLastSubUint64(t *testing.T) {
-	for _, tt := range testDataColSub64 {
-		t.Run("", func(t *testing.T) {
-			t.Parallel()
+	for _, o := range colOrders64() {
+		for _, tt := range testDataColSub64 {
+			t.Run(o.name, func(t *testing.T) {
+				t.Parallel()
 
-			h, f, l := cmf.ColFindLastSubUint64(cmf.Index[3], 16, 47, tt.first, tt.last, tt.search)
+				h, f, l, err := o.findLastSub(o.mf.Index[3], 16, 47, tt.first, tt.last, tt.search)
+				require.NoError(t, err)
 
-			if h != tt.foundLast {
-				t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
-			}
-
-			if f != tt.foundLFirst {
-				t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
-			}
-
-			if l != tt.foundLLast {
-				t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
-			}
-
-			numitems := tt.foundLast - tt.foundFirst + 1
-
-			if (h < tt.last) && (numitems > 0) {
-				pos := h
-				ret := true
-
-				var counter uint64
-
-				for ret {
-					ret, pos = cmf.ColHasPrevSubUint64(cmf.Index[3], 16, 47, tt.first, pos, tt.search)
-					counter++
+				if h != tt.foundLast {
+					t.Errorf("Expected found 0x%x, got 0x%x", tt.foundLast, h)
 				}
 
-				if counter != numitems {
-					t.Errorf("Expected next items %d, got %d", numitems, counter)
+				if f != tt.foundLFirst {
+					t.Errorf("Expected first 0x%x, got 0x%x", tt.foundLFirst, f)
 				}
-			}
-		})
+
+				if l != tt.foundLLast {
+					t.Errorf("Expected last 0x%x, got 0x%x", tt.foundLLast, l)
+				}
+
+				numitems := tt.foundLast - tt.foundFirst + 1
+
+				if (h < tt.last) && (numitems > 0) {
+					pos := h
+					ret := true
+
+					var counter uint64
+
+					for ret {
+						ret, pos, err = o.hasPrevSub(o.mf.Index[3], 16, 47, tt.first, pos, tt.search)
+						require.NoError(t, err)
+
+						counter++
+					}
+
+					if counter != numitems {
+						t.Errorf("Expected next items %d, got %d", numitems, counter)
+					}
+				}
+			})
+		}
 	}
 }
 
 func BenchmarkColFindLastSubUint64(b *testing.B) {
 	for b.Loop() {
-		cmf.ColFindLastSubUint64(cmf.Index[3], 16, 47, testDataColSub64[4].first, testDataColSub64[4].last, testDataColSub64[4].search)
+		_, _, _, _ = cmf.ColFindLastSubLEUint64(cmf.Index[3], 16, 47, testDataColSub64[4].first, testDataColSub64[4].last, testDataColSub64[4].search)
 	}
 }

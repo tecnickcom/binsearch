@@ -48,6 +48,8 @@ jobs:
         run: cd go && make mod deps linter test coverage GOPATH=$(go env GOPATH)
       - name: go.mod and go.sum are tidy
         run: cd go && make modcheck GOPATH=$(go env GOPATH)
+      - name: the generated sources are up to date
+        run: cd go && make generatecheck GOPATH=$(go env GOPATH)
 
   python:
     runs-on: ubuntu-latest
