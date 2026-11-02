@@ -67,6 +67,7 @@ TIDYCHECKS=*,\
 -bugprone-easily-swappable-parameters,-cppcoreguidelines-avoid-magic-numbers,\
 -readability-magic-numbers,-readability-identifier-length,\
 -readability-isolate-declaration,-readability-function-cognitive-complexity,\
+-readability-use-concise-preprocessor-directives,\
 -llvmlibc-restrict-system-libc-headers,-llvm-header-guard,-llvm-include-order,\
 -android-cloexec-open,-hicpp-no-assembler,-hicpp-signed-bitwise,\
 -misc-include-cleaner,-concurrency-mt-unsafe,-cert-err33-c,\
@@ -110,7 +111,7 @@ linter:
 	# pointed at a compilation database that does not exist, and without
 	# --warnings-as-errors the target could never fail.
 	clang-tidy src/binsearch/binsearch.h --warnings-as-errors='$(TIDYCHECKS)' -checks='$(TIDYCHECKS)' -- -x c -std=c2x -I src/binsearch
-	cppcheck --enable=warning,style,performance,portability --check-level=exhaustive --error-exitcode=1 --inline-suppr --std=c11 -I src/binsearch test/*.c
+	cppcheck --force --enable=warning,style,performance,portability --check-level=exhaustive --error-exitcode=1 --inline-suppr --std=c11 -I src/binsearch test/*.c
 
 ## Build and run the unit tests
 .PHONY: test
